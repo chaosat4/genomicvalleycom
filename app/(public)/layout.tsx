@@ -6,6 +6,7 @@ export default function PublicLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <>
         <div className="relative flex min-h-screen flex-col">
         <SiteHeader />
             <main className="flex-1">
@@ -14,6 +15,7 @@ export default function PublicLayout({
             </div>
             </main>
       </div>
+      </>
   );
 }
 
