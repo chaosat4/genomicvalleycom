@@ -1,3 +1,4 @@
+import { FaqSection } from "@/components/FaqSection";
 import Features from "@/components/features";
 import Hero from "@/components/hero";
 import { ServiceCarousel } from "@/components/serviceCarousel";
@@ -9,6 +10,7 @@ export default function Home() {
       <Hero />
       <Features />
       <ServiceCarousel />
+      <FaqSection />
     </div>
   );
 }
