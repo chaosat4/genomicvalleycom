@@ -4,11 +4,11 @@ import Image from "next/image"
 export default function Hero() { 
   return (   
     <>
-    <section className="relative bg-purple-50 h-[600px] w-full overflow-hidden">
+    <section className="relative h-[600px] bg-purple-50 w-full overflow-hidden">
       {/* Background Image with Gradient Overlay */}
       <div className="absolute inset-0">
         <Image
-          src="/hero-cover.jpg"
+          src="/about-img.jpg"
           alt="Medical care background"
           width={1200}
           height={600}
@@ -31,7 +31,7 @@ export default function Hero() {
       </div>
 
       {/* Action Buttons */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 grid w-full grid-cols-1 divide-x divide-gray-200 border-t border-gray-200 bg-purple-50 sm:grid-cols-3">
+      <div className="absolute bottom-0 left-0 right-0 z-20 grid w-full grid-cols-1 divide-x divide-gray-200 border-t border-gray-200 bg-purple-50 sm:grid-cols-3 border-b">
         <Link
           href="#appointment"
           className="flex items-center justify-between p-4 text-sm hover:bg-gray-50"

@@ -60,7 +60,7 @@ export function FaqSection() {
    setProgress(0)
  }, [activeCategory])
   return (
-   <section className="bg-purple-50 mb-16 px-4">
+   <section className="bg-purple-50 mb-16 my-16 px-4">
      <div className="container mx-auto max-w-7xl">
        <div className="text-center mb-12">
          <h2 className="text-2xl md:text-2xl text-purple-600 font-bold mb-2">

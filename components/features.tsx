@@ -13,7 +13,7 @@ const iconMap = {
 
 function Features() {
   return (
-    <section className="py-8 md:py-0"> 
+    <section className="py-8 bg-purple-50 md:py-0"> 
       <div className="container hidden md:block">
         <div className="w-full h-px bg-gray-200 mb-8 md:mb-16"></div>
       </div>

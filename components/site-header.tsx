@@ -30,7 +30,7 @@ export function SiteHeader() {
         className={`fixed bg-gray-800/40 inset-0 z-30 ${navIsOpened ? "sm:hidden" : "hidden"}`}
       />
 
-      <header className="w-full border-b bg-background z-40">
+      <header className="w-full border-b bg-purple-50 z-40">
         <div className="container mx-auto">
           <div className="flex h-16 items-center justify-between px-4">
             {/* Logo */}
@@ -49,13 +49,13 @@ export function SiteHeader() {
                 <Input
                   type="search"
                   placeholder="Search"
-                  className="w-full pl-8 bg-white"
+                  className="w-full pl-8 bg-purple-50"
                 />
               </div>
             </div>
 
             {/* Desktop Login Button */}
-            <Button variant="ghost" className="gap-2 hidden sm:flex">
+            <Button variant="ghost" className="gap-2 hidden sm:flex bg-purple-100 hover:bg-purple-200">
               <UserCircle className="h-5 w-5" />
               Login to Patient Account
             </Button>
@@ -140,13 +140,13 @@ export function SiteHeader() {
                   <NavigationMenuItem key={item.name}>
                     {!item.features ? (
                       <Link href={item.href} legacyBehavior passHref>
-                        <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-base font-normal transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
+                        <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-purple-50 px-4 py-2 text-base font-normal transition-colors hover:bg-purple-100 hover:text-accent-foreground focus:bg-purple-100 focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
                           {item.name}
                         </NavigationMenuLink>
                       </Link>
                     ) : (
                       <>
-                        <NavigationMenuTrigger className="text-base font-normal">
+                        <NavigationMenuTrigger className="text-base font-normal bg-purple-50 hover:bg-purple-100 focus:bg-purple-100">
                           {item.name}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>

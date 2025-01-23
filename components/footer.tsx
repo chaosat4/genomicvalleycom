@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="w-full">
 
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container bg-purple-50 mx-auto px-4 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8">
           {FOOTER_CONSTANTS.columns.map((column, index) => (
             <div key={index} className="col-span-2 md:col-span-1">
