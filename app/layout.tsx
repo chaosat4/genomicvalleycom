@@ -35,7 +35,6 @@ export default function RootLayout({
         <Providers>
           <TopNotification />
           <main className="mx-auto max-w-[1200px]">
-            <SiteHeader />
             {children}
           </main>
           <SupportBanner />

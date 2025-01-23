@@ -26,7 +26,8 @@ export async function POST(request: Request) {
       whoCanBenefit,
       diseasesSupported,
       process,
-      faqs 
+      faqs,
+      category
     } = body;
 
     const service = await prisma.service.create({
@@ -36,6 +37,7 @@ export async function POST(request: Request) {
         commitment,
         contact,
         price: parseFloat(price),
+        category,
         whyChoose: {
           create: whyChoose
         },
@@ -64,6 +66,50 @@ export async function POST(request: Request) {
     return NextResponse.json(service, { status: 201 });
   } catch (error) {
     console.error('Failed to create service:', error);
+    return NextResponse.json(
+      { message: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(request: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    // Optional: Check if user is admin
+    if (!session?.user?.isAdmin) {
+      return NextResponse.json(
+        { message: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const services = await prisma.service.findMany({
+      select: {
+        id: true,
+        name: true,
+        overview: true,
+        price: true,
+        createdAt: true,
+        _count: {
+          select: {
+            whyChoose: true,
+            whoCanBenefit: true,
+            diseasesSupported: true,
+            process: true,
+            faqs: true,
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    return NextResponse.json(services);
+  } catch (error) {
+    console.error('Failed to fetch services:', error);
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }

@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 
-interface ServiceFormData {
+export interface ServiceFormData {
   name: string;
   overview: string;
   commitment: string;
   contact: string;
   price: number;
+  category: string;
   whyChoose: { feature: string; description: string }[];
   whoCanBenefit: { type: string; description: string }[];
   diseasesSupported: { name: string; relevance: string }[];
@@ -15,23 +16,32 @@ interface ServiceFormData {
   faqs: { question: string; answer: string }[];
 }
 
-export default function ServiceForm() {
-  const [formData, setFormData] = useState<ServiceFormData>({
-    name: '',
-    overview: '',
-    commitment: '',
-    contact: '',
-    price: 0,
-    whyChoose: [{ feature: '', description: '' }],
-    whoCanBenefit: [{ type: '', description: '' }],
-    diseasesSupported: [{ name: '', relevance: '' }],
-    process: [{ step: '', description: '' }],
-    faqs: [{ question: '', answer: '' }],
-  });
+interface ServiceFormProps {
+  initialData?: ServiceFormData;
+  serviceId?: string;
+  onSuccess?: () => void;
+}
+
+export default function ServiceForm({ initialData, serviceId, onSuccess }: ServiceFormProps) {
+  const [formData, setFormData] = useState<ServiceFormData>(
+    initialData || {
+      name: '',
+      overview: '',
+      commitment: '',
+      contact: '',
+      price: 0,
+      category: 'Diagnostic Services',
+      whyChoose: [{ feature: '', description: '' }],
+      whoCanBenefit: [{ type: '', description: '' }],
+      diseasesSupported: [{ name: '', relevance: '' }],
+      process: [{ step: '', description: '' }],
+      faqs: [{ question: '', answer: '' }],
+    }
+  );
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -95,8 +105,14 @@ export default function ServiceForm() {
     setMessage('');
 
     try {
-      const response = await fetch('/api/services', {
-        method: 'POST',
+      const url = serviceId 
+        ? `/api/services/${serviceId}`
+        : '/api/services';
+      
+      const method = serviceId ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -104,24 +120,30 @@ export default function ServiceForm() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add service');
+        throw new Error('Failed to save service');
       }
 
-      setMessage('Service added successfully!');
-      setFormData({
-        name: '',
-        overview: '',
-        commitment: '',
-        contact: '',
-        price: 0,
-        whyChoose: [{ feature: '', description: '' }],
-        whoCanBenefit: [{ type: '', description: '' }],
-        diseasesSupported: [{ name: '', relevance: '' }],
-        process: [{ step: '', description: '' }],
-        faqs: [{ question: '', answer: '' }],
-      });
+      setMessage('Service saved successfully!');
+      
+      if (!serviceId) {
+        setFormData({
+          name: '',
+          overview: '',
+          commitment: '',
+          contact: '',
+          price: 0,
+          category: 'Diagnostic Services',
+          whyChoose: [{ feature: '', description: '' }],
+          whoCanBenefit: [{ type: '', description: '' }],
+          diseasesSupported: [{ name: '', relevance: '' }],
+          process: [{ step: '', description: '' }],
+          faqs: [{ question: '', answer: '' }],
+        });
+      }
+      
+      onSuccess?.();
     } catch (error) {
-      setMessage('Failed to add service. Please try again.');
+      setMessage('Failed to save service. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -196,7 +218,7 @@ export default function ServiceForm() {
 
           <div>
             <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-              Price (USD)
+              Price (INR)
             </label>
             <input
               type="number"
@@ -209,6 +231,22 @@ export default function ServiceForm() {
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
+          </div>
+
+          <div>
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+              Category
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            >
+              <option value="Diagnostic Services">Diagnostic Services</option>
+              <option value="Research Services">Research Services</option>
+            </select>
           </div>
         </div>
 
@@ -443,7 +481,7 @@ export default function ServiceForm() {
           disabled={loading}
           className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
         >
-          {loading ? 'Adding...' : 'Add Service'}
+          {loading ? 'Saving...' : 'Save Service'}
         </button>
       </form>
     </div>
