@@ -96,6 +96,7 @@ function LoginContent() {
             </div>
           </div>
 
+
           {error && (
             <div className="text-red-500 text-sm text-center">{error}</div>
           )}
