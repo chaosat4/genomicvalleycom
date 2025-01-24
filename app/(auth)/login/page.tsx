@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import Link from 'next/link';
+import { getSession } from 'next-auth/react';
 
 function LoginContent() {
   const router = useRouter();
@@ -33,8 +34,21 @@ function LoginContent() {
         return;
       }
 
-      const callbackUrl = searchParams.get('callbackUrl') || '/';
-      router.push(callbackUrl);
+      // Get the session to check user role
+      const session = await getSession();
+      
+      // Redirect based on user role
+      if (session?.user?.isAdmin) {
+        router.push('/admin');
+      } else if (session?.user?.isDoctor) {
+        router.push('/doctor');
+      } else if (session?.user?.isPatient) {
+        router.push('/patient');
+      } else {
+        router.push('/dashboard'); // Fallback
+      }
+      
+      router.refresh();
     } catch (error) {
       setError('An error occurred. Please try again.');
     } finally {
