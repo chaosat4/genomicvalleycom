@@ -49,11 +49,22 @@ const AdminDashboard = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await fetch('/api/services');
+      const response = await fetch('/api/services', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Important for sending cookies
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch services');
+      }
+      
       const data = await response.json();
-      setServices(data);
+      setServices(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to fetch services:', error);
+      setServices([]);
     } finally {
       setLoading(false);
     }

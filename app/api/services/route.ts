@@ -77,20 +77,14 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     
-    // Optional: Check if user is admin
-    if (!session?.user?.isAdmin) {
-      return NextResponse.json(
-        { message: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
+    // Allow public access to services list
     const services = await prisma.service.findMany({
       select: {
         id: true,
         name: true,
         overview: true,
         price: true,
+        category: true,
         createdAt: true,
         _count: {
           select: {
