@@ -16,6 +16,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { navigationItems } from "@/constants"
+import { useSession, signOut } from 'next-auth/react'
 
 interface SearchResult {
   id: number;
@@ -34,6 +35,7 @@ export function SiteHeader() {
   const searchRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const debouncedSearch = useDebounce(searchQuery, 300)
+  const { data: session } = useSession()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -77,6 +79,10 @@ export function SiteHeader() {
   const closeNavbar = () => setNavIsOpened(false)
   const toggleNavbar = () => setNavIsOpened((prev) => !prev)
 
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/' })
+  }
+
   return (
     <>
       {/* Overlay */}
@@ -92,9 +98,9 @@ export function SiteHeader() {
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
               <img 
-                src="/placeholder.svg?height=40&width=150" 
+                src="/nav_logo.png" 
                 alt="Logo" 
-                className="h-10"
+                className="h-16"
               />
             </Link>
 
@@ -161,11 +167,26 @@ export function SiteHeader() {
               )}
             </div>
 
-            {/* Desktop Login Button */}
-            <Button variant="ghost" className="gap-2 hidden sm:flex bg-purple-100 hover:bg-purple-200">
-              <UserCircle className="h-5 w-5" />
-              Login to Patient Account
-            </Button>
+            {/* Desktop Login/Profile Button */}
+            {session ? (
+              <Button 
+                variant="ghost" 
+                className="gap-2 hidden sm:flex bg-purple-100 hover:bg-purple-200"
+                onClick={handleLogout}
+              >
+                <UserCircle className="h-5 w-5" />
+                Logout
+              </Button>
+            ) : (
+              <Button 
+                variant="ghost" 
+                className="gap-2 hidden sm:flex bg-purple-100 hover:bg-purple-200"
+                onClick={() => router.push('/login')}
+              >
+                <UserCircle className="h-5 w-5" />
+                Login to Patient Account
+              </Button>
+            )}
 
             {/* Mobile Menu Button */}
             <button 

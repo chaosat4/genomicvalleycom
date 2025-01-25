@@ -20,7 +20,7 @@ export default function NewServicePage() {
     }
 
     if (!session.user?.isAdmin) {
-      router.push('/login');
+      router.push('/');
     }
   }, [session, status, router]);
 

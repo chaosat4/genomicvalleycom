@@ -41,88 +41,75 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const resolvedParams = await params;
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.isAdmin) {
-      return NextResponse.json(
-        { message: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
     const body = await request.json();
-    const { 
-      name, 
-      overview, 
-      commitment, 
+    const {
+      name,
+      overview,
+      commitment,
       contact,
       price,
+      category,
+      razorpay_link,
       whyChoose,
       whoCanBenefit,
       diseasesSupported,
       process,
       faqs,
-      category
     } = body;
 
-    // Delete existing related records
-    await prisma.$transaction([
-      prisma.whyChoose.deleteMany({
-        where: { serviceId: parseInt(resolvedParams.id) }
-      }),
-      prisma.whoCanBenefit.deleteMany({
-        where: { serviceId: parseInt(resolvedParams.id) }
-      }),
-      prisma.diseaseSupported.deleteMany({
-        where: { serviceId: parseInt(resolvedParams.id) }
-      }),
-      prisma.process.deleteMany({
-        where: { serviceId: parseInt(resolvedParams.id) }
-      }),
-      prisma.fAQ.deleteMany({
-        where: { serviceId: parseInt(resolvedParams.id) }
-      }),
-    ]);
-
-    // Update service and create new related records
     const updatedService = await prisma.service.update({
       where: {
-        id: parseInt(resolvedParams.id),
+        id: parseInt(params.id),
       },
       data: {
         name,
         overview,
         commitment,
         contact,
-        price: parseFloat(price),
+        price,
         category,
+        razorpay_link,
         whyChoose: {
-          create: whyChoose
+          deleteMany: {},
+          createMany: {
+            data: whyChoose,
+          },
         },
         whoCanBenefit: {
-          create: whoCanBenefit
+          deleteMany: {},
+          createMany: {
+            data: whoCanBenefit,
+          },
         },
         diseasesSupported: {
-          create: diseasesSupported
+          deleteMany: {},
+          createMany: {
+            data: diseasesSupported,
+          },
         },
         process: {
-          create: process
+          deleteMany: {},
+          createMany: {
+            data: process,
+          },
         },
         faqs: {
-          create: faqs
-        }
+          deleteMany: {},
+          createMany: {
+            data: faqs,
+          },
+        },
       },
       include: {
         whyChoose: true,
         whoCanBenefit: true,
         diseasesSupported: true,
         process: true,
-        faqs: true
-      }
+        faqs: true,
+      },
     });
 
     return NextResponse.json(updatedService);
