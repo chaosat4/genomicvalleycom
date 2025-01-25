@@ -47,10 +47,28 @@ export async function PUT(
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session?.user?.isAdmin) {
+    // Check if session exists first
+    if (!session) {
       return NextResponse.json(
-        { message: 'Unauthorized' },
+        { message: 'Not authenticated' },
         { status: 401 }
+      );
+    }
+
+    // Check if user email exists and is an allowed admin
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session.user?.email as string
+      },
+      select: {
+        is_admin: true
+      }
+    });
+
+    if (!user?.is_admin) {
+      return NextResponse.json(
+        { message: 'Not authorized - Admin access required' },
+        { status: 403 }
       );
     }
 
@@ -145,10 +163,28 @@ export async function DELETE(
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session?.user?.isAdmin) {
+    // Check if session exists first
+    if (!session) {
       return NextResponse.json(
-        { message: 'Unauthorized' },
+        { message: 'Not authenticated' },
         { status: 401 }
+      );
+    }
+
+    // Check if user email exists and is an allowed admin
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session.user?.email as string
+      },
+      select: {
+        is_admin: true
+      }
+    });
+
+    if (!user?.is_admin) {
+      return NextResponse.json(
+        { message: 'Not authorized - Admin access required' },
+        { status: 403 }
       );
     }
 

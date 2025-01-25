@@ -7,9 +7,10 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     
-    // Add debug logging
-    console.log('Session:', JSON.stringify(session, null, 2));
-    console.log('User:', session?.user);
+    // Add more detailed debug logging
+    console.log('Full Session Object:', JSON.stringify(session, null, 2));
+    console.log('Session User:', session?.user);
+    console.log('User Email:', session?.user?.email);
     console.log('Is Admin:', session?.user?.isAdmin);
 
     // Check if session exists first
@@ -20,8 +21,17 @@ export async function POST(request: Request) {
       );
     }
 
-    // Then check admin status
-    if (!session.user?.isAdmin) {
+    // Check if user email exists and is an allowed admin
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session.user?.email as string
+      },
+      select: {
+        is_admin: true
+      }
+    });
+
+    if (!user?.is_admin) {
       return NextResponse.json(
         { message: 'Not authorized - Admin access required' },
         { status: 403 }
