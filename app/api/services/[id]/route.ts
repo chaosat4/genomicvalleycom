@@ -62,41 +62,25 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const resolvedParams = await params;
   try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
+    const resolvedParams = await params;
+    const token = request.headers.get('authorization')?.split(' ')[1];
+    if (!token) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       );
     }
 
-    const token = authHeader.split(' ')[1];
     const payload = await verifyJWT<JWTPayload>(token);
-
     if (!payload.is_admin) {
       return NextResponse.json(
-        { error: 'Not authorized - Admin access required' },
+        { error: 'Not authorized' },
         { status: 403 }
       );
     }
 
     const body = await request.json();
-    const {
-      name,
-      overview,
-      commitment,
-      contact,
-      price,
-      category,
-      razorpay_link,
-      whyChoose,
-      whoCanBenefit,
-      diseasesSupported,
-      process,
-      faqs,
-    } = body;
 
     // Delete existing related records
     await prisma.$transaction([
@@ -118,31 +102,29 @@ export async function PUT(
     ]);
 
     const updatedService = await prisma.service.update({
-      where: {
-        id: parseInt(resolvedParams.id),
-      },
+      where: { id: parseInt(resolvedParams.id) },
       data: {
-        name,
-        overview,
-        commitment,
-        contact,
-        price,
-        category,
-        razorpay_link,
+        name: body.name,
+        overview: body.overview,
+        commitment: body.commitment,
+        contact: body.contact,
+        price: body.price,
+        category: body.category,
+        razorpay_link: body.razorpay_link,
         whyChoose: {
-          create: whyChoose
+          create: body.whyChoose
         },
         whoCanBenefit: {
-          create: whoCanBenefit
+          create: body.whoCanBenefit
         },
         diseasesSupported: {
-          create: diseasesSupported
+          create: body.diseasesSupported
         },
         process: {
-          create: process
+          create: body.process
         },
         faqs: {
-          create: faqs
+          create: body.faqs
         }
       },
       include: {
@@ -168,27 +150,24 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const resolvedParams = await params;
   try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
+    const resolvedParams = await params;
+    const token = request.headers.get('authorization')?.split(' ')[1];
+    if (!token) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       );
     }
 
-    const token = authHeader.split(' ')[1];
     const payload = await verifyJWT<JWTPayload>(token);
-
     if (!payload.is_admin) {
       return NextResponse.json(
-        { error: 'Not authorized - Admin access required' },
+        { error: 'Not authorized' },
         { status: 403 }
       );
     }
 
-    // Delete related records first
     await prisma.$transaction([
       prisma.whyChoose.deleteMany({
         where: { serviceId: parseInt(resolvedParams.id) }
@@ -208,9 +187,7 @@ export async function DELETE(
     ]);
 
     await prisma.service.delete({
-      where: {
-        id: parseInt(resolvedParams.id),
-      },
+      where: { id: parseInt(resolvedParams.id) },
     });
 
     return NextResponse.json({ message: 'Service deleted successfully' });

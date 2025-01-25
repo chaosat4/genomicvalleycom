@@ -2,6 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useUser } from '@/app/contexts/UserContext';
+import { Button } from '@/components/ui/button';
+import { LogOut } from 'lucide-react';
 
 export default function DashboardLayout({
   children,
@@ -9,6 +12,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const { user, setUser, loading } = useUser();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -51,7 +55,13 @@ export default function DashboardLayout({
     checkAuth();
   }, [router]);
 
-  if (isLoading) {
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    router.push('/');
+  };
+
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -59,5 +69,19 @@ export default function DashboardLayout({
     );
   }
 
-  return <>{children}</>;
+  return (
+    <div>
+      <div className="flex justify-end p-4 border-b">
+        <Button
+          variant="ghost"
+          onClick={handleLogout}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+        >
+          <LogOut className="h-4 w-4" />
+          Logout
+        </Button>
+      </div>
+      {children}
+    </div>
+  );
 }

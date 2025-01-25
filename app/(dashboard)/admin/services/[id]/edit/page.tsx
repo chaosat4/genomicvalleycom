@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import ServiceForm from '@/components/admin/ServiceForm';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { useUser } from '@/app/contexts/UserContext';
 
 interface Service {
   id: string;
@@ -20,7 +21,7 @@ interface Service {
   diseasesSupported: Array<{ name: string; relevance: string }>;
   process: Array<{ step: string; description: string }>;
   faqs: Array<{ question: string; answer: string }>;
-} 
+}
 
 export default function EditServicePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -28,8 +29,14 @@ export default function EditServicePage({ params }: { params: Promise<{ id: stri
   const [service, setService] = useState<Service | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { user, loading: userLoading } = useUser();
 
   useEffect(() => {
+    if (!user?.is_admin) {
+      router.push('/');
+      return;
+    }
+
     const fetchService = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -58,14 +65,12 @@ export default function EditServicePage({ params }: { params: Promise<{ id: stri
       }
     };
 
-    fetchService();
-  }, [resolvedParams.id, router]);
+    if (!userLoading) {
+      fetchService();
+    }
+  }, [resolvedParams.id, router, user, userLoading]);
 
-  const handleSuccess = () => {
-    router.push('/admin');
-  };
-
-  if (loading) {
+  if (loading || userLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -90,8 +95,8 @@ export default function EditServicePage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <div className=" mx-auto py-8">
-      <div className=" items-center gap-4 mb-8">
+    <div className="mx-auto py-8">
+      <div className="items-center gap-4 mb-8">
         <Button
           variant="ghost"
           onClick={() => router.push('/admin')}
@@ -103,18 +108,18 @@ export default function EditServicePage({ params }: { params: Promise<{ id: stri
       </div>
 
       <div>
-          <h1 className="text-4xl font-bold text-gray-900">
-            Edit Service
-          </h1>
-          <p className="text-gray-600 mt-2">
-            Update the service details below
-          </p>
-        </div>
+        <h1 className="text-4xl font-bold text-gray-900">
+          Edit Service
+        </h1>
+        <p className="text-gray-600 mt-2">
+          Update the service details below
+        </p>
+      </div>
 
       <ServiceForm 
         initialData={service}
         serviceId={resolvedParams.id}
-        onSuccess={handleSuccess}
+        onSuccess={() => router.push('/admin')}
       />
     </div>
   );
