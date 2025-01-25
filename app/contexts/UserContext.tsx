@@ -22,34 +22,29 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const session = useSession();
 
   useEffect(() => {
     async function loadUser() {
-      try {
-        if (status === 'authenticated' && session) {
+      if (session.status === 'authenticated') {
+        try {
           const response = await fetch('/api/me');
           if (response.ok) {
             const userData = await response.json();
             setUser(userData);
-          } else {
-            console.error('Failed to load user data:', await response.text());
           }
+        } catch (error) {
+          console.error('Failed to load user:', error);
         }
-      } catch (error) {
-        console.error('Failed to load user:', error);
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     }
 
-    if (status !== 'loading') {
-      loadUser();
-    }
-  }, [session, status]);
+    loadUser();
+  }, [session.status]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading: status === 'loading' || loading }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );
