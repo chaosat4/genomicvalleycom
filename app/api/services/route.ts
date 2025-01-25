@@ -7,28 +7,17 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     
-    // Add more detailed debug logging
-    console.log('Full Session Object:', JSON.stringify(session, null, 2));
-    console.log('Session User:', session?.user);
-    console.log('User Email:', session?.user?.email);
-    console.log('Is Admin:', session?.user?.isAdmin);
-
-    // Check if session exists first
-    if (!session) {
+    if (!session?.user?.email) {
       return NextResponse.json(
         { message: 'Not authenticated' },
         { status: 401 }
       );
     }
 
-    // Check if user email exists and is an allowed admin
+    // Check admin status from database
     const user = await prisma.user.findUnique({
-      where: {
-        email: session.user?.email as string
-      },
-      select: {
-        is_admin: true
-      }
+      where: { email: session.user.email },
+      select: { is_admin: true }
     });
 
     if (!user?.is_admin) {

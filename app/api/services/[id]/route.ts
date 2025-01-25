@@ -47,22 +47,16 @@ export async function PUT(
   try {
     const session = await getServerSession(authOptions);
     
-    // Check if session exists first
-    if (!session) {
+    if (!session?.user?.email) {
       return NextResponse.json(
         { message: 'Not authenticated' },
         { status: 401 }
       );
     }
 
-    // Check if user email exists and is an allowed admin
     const user = await prisma.user.findUnique({
-      where: {
-        email: session.user?.email as string
-      },
-      select: {
-        is_admin: true
-      }
+      where: { email: session.user.email },
+      select: { is_admin: true }
     });
 
     if (!user?.is_admin) {
@@ -163,22 +157,16 @@ export async function DELETE(
   try {
     const session = await getServerSession(authOptions);
     
-    // Check if session exists first
-    if (!session) {
+    if (!session?.user?.email) {
       return NextResponse.json(
         { message: 'Not authenticated' },
         { status: 401 }
       );
     }
 
-    // Check if user email exists and is an allowed admin
     const user = await prisma.user.findUnique({
-      where: {
-        email: session.user?.email as string
-      },
-      select: {
-        is_admin: true
-      }
+      where: { email: session.user.email },
+      select: { is_admin: true }
     });
 
     if (!user?.is_admin) {
