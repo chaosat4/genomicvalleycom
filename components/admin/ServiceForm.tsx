@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2 } from 'lucide-react';
+import { useUser } from '@/app/contexts/UserContext';
 
 export interface ServiceFormData {
   name: string;
@@ -49,6 +50,15 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Props
     }
   );
   const [message, setMessage] = useState('');
+  const { user, loading: userLoading } = useUser();
+
+  if (userLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user?.is_admin) {
+    return <div>Unauthorized</div>;
+  }
 
   const handleBasicChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -128,13 +138,19 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Props
         body: JSON.stringify(formData),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to save service');
+        throw new Error(data.message || 'Failed to save service');
       }
 
-      setMessage('Service saved successfully!');
+      toast({
+        title: "Success",
+        description: "Service saved successfully!",
+      });
       
       if (!serviceId) {
+        // Reset form
         setFormData({
           name: '',
           overview: '',
@@ -152,8 +168,13 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Props
       }
       
       onSuccess?.();
-    } catch (error) {
-      setMessage('Failed to save service. Please try again.');
+    } catch (error: any) {
+      console.error('Submit error:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save service",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }

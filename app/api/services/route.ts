@@ -14,7 +14,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check admin status from database
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       select: { is_admin: true }
@@ -22,62 +21,66 @@ export async function POST(request: Request) {
 
     if (!user?.is_admin) {
       return NextResponse.json(
-        { message: 'Not authorized - Admin access required' },
+        { message: 'Not authorized' },
         { status: 403 }
       );
     }
 
     const body = await request.json();
-    const { 
-      name, 
-      overview, 
-      commitment, 
-      contact,
-      price,
-      whyChoose,
-      whoCanBenefit,
-      diseasesSupported,
-      process,
-      faqs,
-      category
-    } = body;
+    
+    // Validate required fields
+    if (!body.name || !body.overview || !body.category) {
+      return NextResponse.json(
+        { message: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
 
-    const service = await prisma.service.create({
-      data: {
-        name,
-        overview,
-        commitment,
-        contact,
-        price: parseFloat(price),
-        category,
-        whyChoose: {
-          create: whyChoose
+    try {
+      const service = await prisma.service.create({
+        data: {
+          name: body.name,
+          overview: body.overview,
+          commitment: body.commitment || '',
+          contact: body.contact || '',
+          price: parseFloat(body.price) || 0,
+          category: body.category,
+          razorpay_link: body.razorpay_link || '',
+          whyChoose: {
+            create: body.whyChoose || []
+          },
+          whoCanBenefit: {
+            create: body.whoCanBenefit || []
+          },
+          diseasesSupported: {
+            create: body.diseasesSupported || []
+          },
+          process: {
+            create: body.process || []
+          },
+          faqs: {
+            create: body.faqs || []
+          }
         },
-        whoCanBenefit: {
-          create: whoCanBenefit
-        },
-        diseasesSupported: {
-          create: diseasesSupported
-        },
-        process: {
-          create: process
-        },
-        faqs: {
-          create: faqs
+        include: {
+          whyChoose: true,
+          whoCanBenefit: true,
+          diseasesSupported: true,
+          process: true,
+          faqs: true
         }
-      },
-      include: {
-        whyChoose: true,
-        whoCanBenefit: true,
-        diseasesSupported: true,
-        process: true,
-        faqs: true
-      }
-    });
+      });
 
-    return NextResponse.json(service, { status: 201 });
+      return NextResponse.json(service, { status: 201 });
+    } catch (dbError) {
+      console.error('Database error:', dbError);
+      return NextResponse.json(
+        { message: 'Failed to create service in database' },
+        { status: 500 }
+      );
+    }
   } catch (error) {
-    console.error('Failed to create service:', error);
+    console.error('Service creation error:', error);
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }

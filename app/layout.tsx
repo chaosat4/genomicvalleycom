@@ -7,6 +7,7 @@ import { SupportBanner } from "@/components/SupportBanner";
 import { SiteHeader } from "@/components/site-header";
 import Providers from '@/components/Providers';
 import { Toaster } from "@/components/ui/toaster";
+import { UserProvider } from './contexts/UserContext';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,16 +34,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`min-h-screen bg-background font-sans bg-purple-50 antialiased ${geistSans.variable} ${geistMono.variable}`}>
-        <Providers>
-          <TopNotification />
-          <main className="mx-auto max-w-[1200px]">
-            {children}
-          </main>
-          <SupportBanner />
-          <div className="mx-auto max-w-[1200px]">
-            <Footer />
-          </div>
-        </Providers>
+        <UserProvider>
+          <Providers>
+            <TopNotification />
+            <main className="mx-auto max-w-[1200px]">
+              {children}
+            </main>
+            <SupportBanner />
+            <div className="mx-auto max-w-[1200px]">
+              <Footer />
+            </div>
+          </Providers>
+        </UserProvider>
         <Toaster />
       </body>
     </html>
