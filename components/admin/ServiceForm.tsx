@@ -1,6 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { Plus, Trash2 } from 'lucide-react';
 
 export interface ServiceFormData {
   name: string;
@@ -9,6 +15,7 @@ export interface ServiceFormData {
   contact: string;
   price: number;
   category: string;
+  razorpay_link: string;
   whyChoose: { feature: string; description: string }[];
   whoCanBenefit: { type: string; description: string }[];
   diseasesSupported: { name: string; relevance: string }[];
@@ -16,13 +23,15 @@ export interface ServiceFormData {
   faqs: { question: string; answer: string }[];
 }
 
-interface ServiceFormProps {
+interface Props {
   initialData?: ServiceFormData;
   serviceId?: string;
   onSuccess?: () => void;
 }
 
-export default function ServiceForm({ initialData, serviceId, onSuccess }: ServiceFormProps) {
+export default function ServiceForm({ initialData, serviceId, onSuccess }: Props) {
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<ServiceFormData>(
     initialData || {
       name: '',
@@ -30,7 +39,8 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Servi
       commitment: '',
       contact: '',
       price: 0,
-      category: 'Diagnostic Services',
+      category: '',
+      razorpay_link: '',
       whyChoose: [{ feature: '', description: '' }],
       whoCanBenefit: [{ type: '', description: '' }],
       diseasesSupported: [{ name: '', relevance: '' }],
@@ -38,10 +48,9 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Servi
       faqs: [{ question: '', answer: '' }],
     }
   );
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleBasicChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -50,8 +59,8 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Servi
   };
 
   const handleArrayChange = (
-    index: number,
     field: keyof Pick<ServiceFormData, 'whyChoose' | 'whoCanBenefit' | 'diseasesSupported' | 'process' | 'faqs'>,
+    index: number,
     subField: string,
     value: string
   ) => {
@@ -133,6 +142,7 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Servi
           contact: '',
           price: 0,
           category: 'Diagnostic Services',
+          razorpay_link: '',
           whyChoose: [{ feature: '', description: '' }],
           whoCanBenefit: [{ type: '', description: '' }],
           diseasesSupported: [{ name: '', relevance: '' }],
@@ -152,144 +162,119 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Servi
   return (
     <div className="bg-white shadow rounded-lg p-6 mt-6">
       <h2 className="text-xl font-semibold mb-4">Add New Service</h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8 p-6">
         {/* Basic Information */}
         <div className="space-y-4">
-          <h3 className="text-lg font-medium">Basic Information</h3>
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Service Name
-            </label>
-            <input
-              type="text"
+          <h3 className="text-lg font-semibold">Basic Information</h3>
+          
+          <div className="space-y-2">
+            <Label htmlFor="name">Service Name</Label>
+            <Input
               id="name"
               name="name"
-              required
               value={formData.name}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              onChange={handleBasicChange}
+              required
             />
           </div>
 
-          <div>
-            <label htmlFor="overview" className="block text-sm font-medium text-gray-700">
-              Overview
-            </label>
-            <textarea
+          <div className="space-y-2">
+            <Label htmlFor="overview">Overview</Label>
+            <Textarea
               id="overview"
               name="overview"
-              required
               value={formData.overview}
-              onChange={handleChange}
+              onChange={handleBasicChange}
+              required
               rows={4}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
 
-          <div>
-            <label htmlFor="commitment" className="block text-sm font-medium text-gray-700">
-              Commitment
-            </label>
-            <textarea
-              id="commitment"
-              name="commitment"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="price">Price (₹)</Label>
+              <Input
+                id="price"
+                name="price"
+                type="number"
+                value={formData.price}
+                onChange={handleBasicChange}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="category">Category</Label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleBasicChange}
+                required
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              >
+                <option value="">Select Category</option>
+                <option value="Diagnostic Services">Diagnostic Services</option>
+                <option value="Research Services">Research Services</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="razorpay_link">Razorpay Link</Label>
+            <Input
+              id="razorpay_link"
+              name="razorpay_link"
+              value={formData.razorpay_link}
+              onChange={handleBasicChange}
               required
-              value={formData.commitment}
-              onChange={handleChange}
-              rows={3}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
-          </div>
-
-          <div>
-            <label htmlFor="contact" className="block text-sm font-medium text-gray-700">
-              Contact Information
-            </label>
-            <input
-              type="text"
-              id="contact"
-              name="contact"
-              required
-              value={formData.contact}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-              Price (INR)
-            </label>
-            <input
-              type="number"
-              id="price"
-              name="price"
-              required
-              min="0"
-              step="0.01"
-              value={formData.price}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-              Category
-            </label>
-            <select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            >
-              <option value="Diagnostic Services">Diagnostic Services</option>
-              <option value="Research Services">Research Services</option>
-            </select>
           </div>
         </div>
 
         {/* Why Choose Section */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Why Choose</h3>
-            <button
+            <h3 className="text-lg font-semibold">Why Choose Our Service</h3>
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => addArrayItem('whyChoose')}
-              className="text-sm text-indigo-600 hover:text-indigo-500"
+              className="text-primary hover:text-primary/80"
             >
-              + Add Feature
-            </button>
+              <Plus className="h-5 w-5" />
+            </Button>
           </div>
           {formData.whyChoose.map((item, index) => (
-            <div key={index} className="space-y-2 p-4 border rounded-md">
-              <div className="flex justify-between">
-                <h4 className="text-sm font-medium">Feature {index + 1}</h4>
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeArrayItem('whyChoose', index)}
-                    className="text-sm text-red-600 hover:text-red-500"
-                  >
-                    Remove
-                  </button>
-                )}
+            <div key={index} className="space-y-4 p-4 border rounded-lg relative">
+              {index > 0 && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeArrayItem('whyChoose', index)}
+                  className="absolute top-2 right-2 text-destructive hover:text-destructive/80"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+              <div className="space-y-2">
+                <Label>Feature</Label>
+                <Input
+                  value={item.feature}
+                  onChange={(e) => handleArrayChange('whyChoose', index, 'feature', e.target.value)}
+                  required
+                />
               </div>
-              <input
-                type="text"
-                value={item.feature}
-                onChange={(e) => handleArrayChange(index, 'whyChoose', 'feature', e.target.value)}
-                placeholder="Feature"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />
-              <textarea
-                value={item.description}
-                onChange={(e) => handleArrayChange(index, 'whyChoose', 'description', e.target.value)}
-                placeholder="Description"
-                rows={2}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />
+              <div className="space-y-2">
+                <Label>Description</Label>
+                <Textarea
+                  value={item.description}
+                  onChange={(e) => handleArrayChange('whyChoose', index, 'description', e.target.value)}
+                  required
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -297,43 +282,46 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Servi
         {/* Who Can Benefit Section */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Who Can Benefit</h3>
-            <button
+            <h3 className="text-lg font-semibold">Who Can Benefit</h3>
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => addArrayItem('whoCanBenefit')}
-              className="text-sm text-indigo-600 hover:text-indigo-500"
+              className="text-primary hover:text-primary/80"
             >
-              + Add Beneficiary Type
-            </button>
+              <Plus className="h-5 w-5" />
+            </Button>
           </div>
           {formData.whoCanBenefit.map((item, index) => (
-            <div key={index} className="space-y-2 p-4 border rounded-md">
-              <div className="flex justify-between">
-                <h4 className="text-sm font-medium">Beneficiary Type {index + 1}</h4>
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeArrayItem('whoCanBenefit', index)}
-                    className="text-sm text-red-600 hover:text-red-500"
-                  >
-                    Remove
-                  </button>
-                )}
+            <div key={index} className="space-y-4 p-4 border rounded-lg relative">
+              {index > 0 && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeArrayItem('whoCanBenefit', index)}
+                  className="absolute top-2 right-2 text-destructive hover:text-destructive/80"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+              <div className="space-y-2">
+                <Label>Beneficiary Type</Label>
+                <Input
+                  value={item.type}
+                  onChange={(e) => handleArrayChange('whoCanBenefit', index, 'type', e.target.value)}
+                  required
+                />
               </div>
-              <input
-                type="text"
-                value={item.type}
-                onChange={(e) => handleArrayChange(index, 'whoCanBenefit', 'type', e.target.value)}
-                placeholder="Type"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />
-              <textarea
-                value={item.description}
-                onChange={(e) => handleArrayChange(index, 'whoCanBenefit', 'description', e.target.value)}
-                placeholder="Description"
-                rows={2}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />
+              <div className="space-y-2">
+                <Label>Description</Label>
+                <Textarea
+                  value={item.description}
+                  onChange={(e) => handleArrayChange('whoCanBenefit', index, 'description', e.target.value)}
+                  required
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -341,43 +329,46 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Servi
         {/* Diseases Supported Section */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Diseases Supported</h3>
-            <button
+            <h3 className="text-lg font-semibold">Diseases Supported</h3>
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => addArrayItem('diseasesSupported')}
-              className="text-sm text-indigo-600 hover:text-indigo-500"
+              className="text-primary hover:text-primary/80"
             >
-              + Add Disease
-            </button>
+              <Plus className="h-5 w-5" />
+            </Button>
           </div>
           {formData.diseasesSupported.map((item, index) => (
-            <div key={index} className="space-y-2 p-4 border rounded-md">
-              <div className="flex justify-between">
-                <h4 className="text-sm font-medium">Disease {index + 1}</h4>
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeArrayItem('diseasesSupported', index)}
-                    className="text-sm text-red-600 hover:text-red-500"
-                  >
-                    Remove
-                  </button>
-                )}
+            <div key={index} className="space-y-4 p-4 border rounded-lg relative">
+              {index > 0 && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeArrayItem('diseasesSupported', index)}
+                  className="absolute top-2 right-2 text-destructive hover:text-destructive/80"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+              <div className="space-y-2">
+                <Label>Disease Name</Label>
+                <Input
+                  value={item.name}
+                  onChange={(e) => handleArrayChange('diseasesSupported', index, 'name', e.target.value)}
+                  required
+                />
               </div>
-              <input
-                type="text"
-                value={item.name}
-                onChange={(e) => handleArrayChange(index, 'diseasesSupported', 'name', e.target.value)}
-                placeholder="Disease Name"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />
-              <textarea
-                value={item.relevance}
-                onChange={(e) => handleArrayChange(index, 'diseasesSupported', 'relevance', e.target.value)}
-                placeholder="Relevance"
-                rows={2}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />
+              <div className="space-y-2">
+                <Label>Relevance</Label>
+                <Textarea
+                  value={item.relevance}
+                  onChange={(e) => handleArrayChange('diseasesSupported', index, 'relevance', e.target.value)}
+                  required
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -385,43 +376,46 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Servi
         {/* Process Section */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Process Steps</h3>
-            <button
+            <h3 className="text-lg font-semibold">Process Steps</h3>
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => addArrayItem('process')}
-              className="text-sm text-indigo-600 hover:text-indigo-500"
+              className="text-primary hover:text-primary/80"
             >
-              + Add Step
-            </button>
+              <Plus className="h-5 w-5" />
+            </Button>
           </div>
           {formData.process.map((item, index) => (
-            <div key={index} className="space-y-2 p-4 border rounded-md">
-              <div className="flex justify-between">
-                <h4 className="text-sm font-medium">Step {index + 1}</h4>
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeArrayItem('process', index)}
-                    className="text-sm text-red-600 hover:text-red-500"
-                  >
-                    Remove
-                  </button>
-                )}
+            <div key={index} className="space-y-4 p-4 border rounded-lg relative">
+              {index > 0 && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeArrayItem('process', index)}
+                  className="absolute top-2 right-2 text-destructive hover:text-destructive/80"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+              <div className="space-y-2">
+                <Label>Step Title</Label>
+                <Input
+                  value={item.step}
+                  onChange={(e) => handleArrayChange('process', index, 'step', e.target.value)}
+                  required
+                />
               </div>
-              <input
-                type="text"
-                value={item.step}
-                onChange={(e) => handleArrayChange(index, 'process', 'step', e.target.value)}
-                placeholder="Step Title"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />
-              <textarea
-                value={item.description}
-                onChange={(e) => handleArrayChange(index, 'process', 'description', e.target.value)}
-                placeholder="Step Description"
-                rows={2}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />
+              <div className="space-y-2">
+                <Label>Step Description</Label>
+                <Textarea
+                  value={item.description}
+                  onChange={(e) => handleArrayChange('process', index, 'description', e.target.value)}
+                  required
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -429,45 +423,74 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Servi
         {/* FAQs Section */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">FAQs</h3>
-            <button
+            <h3 className="text-lg font-semibold">Frequently Asked Questions</h3>
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => addArrayItem('faqs')}
-              className="text-sm text-indigo-600 hover:text-indigo-500"
+              className="text-primary hover:text-primary/80"
             >
-              + Add FAQ
-            </button>
+              <Plus className="h-5 w-5" />
+            </Button>
           </div>
           {formData.faqs.map((item, index) => (
-            <div key={index} className="space-y-2 p-4 border rounded-md">
-              <div className="flex justify-between">
-                <h4 className="text-sm font-medium">FAQ {index + 1}</h4>
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeArrayItem('faqs', index)}
-                    className="text-sm text-red-600 hover:text-red-500"
-                  >
-                    Remove
-                  </button>
-                )}
+            <div key={index} className="space-y-4 p-4 border rounded-lg relative">
+              {index > 0 && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeArrayItem('faqs', index)}
+                  className="absolute top-2 right-2 text-destructive hover:text-destructive/80"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+              <div className="space-y-2">
+                <Label>Question</Label>
+                <Input
+                  value={item.question}
+                  onChange={(e) => handleArrayChange('faqs', index, 'question', e.target.value)}
+                  required
+                />
               </div>
-              <input
-                type="text"
-                value={item.question}
-                onChange={(e) => handleArrayChange(index, 'faqs', 'question', e.target.value)}
-                placeholder="Question"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />
-              <textarea
-                value={item.answer}
-                onChange={(e) => handleArrayChange(index, 'faqs', 'answer', e.target.value)}
-                placeholder="Answer"
-                rows={2}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />
+              <div className="space-y-2">
+                <Label>Answer</Label>
+                <Textarea
+                  value={item.answer}
+                  onChange={(e) => handleArrayChange('faqs', index, 'answer', e.target.value)}
+                  required
+                />
+              </div>
             </div>
           ))}
+        </div>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="commitment">Our Commitment</Label>
+            <Textarea
+              id="commitment"
+              name="commitment"
+              value={formData.commitment}
+              onChange={handleBasicChange}
+              required
+              rows={4}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="contact">Contact Information</Label>
+            <Textarea
+              id="contact"
+              name="contact"
+              value={formData.contact}
+              onChange={handleBasicChange}
+              required
+              rows={4}
+            />
+          </div>
         </div>
 
         {message && (
@@ -476,13 +499,13 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Servi
           </div>
         )}
 
-        <button
+        <Button
           type="submit"
+          className="w-full"
           disabled={loading}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
         >
-          {loading ? 'Saving...' : 'Save Service'}
-        </button>
+          {loading ? 'Saving...' : serviceId ? 'Update Service' : 'Create Service'}
+        </Button>
       </form>
     </div>
   );

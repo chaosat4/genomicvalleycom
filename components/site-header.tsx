@@ -1,10 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { Search, UserCircle } from 'lucide-react'
+import { Search, UserCircle, X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useRouter } from 'next/navigation'
+import { useDebounce } from "@/hooks/use-debounce"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -15,8 +17,62 @@ import {
 } from "@/components/ui/navigation-menu"
 import { navigationItems } from "@/constants"
 
+interface SearchResult {
+  id: number;
+  name: string;
+  overview: string;
+  price: number;
+  category: string;
+  diseasesSupported: { name: string }[];
+}
+
 export function SiteHeader() {
   const [navIsOpened, setNavIsOpened] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [results, setResults] = useState<SearchResult[]>([])
+  const [showResults, setShowResults] = useState(false)
+  const searchRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
+  const debouncedSearch = useDebounce(searchQuery, 300)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowResults(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      if (debouncedSearch.trim().length < 2) {
+        setResults([])
+        return
+      }
+
+      try {
+        const response = await fetch(`/api/services/search?q=${encodeURIComponent(debouncedSearch)}`)
+        if (!response.ok) throw new Error('Search failed')
+        const data = await response.json()
+        setResults(data)
+        setShowResults(true)
+      } catch (error) {
+        console.error('Search error:', error)
+        setResults([])
+      }
+    }
+
+    fetchResults()
+  }, [debouncedSearch])
+
+  const handleSearchClick = (id: number) => {
+    setShowResults(false)
+    setSearchQuery("")
+    router.push(`/services/${id}`)
+  }
 
   const closeNavbar = () => setNavIsOpened(false)
   const toggleNavbar = () => setNavIsOpened((prev) => !prev)
@@ -43,15 +99,66 @@ export function SiteHeader() {
             </Link>
 
             {/* Search */}
-            <div className="flex-1 max-w-xl mx-auto hidden sm:block">
+            <div className="flex-1 max-w-xl mx-auto hidden sm:block relative" ref={searchRef}>
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  type="search"
-                  placeholder="Search"
+                  placeholder="Search services or diseases..."
                   className="w-full pl-8 bg-purple-50"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setShowResults(true)}
                 />
+                {searchQuery && (
+                  <button
+                    onClick={() => {
+                      setSearchQuery("")
+                      setResults([])
+                    }}
+                    className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
               </div>
+
+              {/* Search Results Dropdown */}
+              {showResults && results.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-96 overflow-auto z-50">
+                  {results.map((result) => (
+                    <div
+                      key={result.id}
+                      className="p-3 hover:bg-gray-50 cursor-pointer border-b last:border-b-0"
+                      onClick={() => handleSearchClick(result.id)}
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-medium text-gray-900">{result.name}</h4>
+                          <p className="text-sm text-gray-600 line-clamp-1">{result.overview}</p>
+                        </div>
+                        <span className="text-primary font-semibold">₹{result.price}</span>
+                      </div>
+                      {result.diseasesSupported.length > 0 && (
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {result.diseasesSupported.slice(0, 3).map((disease, idx) => (
+                            <span
+                              key={idx}
+                              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800"
+                            >
+                              {disease.name}
+                            </span>
+                          ))}
+                          {result.diseasesSupported.length > 3 && (
+                            <span className="text-xs text-gray-500">
+                              +{result.diseasesSupported.length - 3} more
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Desktop Login Button */}

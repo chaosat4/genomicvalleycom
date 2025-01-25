@@ -85,6 +85,7 @@ export async function GET(request: Request) {
         overview: true,
         price: true,
         category: true,
+        razorpay_link: true,
         createdAt: true,
         _count: {
           select: {

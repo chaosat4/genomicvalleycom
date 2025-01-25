@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import { SupportBanner } from "@/components/SupportBanner";
 import { SiteHeader } from "@/components/site-header";
 import Providers from '@/components/Providers';
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -42,6 +43,7 @@ export default function RootLayout({
             <Footer />
           </div>
         </Providers>
+        <Toaster />
       </body>
     </html>
   );

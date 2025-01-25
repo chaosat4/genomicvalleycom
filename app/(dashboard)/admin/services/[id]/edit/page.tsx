@@ -51,6 +51,7 @@ export default function EditServicePage({
         contact: data.contact,
         price: data.price,
         category: data.category,
+        razorpay_link: data.razorpay_link || '',
         whyChoose: data.whyChoose,
         whoCanBenefit: data.whoCanBenefit,
         diseasesSupported: data.diseasesSupported,

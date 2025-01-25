@@ -21,6 +21,7 @@ model Service {
   contact           String
   price             Float
   category          String
+  razorpay_link     String?
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   whyChoose         WhyChoose[]
@@ -28,6 +29,7 @@ model Service {
   diseasesSupported DiseaseSupported[]
   process           Process[]
   faqs              FAQ[]
+  checkouts         Checkout[]
 }
 
 model WhyChoose {
@@ -119,4 +121,31 @@ model FAQ {
   answer    String
   serviceId Int
   service   Service @relation(fields: [serviceId], references: [id])
+}
+
+model Checkout {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String
+  address   String
+  serviceId Int
+  service   Service  @relation(fields: [serviceId], references: [id])
+  status    String   @default("PENDING") // PENDING, COMPLETED, FAILED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Contact {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String
+  phone        String
+  organization String?
+  queryType    String
+  subject      String
+  message      String   @db.Text
+  status       String   @default("PENDING")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
