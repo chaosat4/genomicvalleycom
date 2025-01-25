@@ -1,18 +1,37 @@
-import { NextResponse } from 'next/server';
-import prisma from '@/app/lib/db';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { verifyJWT } from '@/lib/jwt';
+
+interface JWTPayload {
+  sub: string;
+  email: string;
+  is_admin: boolean;
+}
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const resolvedParams = await params;
   try {
+    const resolvedParams = await params;
+    const token = request.headers.get('authorization')?.split(' ')[1];
+    if (!token) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const payload = await verifyJWT<JWTPayload>(token);
+    if (!payload.is_admin) {
+      return NextResponse.json(
+        { error: 'Not authorized' },
+        { status: 403 }
+      );
+    }
+
     const service = await prisma.service.findUnique({
-      where: {
-        id: parseInt(resolvedParams.id),
-      },
+      where: { id: parseInt(resolvedParams.id) },
       include: {
         whyChoose: true,
         whoCanBenefit: true,
@@ -24,44 +43,41 @@ export async function GET(
 
     if (!service) {
       return NextResponse.json(
-        { message: 'Service not found' },
+        { error: 'Service not found' },
         { status: 404 }
       );
     }
 
     return NextResponse.json(service);
   } catch (error) {
-    console.error('Failed to fetch service:', error);
+    console.error('Error fetching service:', error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
 }
 
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const resolvedParams = await params;
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.email) {
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json(
-        { message: 'Not authenticated' },
+        { error: 'Unauthorized' },
         { status: 401 }
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: { is_admin: true }
-    });
+    const token = authHeader.split(' ')[1];
+    const payload = await verifyJWT<JWTPayload>(token);
 
-    if (!user?.is_admin) {
+    if (!payload.is_admin) {
       return NextResponse.json(
-        { message: 'Not authorized - Admin access required' },
+        { error: 'Not authorized - Admin access required' },
         { status: 403 }
       );
     }
@@ -101,7 +117,6 @@ export async function PUT(
       }),
     ]);
 
-    // Update service and create new related records
     const updatedService = await prisma.service.update({
       where: {
         id: parseInt(resolvedParams.id),
@@ -143,35 +158,32 @@ export async function PUT(
   } catch (error) {
     console.error('Failed to update service:', error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
 }
 
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const resolvedParams = await params;
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.email) {
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json(
-        { message: 'Not authenticated' },
+        { error: 'Unauthorized' },
         { status: 401 }
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: { is_admin: true }
-    });
+    const token = authHeader.split(' ')[1];
+    const payload = await verifyJWT<JWTPayload>(token);
 
-    if (!user?.is_admin) {
+    if (!payload.is_admin) {
       return NextResponse.json(
-        { message: 'Not authorized - Admin access required' },
+        { error: 'Not authorized - Admin access required' },
         { status: 403 }
       );
     }
@@ -195,7 +207,6 @@ export async function DELETE(
       }),
     ]);
 
-    // Then delete the service
     await prisma.service.delete({
       where: {
         id: parseInt(resolvedParams.id),
@@ -206,7 +217,7 @@ export async function DELETE(
   } catch (error) {
     console.error('Failed to delete service:', error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

@@ -16,7 +16,6 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { navigationItems } from "@/constants"
-import { useSession, signOut } from 'next-auth/react'
 
 interface SearchResult {
   id: number;
@@ -32,10 +31,15 @@ export function SiteHeader() {
   const [searchQuery, setSearchQuery] = useState("")
   const [results, setResults] = useState<SearchResult[]>([])
   const [showResults, setShowResults] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const searchRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const debouncedSearch = useDebounce(searchQuery, 300)
-  const { data: session } = useSession()
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    setIsLoggedIn(!!token)
+  }, [])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -79,8 +83,10 @@ export function SiteHeader() {
   const closeNavbar = () => setNavIsOpened(false)
   const toggleNavbar = () => setNavIsOpened((prev) => !prev)
 
-  const handleLogout = async () => {
-    await signOut({ callbackUrl: '/' })
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    setIsLoggedIn(false)
+    router.push('/')
   }
 
   return (
@@ -168,7 +174,7 @@ export function SiteHeader() {
             </div>
 
             {/* Desktop Login/Profile Button */}
-            {session ? (
+            {isLoggedIn ? (
               <Button 
                 variant="ghost" 
                 className="gap-2 hidden sm:flex bg-purple-100 hover:bg-purple-200"

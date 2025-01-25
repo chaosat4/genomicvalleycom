@@ -1,98 +1,86 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import prisma from '@/app/lib/db';
-import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { verifyJWT } from '@/lib/jwt';
 
-export async function POST(request: Request) {
+interface JWTPayload {
+  sub: string;
+  email: string;
+  is_admin: boolean;
+}
+
+export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.email) {
+    const token = request.headers.get('authorization')?.split(' ')[1];
+    if (!token) {
       return NextResponse.json(
-        { message: 'Not authenticated' },
+        { error: 'Unauthorized' },
         { status: 401 }
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: { is_admin: true }
-    });
-
-    if (!user?.is_admin) {
+    const payload = await verifyJWT<JWTPayload>(token);
+    if (!payload.is_admin) {
       return NextResponse.json(
-        { message: 'Not authorized' },
+        { error: 'Not authorized' },
         { status: 403 }
       );
     }
 
     const body = await request.json();
     
-    // Validate required fields
     if (!body.name || !body.overview || !body.category) {
       return NextResponse.json(
-        { message: 'Missing required fields' },
+        { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
-    try {
-      const service = await prisma.service.create({
-        data: {
-          name: body.name,
-          overview: body.overview,
-          commitment: body.commitment || '',
-          contact: body.contact || '',
-          price: parseFloat(body.price) || 0,
-          category: body.category,
-          razorpay_link: body.razorpay_link || '',
-          whyChoose: {
-            create: body.whyChoose || []
-          },
-          whoCanBenefit: {
-            create: body.whoCanBenefit || []
-          },
-          diseasesSupported: {
-            create: body.diseasesSupported || []
-          },
-          process: {
-            create: body.process || []
-          },
-          faqs: {
-            create: body.faqs || []
-          }
+    const service = await prisma.service.create({
+      data: {
+        name: body.name,
+        overview: body.overview,
+        commitment: body.commitment || '',
+        contact: body.contact || '',
+        price: parseFloat(body.price) || 0,
+        category: body.category,
+        razorpay_link: body.razorpay_link || '',
+        whyChoose: {
+          create: body.whyChoose || []
         },
-        include: {
-          whyChoose: true,
-          whoCanBenefit: true,
-          diseasesSupported: true,
-          process: true,
-          faqs: true
+        whoCanBenefit: {
+          create: body.whoCanBenefit || []
+        },
+        diseasesSupported: {
+          create: body.diseasesSupported || []
+        },
+        process: {
+          create: body.process || []
+        },
+        faqs: {
+          create: body.faqs || []
         }
-      });
+      },
+      include: {
+        whyChoose: true,
+        whoCanBenefit: true,
+        diseasesSupported: true,
+        process: true,
+        faqs: true
+      }
+    });
 
-      return NextResponse.json(service, { status: 201 });
-    } catch (dbError) {
-      console.error('Database error:', dbError);
-      return NextResponse.json(
-        { message: 'Failed to create service in database' },
-        { status: 500 }
-      );
-    }
+    return NextResponse.json(service, { status: 201 });
   } catch (error) {
     console.error('Service creation error:', error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    
-    // Allow public access to services list
     const services = await prisma.service.findMany({
       select: {
         id: true,
@@ -121,7 +109,7 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error('Failed to fetch services:', error);
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

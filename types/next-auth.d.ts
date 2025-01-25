@@ -4,24 +4,24 @@ declare module 'next-auth' {
   interface Session {
     user: {
       id: string;
-      isAdmin: boolean;
-      isDoctor: boolean;
-      isPatient: boolean;
+      is_admin: boolean;
+      is_doctor: boolean;
+      is_patient: boolean;
     } & DefaultSession['user']
   }
 
   interface User {
-    isAdmin: boolean;
-    isDoctor: boolean;
-    isPatient: boolean;
+    is_admin: boolean;
+    is_doctor: boolean;
+    is_patient: boolean;
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
     id: string;
-    isAdmin: boolean;
-    isDoctor: boolean;
-    isPatient: boolean;
+    is_admin: boolean;
+    is_doctor: boolean;
+    is_patient: boolean;
   }
 }

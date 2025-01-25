@@ -124,6 +124,7 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Props
     setMessage('');
 
     try {
+      const token = localStorage.getItem('token');
       const url = serviceId 
         ? `/api/services/${serviceId}`
         : '/api/services';
@@ -133,6 +134,7 @@ export default function ServiceForm({ initialData, serviceId, onSuccess }: Props
       const response = await fetch(url, {
         method,
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),

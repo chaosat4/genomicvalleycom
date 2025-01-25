@@ -1,54 +1,66 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import prisma from '@/app/lib/db';
-import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { verifyJWT } from '@/lib/jwt';
 
-export async function GET() {
+interface JWTPayload {
+  sub: string;
+  email: string;
+  is_admin: boolean;
+  type: string;
+  iat: number;
+  exp: number;
+}
+
+export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    console.log('Session in /me:', session); // Debug log
+    const authHeader = request.headers.get('authorization');
+    console.log('Auth header:', authHeader);
 
-    if (!session?.user?.email) {
+    if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json(
-        { message: 'Not authenticated' },
+        { error: 'Missing or invalid authorization header' },
         { status: 401 }
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session.user.email
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        is_admin: true,
-        image: true
-      }
-    });
+    const token = authHeader.split(' ')[1];
+    console.log('Token to verify:', token.slice(0, 10) + '...');
 
-    if (!user) {
+    try {
+      const payload = await verifyJWT<JWTPayload>(token);
+      console.log('Verified payload:', payload);
+
+      const user = await prisma.user.findUnique({
+        where: { id: payload.sub },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          is_admin: true,
+          image: true,
+        },
+      });
+
+      if (!user) {
+        return NextResponse.json(
+          { error: 'User not found' },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json(user);
+    } catch (verifyError: unknown) {
+      console.error('Token verification failed:', verifyError);
       return NextResponse.json(
-        { message: 'User not found' },
-        { status: 404 }
+        { error: 'Invalid token', details: verifyError instanceof Error ? verifyError.message : 'Unknown error' },
+        { status: 401 }
       );
     }
-
-    // Debug log
-    console.log('User found:', {
-      id: user.id,
-      email: user.email,
-      is_admin: user.is_admin
-    });
-
-    return NextResponse.json(user);
   } catch (error) {
-    console.error('Error in /me route:', error);
+    console.error('ME endpoint error:', error);
     return NextResponse.json(
-      { message: 'Internal server error' },
-      { status: 500 }
+      { error: 'Unauthorized' },
+      { status: 401 }
     );
   }
 } 

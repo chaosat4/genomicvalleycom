@@ -1,46 +1,32 @@
 import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
+import { verifyJWT } from '@/lib/jwt';
 
-export async function middleware(req: NextRequest) {
-  // Allow API routes to handle their own auth
-  if (req.nextUrl.pathname.startsWith('/api/')) {
-    return NextResponse.next();
-  }
+export async function middleware(request: NextRequest) {
+  try {
+    const token = request.headers.get('authorization')?.split(' ')[1];
 
-  const token = await getToken({ req });
-  
-  if (req.nextUrl.pathname.startsWith('/admin')) {
     if (!token) {
-      return NextResponse.redirect(new URL('/api/auth/signin', req.url));
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
     }
 
-    try {
-      const userResponse = await fetch(`${req.nextUrl.origin}/api/me`, {
-        headers: {
-          Cookie: req.headers.get('cookie') || '',
-        },
-      });
-
-      if (!userResponse.ok) {
-        return NextResponse.redirect(new URL('/api/auth/signin', req.url));
-      }
-
-      const userData = await userResponse.json();
-      if (!userData.is_admin) {
-        return NextResponse.redirect(new URL('/', req.url));
-      }
-    } catch (error) {
-      return NextResponse.redirect(new URL('/api/auth/signin', req.url));
-    }
+    const payload = await verifyJWT(token);
+    return NextResponse.next();
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Invalid token' },
+      { status: 401 }
+    );
   }
-
-  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    '/admin/:path*',
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/api/services/:path*',
+    '/api/me',
+    // Add other protected routes here
   ],
 };

@@ -1,10 +1,7 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import ServiceForm from '@/components/admin/ServiceForm';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Pencil, Trash2, Plus, Package, ArrowRight } from "lucide-react";
 import Link from 'next/link';
@@ -26,56 +23,62 @@ interface Service {
 }
 
 const AdminDashboard = () => {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (status === 'loading') return;
-    
-    if (!session) {
-      router.push('/login');
-      return;
-    }
+    const checkAuthAndFetchServices = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const userData = localStorage.getItem('user');
 
-    if (!session.user?.isAdmin) {
-      router.push('/login');
-    }
+        if (!token || !userData) {
+          router.push('/login');
+          console.log('User not authenticated');
+          return;
+        }
 
-    // Fetch services
-    fetchServices();
-  }, [session, status, router]);
+        const user = JSON.parse(userData);
+        if (!user.is_admin) {
+          router.push('/');
+          return;
+        }
 
-  const fetchServices = async () => {
-    try {
-      const response = await fetch('/api/services', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Important for sending cookies
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch services');
+        // Fetch services
+        const response = await fetch('/api/services', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch services');
+        }
+
+        const data = await response.json();
+        setServices(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Failed to fetch services:', error);
+        setServices([]);
+      } finally {
+        setLoading(false);
       }
-      
-      const data = await response.json();
-      setServices(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error('Failed to fetch services:', error);
-      setServices([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    checkAuthAndFetchServices();
+  }, [router]);
 
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this service?')) return;
 
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`/api/services/${id}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
@@ -90,16 +93,12 @@ const AdminDashboard = () => {
     router.push(`/admin/services/${id}/edit`);
   };
 
-  if (status === 'loading' || loading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
-  }
-
-  if (!session?.user?.isAdmin) {
-    return null;
   }
 
   return (

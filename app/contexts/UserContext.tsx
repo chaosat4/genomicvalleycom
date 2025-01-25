@@ -1,15 +1,16 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
 
-type User = {
+interface User {
   id: string;
-  name: string | null;
   email: string;
-  is_admin: boolean;
+  name: string;
   image: string | null;
-};
+  is_admin: boolean;
+  is_doctor: boolean;
+  is_patient: boolean;
+}
 
 type UserContextType = {
   user: User | null;
@@ -22,26 +23,40 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const session = useSession();
 
   useEffect(() => {
     async function loadUser() {
-      if (session.status === 'authenticated') {
-        try {
-          const response = await fetch('/api/me');
-          if (response.ok) {
-            const userData = await response.json();
-            setUser(userData);
-          }
-        } catch (error) {
-          console.error('Failed to load user:', error);
-        }
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setLoading(false);
+        return;
       }
-      setLoading(false);
+
+      try {
+        const response = await fetch('/api/me', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        } else {
+          localStorage.removeItem('token');
+          setUser(null);
+        }
+      } catch (error) {
+        console.error('Failed to load user:', error);
+        localStorage.removeItem('token');
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     }
 
     loadUser();
-  }, [session.status]);
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser, loading }}>

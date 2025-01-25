@@ -1,34 +1,58 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ServiceForm from '@/components/admin/ServiceForm';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function NewServicePage() {
-  const { data: session, status } = useSession();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    if (status === 'loading') return;
-    
-    if (!session) {
-      router.push('/login');
-      return;
-    }
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          router.push('/login');
+          return;
+        }
 
-    if (!session.user?.isAdmin) {
-      router.push('/');
-    }
-  }, [session, status, router]);
+        const response = await fetch('/api/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          router.push('/login');
+          return;
+        }
+
+        const user = await response.json();
+        if (!user.is_admin) {
+          router.push('/');
+          return;
+        }
+
+        setIsAdmin(true);
+      } catch (error) {
+        router.push('/login');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
 
   const handleSuccess = () => {
     router.push('/admin');
   };
 
-  if (status === 'loading') {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -36,7 +60,7 @@ export default function NewServicePage() {
     );
   }
 
-  if (!session?.user?.isAdmin) {
+  if (!isAdmin) {
     return null;
   }
 
