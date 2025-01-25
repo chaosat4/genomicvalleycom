@@ -7,7 +7,9 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session) {
+    console.log('Session in /me:', session); // Debug log
+
+    if (!session?.user?.email) {
       return NextResponse.json(
         { message: 'Not authenticated' },
         { status: 401 }
@@ -16,7 +18,7 @@ export async function GET() {
 
     const user = await prisma.user.findUnique({
       where: {
-        email: session.user?.email as string
+        email: session.user.email
       },
       select: {
         id: true,
@@ -34,9 +36,16 @@ export async function GET() {
       );
     }
 
+    // Debug log
+    console.log('User found:', {
+      id: user.id,
+      email: user.email,
+      is_admin: user.is_admin
+    });
+
     return NextResponse.json(user);
   } catch (error) {
-    console.error('Failed to fetch user:', error);
+    console.error('Error in /me route:', error);
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }

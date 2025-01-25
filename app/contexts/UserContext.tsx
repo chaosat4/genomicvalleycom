@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 type User = {
   id: string;
@@ -21,14 +22,19 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     async function loadUser() {
       try {
-        const response = await fetch('/api/me');
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
+        if (status === 'authenticated' && session) {
+          const response = await fetch('/api/me');
+          if (response.ok) {
+            const userData = await response.json();
+            setUser(userData);
+          } else {
+            console.error('Failed to load user data:', await response.text());
+          }
         }
       } catch (error) {
         console.error('Failed to load user:', error);
@@ -36,11 +42,14 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     }
-    loadUser();
-  }, []);
+
+    if (status !== 'loading') {
+      loadUser();
+    }
+  }, [session, status]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading }}>
+    <UserContext.Provider value={{ user, setUser, loading: status === 'loading' || loading }}>
       {children}
     </UserContext.Provider>
   );
