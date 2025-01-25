@@ -7,11 +7,24 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     
-    // Check if user is authenticated and is admin
-    if (!session?.user?.isAdmin) {
+    // Add debug logging
+    console.log('Session:', JSON.stringify(session, null, 2));
+    console.log('User:', session?.user);
+    console.log('Is Admin:', session?.user?.isAdmin);
+
+    // Check if session exists first
+    if (!session) {
       return NextResponse.json(
-        { message: 'Unauthorized' },
+        { message: 'Not authenticated' },
         { status: 401 }
+      );
+    }
+
+    // Then check admin status
+    if (!session.user?.isAdmin) {
+      return NextResponse.json(
+        { message: 'Not authorized - Admin access required' },
+        { status: 403 }
       );
     }
 
