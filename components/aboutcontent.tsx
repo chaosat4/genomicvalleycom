@@ -4,7 +4,7 @@ const alternatingFeaturesData = [
   {
     title: "Where Innovation Meets Expertise",
     description:
-      "At Genomic Valley Bharat Limited, we combine over 10 years of experience in Next-Generation Sequencing (NGS), oncology, and AI to propel healthcare forward. Our dedicated team implements both novel and validated methods, ensuring accurate and confident results in our quest for better healthcare outcomes.",
+      "At Genomic Valley Bharat Pvt Ltd, we combine over 10 years of experience in Next-Generation Sequencing (NGS), oncology, and AI to propel healthcare forward. Our dedicated team implements both novel and validated methods, ensuring accurate and confident results in our quest for better healthcare outcomes.",
     image: "/c5.png",
     alt: "Team of biotech experts"
   },
