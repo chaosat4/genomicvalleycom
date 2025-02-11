@@ -66,8 +66,8 @@ export const navigationItems: NavigationItem[] = [
         title: "Company Info",
         links: [
           { text: "About Us", href: "/about-us" },
-          { text: "Career", href: "#" },
-          { text: "We are hiring", href: "#" },
+          { text: "Career", href: "/contact" },
+          { text: "We are hiring", href: "/contact" },
           { text: "Blog", href: "#" }
         ]
       },
@@ -75,14 +75,14 @@ export const navigationItems: NavigationItem[] = [
         title: "Services",
         links: [
           { text: "Genetic Counselling", href: "/genetic-counseling" },
-          { text: "Diagnostic Services", href: "/diagnostic" },
-          { text: "Research Services", href: "/research" },
+          { text: "Diagnostic Services", href: "/services/diagnostic" },
+          { text: "Research Services", href: "/services/research" },
         ]
       },
       {
         title: "Resources",
         links: [
-          { text: "Testimonials", href: "#" },
+          { text: "Testimonials", href: "/testimonials" },
           { text: "Privacy Policy", href: "/privacy-policy" },
           { text: "Terms & Conditions", href: "/terms" },
         ]
