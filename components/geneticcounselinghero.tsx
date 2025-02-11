@@ -8,8 +8,8 @@ export default function Hero() {
       {/* Background Image with Gradient Overlay */}
       <div className="absolute inset-0">
         <Image
-          src="/placeholder.svg"
-          alt="Medical care background"
+          src="/genetic-counseling-hero.jpg"
+          alt="Genetic Counseling Hero"
           width={1200}
           height={600}
           className="h-full w-full object-cover"
@@ -22,7 +22,7 @@ export default function Hero() {
       <div className="relative z-1 mx-auto max-w-7xl px-4 pt-[25%] sm:px-6 lg:px-8">
         <div className="max-w-3xl space-y-6">
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
-            You know where to go if you need answers.
+            Empowering choices through knowledge.
           </h1>
           <p className="text-xl text-white/90">
             Genomicvalley is India&apos;s most trusted Next Generation Sequencing diagnostic platform.
@@ -33,21 +33,21 @@ export default function Hero() {
       {/* Action Buttons */}
       <div className="absolute bottom-0 left-0 right-0 z-20 grid w-full grid-cols-1 divide-x divide-gray-200 border-t border-gray-200 bg-purple-50 sm:grid-cols-3 border-b">
         <Link
-          href="#appointment"
+          href="/genetic-counseling"
           className="flex items-center justify-between p-4 text-sm hover:bg-gray-50"
         >
           Request an Appointment
           <span className="ml-2">→</span>
         </Link>
         <Link
-          href="#search"
+          href="/services"
           className="flex items-center justify-between p-4 text-sm hover:bg-gray-50"
         >
-          Search Diseases & Conditions
+          Search Services
           <span className="ml-2">→</span>
         </Link>
         <Link
-          href="#locations"
+          href="/contact"
           className="flex items-center justify-between p-4 text-sm hover:bg-gray-50"
         >
           Find Genomicvalley

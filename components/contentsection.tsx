@@ -6,29 +6,33 @@ import { Sparkles } from "lucide-react"
 import { Eye } from "lucide-react"
 
 const contentSectionData = {
-    title: "We help drive your business forward faster",
-    description: "Our innovative solutions and expert team work tirelessly to accelerate your business growth. We combine cutting-edge technology with strategic insights to propel your company to new heights.",
-    image: {
-      src: "/c4.png",
-      alt: "working on housing"
+  title: "Revolutionizing Healthcare through AI-Driven Genomics",
+  description:
+    "At Genomic Valley Biotech Limited, we integrate cutting-edge AI, Next-Generation Sequencing (NGS), and years of expertise to advance oncology research and diagnostics. Join us on our journey to deliver confident, precise, and transformative healthcare solutions worldwide.",
+  image: {
+    src: "/c12.png",
+    alt: "Researchers analyzing genomic data"
+  },
+  cards: [
+    {
+      icon: Sparkles,
+      title: "Our Mission",
+      description:
+        "To pioneer rapid, precise genomic solutions for global healthcare, ensuring confident diagnostics and better outcomes through continuous innovation."
     },
-    cards: [
-      {
-        icon: Sparkles,
-        title: "Our mission",
-        description: "To empower businesses with innovative solutions that drive growth and success in the digital age."
-      },
-      {
-        icon: Eye,
-        title: "Our vision",
-        description: "To be the catalyst for transformative change in businesses worldwide, setting new standards for innovation and excellence."
-      }
-    ],
-    cta: {
-      text: "Learn More",
-      href: "/about"
+    {
+      icon: Eye,
+      title: "Our Vision",
+      description:
+        "To build India’s global genomics hub, advancing AI-driven healthcare and transforming diagnostics, research, and treatment for all."
     }
+  ],
+  cta: {
+    text: "Learn More",
+    href: "/services"
   }
+}
+
 
 const ContentSection = () => {
   return (

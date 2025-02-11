@@ -1,31 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyJWT } from '@/lib/jwt';
 
-interface JWTPayload {
-  sub: string;
-  email: string;
-  is_admin: boolean;
-}
+
 
 export async function POST(request: NextRequest) {
   try {
-    const token = request.headers.get('authorization')?.split(' ')[1];
-    if (!token) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const payload = await verifyJWT<JWTPayload>(token);
-    if (!payload.is_admin) {
-      return NextResponse.json(
-        { error: 'Not authorized' },
-        { status: 403 }
-      );
-    }
-
     const body = await request.json();
     
     if (!body.name || !body.overview || !body.category) {
@@ -79,7 +58,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const services = await prisma.service.findMany({
       select: {

@@ -1,5 +1,5 @@
 import Hero from "@/components/geneticcounselinghero";
-import MeetGeneticCounselor from "@/components/meetgeneticcounselor";
+import { MeetGeneticCounselor } from "@/components/meetgeneticcounselor";
 import { FaqSection } from "@/components/geneticcounselingfaq";
 import GeneticCounselingProcess from "@/components/geneticcounselingprocess";
 

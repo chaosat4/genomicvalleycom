@@ -24,20 +24,39 @@ interface ServiceData {
 export default function ServiceDetails({ id }: { id: string }) {
   const [data, setData] = useState<ServiceData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    setIsLoading(true);
-    fetch(`/api/services/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        setData(data);
+    const fetchService = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`/api/services/${id}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch service details');
+        }
+        
+        const serviceData = await response.json();
+        
+        // Validate required arrays exist
+        if (!serviceData.whyChoose) serviceData.whyChoose = [];
+        if (!serviceData.whoCanBenefit) serviceData.whoCanBenefit = [];
+        if (!serviceData.diseasesSupported) serviceData.diseasesSupported = [];
+        if (!serviceData.process) serviceData.process = [];
+        if (!serviceData.faqs) serviceData.faqs = [];
+        
+        setData(serviceData);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching service:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load service');
+      } finally {
         setIsLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching service:', error);
-        setIsLoading(false);
-      });
+      }
+    };
+
+    fetchService();
   }, [id]);
 
   const handleBuyNow = () => {
@@ -48,8 +67,12 @@ export default function ServiceDetails({ id }: { id: string }) {
     return <LoadingSpinner />;
   }
 
-  if (!data) {
-    return <div className="text-center text-red-500">Service not found</div>;
+  if (error || !data) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-red-500">{error || 'Service not found'}</div>
+      </div>
+    );
   }
 
   return (
@@ -60,7 +83,6 @@ export default function ServiceDetails({ id }: { id: string }) {
           <h1 className="text-5xl font-bold mb-4 text-primary">{data.name}</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">{data.overview}</p>
           <div className="flex justify-center items-center gap-4">
-            <span className="text-3xl font-bold text-primary">${data.price}</span>
             <button
               onClick={handleBuyNow}
               className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"

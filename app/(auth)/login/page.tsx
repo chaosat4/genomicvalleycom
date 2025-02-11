@@ -47,13 +47,13 @@ export default function LoginPage() {
         router.push('/admin');
       } else if (data.user.is_doctor) {
         console.log('User is doctor, redirecting to /doctor/dashboard');
-        router.push('/doctor/dashboard');
+        router.push('/services');
       } else if (data.user.is_patient) {
         console.log('User is patient, redirecting to /patient/dashboard');
-        router.push('/patient/dashboard');
+        router.push('/services');
       } else {
         console.log('User has no specific role, redirecting to /dashboard');
-        router.push('/dashboard');
+        router.push('/');
       }
     } catch (err) {
       console.error('Login error:', err);

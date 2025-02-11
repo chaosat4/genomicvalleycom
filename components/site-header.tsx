@@ -148,7 +148,6 @@ export function SiteHeader() {
                           <h4 className="font-medium text-gray-900">{result.name}</h4>
                           <p className="text-sm text-gray-600 line-clamp-1">{result.overview}</p>
                         </div>
-                        <span className="text-primary font-semibold">₹{result.price}</span>
                       </div>
                       {result.diseasesSupported.length > 0 && (
                         <div className="mt-1 flex flex-wrap gap-1">
@@ -190,7 +189,7 @@ export function SiteHeader() {
                 onClick={() => router.push('/login')}
               >
                 <UserCircle className="h-5 w-5" />
-                Login to Patient Account
+                Login
               </Button>
             )}
 
@@ -261,7 +260,7 @@ export function SiteHeader() {
               ))}
               <Button className="w-full mt-4">
                 <UserCircle className="h-5 w-5 mr-2" />
-                Login to Patient Account
+                Login
               </Button>
             </nav>
           </div>
@@ -280,9 +279,12 @@ export function SiteHeader() {
                       </Link>
                     ) : (
                       <>
-                        <NavigationMenuTrigger className="text-base font-normal bg-purple-50 hover:bg-purple-100 focus:bg-purple-100">
-                          {item.name}
-                        </NavigationMenuTrigger>
+                        <Link href={item.href}>
+                          <NavigationMenuTrigger className="text-base font-normal bg-purple-50 hover:bg-purple-100 focus:bg-purple-100">
+                            {item.name}
+                          </NavigationMenuTrigger>
+                        </Link>
+                        
                         <NavigationMenuContent>
                           <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                             <li className="row-span-3">

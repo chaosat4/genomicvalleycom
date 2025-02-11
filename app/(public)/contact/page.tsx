@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { FOOTER_CONSTANTS } from '@/constants';
 
 interface ContactForm {
   name: string;
@@ -99,7 +100,7 @@ export default function ContactPage() {
             <div className="space-y-8">
               <div className="aspect-square w-full rounded-lg overflow-hidden">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=YOUR_EMBED_URL"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3499.973332493686!2d76.86835157929856!3d28.690444318641397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d0b828a3ccd19%3A0xffc3342a2a882b37!2sGenomic%20Valley%20Biotech%20Limited!5e0!3m2!1sen!2sin!4v1738382983705!5m2!1sen!2sin"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -115,7 +116,7 @@ export default function ContactPage() {
                     <MapPin className="w-6 h-6 text-primary mt-1" />
                     <div>
                       <h3 className="font-semibold">Address</h3>
-                      <p className="text-gray-600">Your Address Here</p>
+                      <p className="text-gray-600">{FOOTER_CONSTANTS.getInTouch.address}</p>
                     </div>
                   </div>
 
@@ -123,7 +124,7 @@ export default function ContactPage() {
                     <Phone className="w-6 h-6 text-primary mt-1" />
                     <div>
                       <h3 className="font-semibold">Phone</h3>
-                      <p className="text-gray-600">+91 Your Phone Number</p>
+                      <p className="text-gray-600">{FOOTER_CONSTANTS.getInTouch.phone}</p>
                     </div>
                   </div>
 
@@ -131,7 +132,7 @@ export default function ContactPage() {
                     <Mail className="w-6 h-6 text-primary mt-1" />
                     <div>
                       <h3 className="font-semibold">Email</h3>
-                      <p className="text-gray-600">your@email.com</p>
+                      <p className="text-gray-600">{FOOTER_CONSTANTS.getInTouch.email}</p>
                     </div>
                   </div>
 

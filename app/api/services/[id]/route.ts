@@ -14,22 +14,6 @@ export async function GET(
 ) {
   try {
     const resolvedParams = await params;
-    const token = request.headers.get('authorization')?.split(' ')[1];
-    if (!token) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const payload = await verifyJWT<JWTPayload>(token);
-    if (!payload.is_admin) {
-      return NextResponse.json(
-        { error: 'Not authorized' },
-        { status: 403 }
-      );
-    }
-
     const service = await prisma.service.findUnique({
       where: { id: parseInt(resolvedParams.id) },
       include: {

@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Share2, Github, Linkedin, Twitter } from 'lucide-react'
 
 const socialLinks = [
-  { icon: Github, href: "https://github.com", label: "GitHub" },
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+  { icon: Linkedin, href: "https://www.linkedin.com/company/genomic-valley-bharat/", label: "LinkedIn" },
 ]
 
 export function FloatingSocialButtons() {

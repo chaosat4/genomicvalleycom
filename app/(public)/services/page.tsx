@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dna, ArrowRight, Activity, Microscope } from 'lucide-react';
+import { Activity, ArrowRight, Microscope } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 
 interface Service {
@@ -24,34 +24,52 @@ export default function ServicesPage() {
   const router = useRouter();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState('all');
-
-  useEffect(() => {
-    fetchServices(activeCategory);
-  }, [activeCategory]);
+  const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState('all');
 
   const fetchServices = async (category: string) => {
     try {
+      setLoading(true);
       const url = category === 'all' 
-        ? '/api/services/category'
+        ? '/api/services'
         : `/api/services/category?category=${encodeURIComponent(category)}`;
       
       const response = await fetch(url);
-      if (!response.ok) throw new Error('Failed to fetch services');
-      const data = await response.json();
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Response error:', response.status, errorData);
+        throw new Error(`Failed to fetch services: ${response.statusText}`);
+      }
+      
+      const data = await response.json() as Service[];
       setServices(data);
+      setError('');
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching services:', error);
+      setError(error instanceof Error ? error.message : 'Failed to load services');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchServices(activeTab);
+  }, [activeTab]);
 
   const handleServiceClick = (id: number) => {
     router.push(`/services/${id}`);
   };
 
   if (loading) return <LoadingSpinner />;
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-purple-50 p-6">
@@ -63,53 +81,20 @@ export default function ServicesPage() {
           </p>
         </div>
 
-        <Tabs defaultValue="all" className="w-full">
+        <Tabs value={activeTab} defaultValue="all" className="w-full" onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger 
-              value="all"
-              onClick={() => setActiveCategory('all')}
-            >
+            <TabsTrigger value="all">
               All Services
             </TabsTrigger>
-            <TabsTrigger 
-              value="Diagnostic Services"
-              onClick={() => setActiveCategory('Diagnostic Services')}
-            >
+            <TabsTrigger value="Diagnostic Services">
               Diagnostic Services
             </TabsTrigger>
-            <TabsTrigger 
-              value="Research Services"
-              onClick={() => setActiveCategory('Research Services')}
-            >
+            <TabsTrigger value="Research Services">
               Research Services
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="all" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {services.map((service) => (
-                <ServiceCard 
-                  key={service.id} 
-                  service={service} 
-                  onClick={() => handleServiceClick(service.id)}
-                />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="Diagnostic Services" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {services.map((service) => (
-                <ServiceCard 
-                  key={service.id} 
-                  service={service} 
-                  onClick={() => handleServiceClick(service.id)}
-                />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="Research Services" className="mt-0">
+          <TabsContent value={activeTab} className="mt-0">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service) => (
                 <ServiceCard 
@@ -150,16 +135,11 @@ function ServiceCard({ service, onClick }: { service: Service; onClick: () => vo
         </p>
 
         <div className="flex items-center justify-between mt-4 pt-4 border-t">
-          <span className="text-2xl font-bold text-primary">₹{service.price}</span>
+          <span className="text-sm font-medium text-primary">Learn More</span>
           <div className="flex items-center text-sm text-gray-500 gap-4">
             <span>{service._count.diseasesSupported} diseases</span>
             <span>{service._count.process} steps</span>
           </div>
-        </div>
-
-        <div className="mt-4 flex items-center text-primary hover:text-primary/80">
-          <span className="text-sm font-medium">Learn More</span>
-          <ArrowRight className="ml-2 h-4 w-4" />
         </div>
       </div>
     </Card>

@@ -131,8 +131,15 @@ export default function CheckoutPage({
               
               <div className="mt-6 pt-6 border-t border-gray-100">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-gray-600">Service Price</span>
-                  <span className="text-3xl font-bold text-primary">₹{service?.price}</span>
+                  <div className="flex items-center space-x-2 text-gray-600 mx-4">
+                    <p>We advise getting a consultation before booking the service for better pricing and customized solutions.</p>
+                  </div>
+                  <button 
+                    onClick={() => router.push('/contact')} 
+                    className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+                  >
+                    Enquiry
+                  </button>
                 </div>
               </div>
 

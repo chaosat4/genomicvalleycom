@@ -14,7 +14,7 @@ export default function TopNotification() {
         <div className="relative bg-purple-600 px-4 py-2 text-white">
               <div className="mx-auto flex max-w-7xl items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm">Genomicvalley is attending the Festivals of Genomics 2024, London. Meet us there!</span>
+                  <span className="text-sm">Genomic Valley wishes you a joyous and blessed Mahakumbh 2025!</span>
                 </div>
                 <button
                   onClick={() => setShowNotification(false)}

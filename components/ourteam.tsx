@@ -4,21 +4,18 @@ import { Github, Linkedin, Twitter } from 'lucide-react'
 import Image from "next/image"
 
 const leadershipData = {
-  name: "Jane Doe",
-  role: "CEO & Founder",
-  image: "/placeholder-profile.svg",
+  name: "Mr. Yogesh Agrawal",
+  role: "Chairman",
+  image: "/ya.jpeg",
   socialLinks: [
-    { icon: Github, href: "https://github.com" },
-    { icon: Linkedin, href: "https://linkedin.com" },
-    { icon: Twitter, href: "https://twitter.com" },
+    { icon: Linkedin, href: "https://www.linkedin.com/in/yogesh-agrawal-b33b952a/" },
   ],
 }
 
 const teamData = [
-  { name: "John Smith", role: "CTO", image: "/placeholder-profile.svg" },
-  { name: "Alice Johnson", role: "COO", image: "/placeholder-profile.svg" },
-  { name: "Bob Williams", role: "Lead Developer", image: "/placeholder-profile.svg" },
-  { name: "Emma Brown", role: "UX Designer", image: "/placeholder-profile.svg" },
+  { name: "Mr. Vipul Garg", role: "Executive Assistant to MD", image: "/vg.jpg" },
+  { name: "Mr. Sanjoy Gupta", role: "General Manager", image: "/sg.jpg" },
+  { name: "Ms. Romasha Gupta", role: "Project Manager", image: "/rg.jpeg" },
 ]
 
 export default function AboutUs() {
@@ -53,7 +50,7 @@ export default function AboutUs() {
 
         <h2 className="text-3xl md:text-4xl font-bold text-purple-700 text-center mb-8">Our Team</h2>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {teamData.map((member, index) => (
             <Card key={index} className="border-purple-500">
               <CardContent className="p-4 flex flex-col items-center">

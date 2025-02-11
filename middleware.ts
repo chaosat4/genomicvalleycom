@@ -25,8 +25,10 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/api/services/:path*',
     '/api/me',
-    // Add other protected routes here
-  ],
+    '/api/services/new',
+    '/api/services/edit/:path*',
+    '/api/services/delete/:path*',
+    '/api/services/admin/:path*'
+  ]
 };

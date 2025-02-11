@@ -3,6 +3,7 @@ import Hero from "@/components/abouthero";
 import ContentSection from "@/components/contentsection";
 import AboutContent from "@/components/aboutcontent";
 import Timeline from "@/components/timeline";
+import Gallery from "@/components/gallery";
 
 export default function Home() {
   return (
@@ -10,7 +11,7 @@ export default function Home() {
       <Hero />
       <AboutContent />
       <ContentSection />
-      <Timeline />
+      <Gallery />
       <OurTeam />
     </div>
   );

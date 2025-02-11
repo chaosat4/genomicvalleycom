@@ -1,25 +1,42 @@
 import Image from "next/image"
 
 const alternatingFeaturesData = [
-    {
-      title: "Innovative Solutions",
-      description: "Our cutting-edge technology provides innovative solutions to complex business problems, helping you stay ahead in a rapidly evolving market.",
-      image: "/placeholder.svg",
-      alt: "Innovative business solutions visualization"
-    },
-    {
-      title: "Expert Consultation",
-      description: "Our team of industry experts offers personalized consultation to help you make informed decisions and optimize your business strategies.",
-      image: "/placeholder.svg",
-      alt: "Expert team in a consultation meeting"
-    },
-    {
-      title: "Scalable Infrastructure",
-      description: "We provide scalable infrastructure solutions that grow with your business, ensuring you're always prepared for the next big opportunity.",
-      image: "/placeholder.svg",
-      alt: "Scalable infrastructure diagram"
-    }
-  ]
+  {
+    title: "Where Innovation Meets Expertise",
+    description:
+      "At Genomic Valley Bharat Limited, we combine over 10 years of experience in Next-Generation Sequencing (NGS), oncology, and AI to propel healthcare forward. Our dedicated team implements both novel and validated methods, ensuring accurate and confident results in our quest for better healthcare outcomes.",
+    image: "/c5.png",
+    alt: "Team of biotech experts"
+  },
+  {
+    title: "A Vision for India's Genomics Future",
+    description:
+      "Inspired by the dream of former Prime Minister Shri Atal Bihari Vajpayee to create a Silicon Valley of genomics in India, we are on a mission to establish Genomics Valley as a global epicenter for cutting-edge research, diagnostics, and healthcare solutions.",
+    image: "/c6.png",
+    alt: "Illustration of India's roadmap for genomic innovation"
+  },
+  {
+    title: "Advancing Oncology with AI & IT",
+    description:
+      "By leveraging artificial intelligence and information technology, Genomic Valley Bharat Limited enhances the precision, efficiency, and effectiveness of oncology diagnostics and research. Our goal is to contribute to a healthier future for all through transformative, technology-driven solutions.",
+    image: "/labimg3.jpg",
+    alt: "AI-based oncology diagnostics"
+  },
+  {
+    title: "Our Vision for Molecular Diagnostics",
+    description:
+      "We aim to usher in a new era of precision and efficiency by integrating novel AI-based approaches in molecular diagnostics. Through faster, more accurate results and comprehensive metadata, doctors receive robust support for decision-making, enabling personalized therapy options for patients worldwide.",
+    image: "/labimg1.jpg",
+    alt: "High-tech molecular diagnostics process"
+  },
+  {
+    title: "Comprehensive Research Process Outsourcing (RPO)",
+    description:
+      "Our commitment extends to global researchers through tailored RPO services. With access to professional software tools and a dedicated team of experts, we refine data analysis to deliver optimal solutions, driving innovation and excellence in healthcare research.",
+    image: "/a2.jpeg",
+    alt: "Researchers collaborating on data analysis"
+  }
+];
 
 const AlternatingFeatures = () => {
   return (

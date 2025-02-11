@@ -108,7 +108,6 @@ export default function ResearchServicesPage() {
                 <h3 className="font-semibold text-lg mb-2">{service.name}</h3>
                 <p className="text-gray-600 text-sm mb-4">{service.overview}</p>
                 <div className="flex justify-between items-center">
-                  <p className="text-primary font-bold">₹{service.price}</p>
                   <div className="text-sm text-gray-500">
                     {service._count.process} research steps
                   </div>

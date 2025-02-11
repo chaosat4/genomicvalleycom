@@ -1,8 +1,11 @@
+'use client'
 import { Button } from "@/components/ui/button"
 import { Microscope, BarChart3, Heart, Home } from 'lucide-react'
 import Image from "next/image";
 import { featureCards } from "@/constants";
 import { FeatureCardProps } from "@/types";
+import { useRouter } from "next/navigation";
+
 
 const iconMap = {
   Microscope,
@@ -12,6 +15,7 @@ const iconMap = {
 };
 
 function Features() {
+  const router = useRouter();
   return (
     <section className="py-8 bg-purple-50 md:py-0"> 
       <div className="container hidden md:block">
@@ -21,12 +25,15 @@ function Features() {
       <div className="container grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
         <div className="mb-8 md:mb-12 max-w-lg mx-auto lg:mx-0"> 
         <h2 className="text-4xl md:text-5xl lg:text-6xl tracking-tight text-center lg:text-left">
-            Why Choose GenomicValley?
+            Why Choose Genomic Valley?
           </h2>
           <div className="flex justify-center lg:justify-start">
             <Button
               variant="secondary"
               className="mt-4 md:mt-6 bg-purple-600 rounded-full text-white hover:bg-purple-700 w-fit"
+              onClick={() => {
+                router.push('/services');
+              }}
             >
               Learn More
             </Button>
