@@ -4,7 +4,7 @@ import Hero from "@/components/hero";
 import { ServiceCarousel } from "@/components/serviceCarousel";
 import { Testimonials } from "@/components/Testimonials";
 import Image from "next/image";
-import Gallery from "@/components/gallery";
+import Gallery from "@/components/Gallery";
 export default function Home() {
   return (
     <div>
