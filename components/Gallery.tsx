@@ -44,7 +44,7 @@ const galleryImages = [
       }
 ]
 
-export default function Gallery() {
+function Gallery() {
     return (
         <div className="min-h-screen bg-purple-50">
             {/* Title Section */}
@@ -69,3 +69,5 @@ export default function Gallery() {
         </div>
     )
 }
+
+export default Gallery;
