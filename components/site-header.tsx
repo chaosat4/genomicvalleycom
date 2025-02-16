@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { Search, UserCircle, X } from 'lucide-react'
+import { Search, UserCircle, X, Download } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useRouter } from 'next/navigation'
@@ -173,25 +173,36 @@ export function SiteHeader() {
             </div>
 
             {/* Desktop Login/Profile Button */}
-            {isLoggedIn ? (
+            <div className="hidden sm:flex gap-2">
               <Button 
                 variant="ghost" 
-                className="gap-2 hidden sm:flex bg-purple-100 hover:bg-purple-200"
-                onClick={handleLogout}
+                className="gap-2 bg-purple-100 hover:bg-purple-200"
+                onClick={() => window.open('/Brochure.pdf', '_blank')}
               >
-                <UserCircle className="h-5 w-5" />
-                Logout
+                <Download className="h-5 w-5" />
+                Brochure
               </Button>
-            ) : (
-              <Button 
-                variant="ghost" 
-                className="gap-2 hidden sm:flex bg-purple-100 hover:bg-purple-200"
-                onClick={() => router.push('/login')}
-              >
-                <UserCircle className="h-5 w-5" />
-                Login
-              </Button>
-            )}
+              
+              {isLoggedIn ? (
+                <Button 
+                  variant="ghost" 
+                  className="gap-2 bg-purple-100 hover:bg-purple-200"
+                  onClick={handleLogout}
+                >
+                  <UserCircle className="h-5 w-5" />
+                  Logout
+                </Button>
+              ) : (
+                <Button 
+                  variant="ghost" 
+                  className="gap-2 bg-purple-100 hover:bg-purple-200"
+                  onClick={() => router.push('/login')}
+                >
+                  <UserCircle className="h-5 w-5" />
+                  Login
+                </Button>
+              )}
+            </div>
 
             {/* Mobile Menu Button */}
             <button 
@@ -258,6 +269,13 @@ export function SiteHeader() {
                   )}
                 </div>
               ))}
+              <Button 
+                className="w-full"
+                onClick={() => window.open('/Brochure.pdf', '_blank')}
+              >
+                <Download className="h-5 w-5 mr-2" />
+                Brochure
+              </Button>
               <Button className="w-full mt-4">
                 <UserCircle className="h-5 w-5 mr-2" />
                 Login
