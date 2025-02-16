@@ -64,7 +64,7 @@ export default function DiagnosticServicesPage() {
         <div className="relative h-[400px] mb-16 rounded-xl overflow-hidden">
           <div className="absolute inset-0 bg-gray-200 animate-pulse" />
           <Image
-            src="/placeholder-diagnostic.jpg"
+            src="/Diagnostic Services.jpg"
             alt="Diagnostic Services"
             fill
             className="object-cover"
@@ -76,17 +76,17 @@ export default function DiagnosticServicesPage() {
           <ServiceSection
             title="Personalized Healthcare"
             content="Personalized healthcare at Genomic Valley Bharat is centered on tailoring medical treatment to individual patients based on their unique genetic profiles..."
-            imagePath="/placeholder-personalized.jpg"
+            imagePath="/Personalized Healthcare.jpg"
           />
           <ServiceSection
             title="Genetic Disease Predisposition"
             content="Our genetic disease predisposition services focus on identifying individuals' susceptibility to various hereditary conditions..."
-            imagePath="/placeholder-genetic.jpg"
+            imagePath="/Genetic Disease Predisposition.jpg"
           />
           <ServiceSection
             title="Community Health Support"
             content="Community health support at Genomic Valley Bharat aims to improve public health outcomes through comprehensive genomic screening programs..."
-            imagePath="/placeholder-community.jpg"
+            imagePath="/Community Health Support.jpg"
           />
         </div>
 

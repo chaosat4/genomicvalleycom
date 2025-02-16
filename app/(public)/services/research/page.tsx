@@ -64,7 +64,7 @@ export default function ResearchServicesPage() {
         <div className="relative h-[400px] mb-16 rounded-xl overflow-hidden">
           <div className="absolute inset-0 bg-gray-200 animate-pulse" />
           <Image
-            src="/placeholder-research.jpg"
+            src="/Research Services_2.jpg"
             alt="Research Services"
             fill
             className="object-cover"
@@ -76,17 +76,17 @@ export default function ResearchServicesPage() {
           <ResearchSection
             title="AI-Based Genome Healthcare"
             content="At Genomic Valley Bharat, we are pioneering AI-based genome healthcare research to revolutionize the way genetic data is analyzed and interpreted..."
-            imagePath="/placeholder-ai.jpg"
+            imagePath="/AI-Based Genome Healthcare.jpg"
           />
           <ResearchSection
             title="Metagenomics and Healthcare"
             content="Our metagenomics research focuses on studying the collective genomes of microbial communities within the human body..."
-            imagePath="/placeholder-metagenomics.jpg"
+            imagePath="/Metagenomics and Healthcare.jpg"
           />
           <ResearchSection
             title="Extramural Research Project"
             content="Our extramural research projects involve collaborating with external academic institutions, research organizations, and industry partners..."
-            imagePath="/placeholder-collaboration.jpg"
+            imagePath="/Extramural Research Project.jpg"
           />
         </div>
 
