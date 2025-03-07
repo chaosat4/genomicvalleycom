@@ -79,7 +79,7 @@ export default function ResearchServicesPage() {
             imagePath="/AI-Based Genome Healthcare.jpg"
           />
           <ResearchSection
-            title="Metagenomics and Healthcare"
+            title="Metagenomics"
             content="Our metagenomics research focuses on studying the collective genomes of microbial communities within the human body..."
             imagePath="/Metagenomics and Healthcare.jpg"
           />

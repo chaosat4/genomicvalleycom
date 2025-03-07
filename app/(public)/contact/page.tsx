@@ -100,7 +100,7 @@ export default function ContactPage() {
             <div className="space-y-8">
               <div className="aspect-square w-full rounded-lg overflow-hidden">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3499.973332493686!2d76.86835157929856!3d28.690444318641397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d0b828a3ccd19%3A0xffc3342a2a882b37!2sGenomic%20Valley%20Biotech%20Limited!5e0!3m2!1sen!2sin!4v1738382983705!5m2!1sen!2sin"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d56011.724824867386!2d77.05709233449376!3d28.6677181649795!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d04709a55ca61%3A0x733c78dcf34281ce!2sPaschim%20Vihar%2C%20Delhi!5e0!3m2!1sen!2sin!4v1740812845912!5m2!1sen!2sin"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

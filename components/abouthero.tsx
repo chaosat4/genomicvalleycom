@@ -21,11 +21,11 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-1 mx-auto max-w-7xl px-4 pt-[25%] sm:px-6 lg:px-8">
         <div className="max-w-3xl space-y-6">
-          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
-            You know where to go if you need answers.
+          <h1 className="text-4xl font-bold tracking-tight text-amber-100 sm:text-5xl md:text-6xl">
+            IT is India Today, <br /> BT is Bharat Tomorrow!
           </h1>
-          <p className="text-xl text-white/90">
-            Genomicvalley is India&apos;s most trusted Next Generation Sequencing diagnostic platform.
+          <p className="text-xl text-amber-100">
+            Genomic Valley is India&apos;s most trusted Next Generation Sequencing diagnostic platform.
           </p>
         </div>
       </div>

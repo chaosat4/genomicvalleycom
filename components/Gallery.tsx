@@ -37,11 +37,6 @@ const galleryImages = [
         alt: "Lab",
         caption: "Lab Infrastructure"
       },
-      {
-        src: "/c8.png",
-        alt: "Collabration",
-        caption: "International Collaborations"
-      }
 ]
 
 function Gallery() {

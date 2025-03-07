@@ -25,7 +25,7 @@ export default function Hero() {
             Where Health Meets Innovation
           </h1>
           <p className="text-xl text-white/90">
-            Genomicvalley is India&apos;s most trusted Next Generation Sequencing diagnostic platform.
+            Genomic Valley is India&apos;s most trusted Next Generation Sequencing diagnostic platform.
           </p>
         </div>
       </div>

@@ -92,7 +92,7 @@ export const navigationItems: NavigationItem[] = [
       title: "Get in Touch",
       phone: "+91 8091366601",
       address: "4 KM Stone,\n Berri Chhara Road, P.O. Tanda Heri,\n Tehsil Bahadurgarh, District Jhajjar,\n HARYANA, INDIA - 124 507",
-      email: "info@genomicvalley.com"
+      email: "info@genomicvalley.in"
     },
     copyright: "Made With Love By Genomic Valley Biotech Limited All Right Reserved",
     socialLinks: [

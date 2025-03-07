@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`min-h-screen bg-background font-sans bg-purple-50 antialiased ${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`min-h-screen bg-background font-serif bg-purple-50 antialiased ${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
           <TopNotification />
           <main className="mx-auto max-w-[1200px]">
