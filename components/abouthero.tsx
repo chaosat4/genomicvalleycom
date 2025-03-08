@@ -29,31 +29,6 @@ export default function Hero() {
           </p>
         </div>
       </div>
-
-      {/* Action Buttons */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 grid w-full grid-cols-1 divide-x divide-gray-200 border-t border-gray-200 bg-purple-50 sm:grid-cols-3 border-b">
-        <Link
-          href="#appointment"
-          className="flex items-center justify-between p-4 text-sm hover:bg-gray-50"
-        >
-          Request an Appointment
-          <span className="ml-2">→</span>
-        </Link>
-        <Link
-          href="#search"
-          className="flex items-center justify-between p-4 text-sm hover:bg-gray-50"
-        >
-          Search Diseases & Conditions
-          <span className="ml-2">→</span>
-        </Link>
-        <Link
-          href="#locations"
-          className="flex items-center justify-between p-4 text-sm hover:bg-gray-50"
-        >
-          Find Genomicvalley
-          <span className="ml-2">→</span>
-        </Link>
-      </div>
     </section>
     </>
   )

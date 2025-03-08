@@ -39,24 +39,34 @@ export const navigationItems: NavigationItem[] = [
 
   export const featureCards = [
     {
-      iconName: "Microscope",
+      iconName: "Target",
       title: "Precision Analysis",
-      description: "Leverage AI-enhanced genomic tools for faster, more accurate data interpretation and confident research outcomes."
+      description: "Trust our experienced team to deliver accurate and reliable NGS data. Our expert-curated data ensures that your research is built on a foundation of precision and excellence."
     },
     {
       iconName: "BarChart3",
-      title: "Dynamic Visualization",
-      description: "Transform raw genomic data into intuitive, interactive visualizations to empower clear insights and informed decisions."
+      title: "Unlocking Discoveries with Cutting-Edge Tech",
+      description: "Stay ahead of the curve with our state-of-the-art NGS technologies. Our commitment to innovation ensures that you have access to the latest advancements in genomics research."
     },
     {
-      iconName: "Heart",
-      title: "Seamless Healthcare Integration",
-      description: "Bridge cutting-edge diagnostics with clinical workflows, enhancing patient care and enabling real-time treatment decisions."
+      iconName: "Globe2",
+      title: "Your Global Partner in Genomics Research",
+      description: "Tap into our network of labs and experts worldwide. Our global reach enables us to provide seamless support, no matter where your research takes you."
     },
     {
-      iconName: "Home",
-      title: "Intuitive Platform",
-      description: "Experience a user-friendly interface designed for both researchers and clinicians, ensuring efficient data management and analysis."
+      iconName: "LineChart",
+      title: "Transforming Data into Insights",
+      description: "Our expert bioinformaticians and analysts turn complex NGS data into actionable insights. Let us help you unlock the full potential of your research."
+    },
+    {
+      iconName: "Clock",
+      title: "Reliable, Rapid, and Customized NGS Solutions",
+      description: "Get the data you need, when you need it. Our flexible and scalable NGS services are designed to meet your unique research requirements, with rapid turnaround times and uncompromising quality."
+    },
+    {
+      iconName: "FlaskConical",
+      title: "Elevate Your Research with Our Expert NGS Services",
+      description: "Take your research to the next level with our comprehensive NGS services. From library preparation to data analysis, our team of experts is dedicated to helping you achieve your research goals."
     }
   ] as const;
 
@@ -91,7 +101,7 @@ export const navigationItems: NavigationItem[] = [
     getInTouch: {
       title: "Get in Touch",
       phone: "+91 8091366601",
-      address: "4 KM Stone,\n Berri Chhara Road, P.O. Tanda Heri,\n Tehsil Bahadurgarh, District Jhajjar,\n HARYANA, INDIA - 124 507",
+      address: "2nd Floor G74\n Pushkar Enclave, Paschim Vihar\n New Delhi, India - 110063",
       email: "info@genomicvalley.in"
     },
     copyright: "Made With Love By Genomic Valley Biotech Limited All Right Reserved",

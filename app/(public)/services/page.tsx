@@ -82,10 +82,7 @@ export default function ServicesPage() {
         </div>
 
         <Tabs value={activeTab} defaultValue="all" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="all">
-              All Services
-            </TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="Diagnostic Services">
               Diagnostic Services
             </TabsTrigger>

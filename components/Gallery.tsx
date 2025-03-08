@@ -4,13 +4,8 @@ import { GalleryCarousel } from '@/components/carousel/GalleryCarousel'
 const galleryImages = [
       {
         src: "/about-img.jpg",
-        alt: "With Former Prime Minister Atal Bihari Vajpayee",
-        caption: "With Former Prime Minister Atal Bihari Vajpayee"
-      },
-      {
-        src: "/labimg3.jpg",
-        alt: "Research Team",
-        caption: "Our dedicated research team at work"
+        alt: "With Former Prime Minister Late Shri Atal Bihari Vajpayee",
+        caption: "With Former Prime Minister Late Shri Atal Bihari Vajpayee"
       },
       {
         src: "/c6.png",
@@ -23,19 +18,24 @@ const galleryImages = [
         caption: "Genomic Valley at FOG London 2025"
       },
       {
-        src: "/labimg11.jpg",
-        alt: "Lab Equipments",
-        caption: "State of the art lab equipments"
-      },
-      {
         src: "/a3.jpeg",
         alt: "Conference",
         caption: "Genomic Valley at FOG London 2025"
       },
       {
+        src: "/labimg3.jpg",
+        alt: "Research Team",
+        caption: "Our dedicated research team at work at Artemis Hospital"
+      },
+      {
+        src: "/labimg11.jpg",
+        alt: "Lab Equipments",
+        caption: "State of the art lab equipments at our partner, Artemis Hospital"
+      },
+      {
         src: "/labimg7.jpg",
         alt: "Lab",
-        caption: "Lab Infrastructure"
+        caption: "Lab Infrastructure at Artemis Hospital"
       },
 ]
 

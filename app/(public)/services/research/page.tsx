@@ -74,14 +74,19 @@ export default function ResearchServicesPage() {
         {/* Research Areas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           <ResearchSection
-            title="AI-Based Genome Healthcare"
-            content="At Genomic Valley Bharat, we are pioneering AI-based genome healthcare research to revolutionize the way genetic data is analyzed and interpreted..."
-            imagePath="/AI-Based Genome Healthcare.jpg"
+            title="Next Generation Sequencing"
+            content="Our next-generation sequencing research utilizes advanced sequencing technologies to analyze genetic variations, gene expression patterns, and genomic architectures."
+            imagePath="/sequencing.jpg"
           />
           <ResearchSection
             title="Metagenomics"
             content="Our metagenomics research focuses on studying the collective genomes of microbial communities within the human body..."
             imagePath="/Metagenomics and Healthcare.jpg"
+          />
+          <ResearchSection
+            title="Bioinformatics and Genome Healthcare"
+            content="Genomic Valley Bharat pioneers bioinformatics and genome healthcare research, transforming genetic data analysis to advance personalized medicine and healthcare outcomes."
+            imagePath="/AI-Based Genome Healthcare.jpg"
           />
           <ResearchSection
             title="Extramural Research Project"

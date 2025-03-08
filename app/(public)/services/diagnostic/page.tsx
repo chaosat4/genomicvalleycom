@@ -81,12 +81,17 @@ export default function DiagnosticServicesPage() {
           <ServiceSection
             title="Genetic Disease Predisposition"
             content="Our genetic disease predisposition services focus on identifying individuals' susceptibility to various hereditary conditions..."
-            imagePath="/Genetic Disease Predisposition.jpg"
+            imagePath="/genetic-disease.jpg"
           />
           <ServiceSection
             title="Community Health Support"
             content="Community health support at Genomic Valley Bharat aims to improve public health outcomes through comprehensive genomic screening programs..."
             imagePath="/Community Health Support.jpg"
+          />
+          <ServiceSection
+            title="Infectious Diseases"
+            content="At Genomic Valley Bharat, we utilize advanced genomic sequencing and rapid diagnostics to identify and combat infectious diseases swiftly, enhancing public health response and patient outcomes."
+            imagePath="/Genetic Disease Predisposition.jpg"
           />
         </div>
 
