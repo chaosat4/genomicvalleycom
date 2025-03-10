@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/db';
+import { sendCheckoutConfirmationEmail } from '@/lib/mail';
 
 export async function POST(request: Request) {
   try {
@@ -27,6 +28,9 @@ export async function POST(request: Request) {
         service: true,
       },
     });
+
+    // Send confirmation email
+    await sendCheckoutConfirmationEmail(checkout);
 
     return NextResponse.json(checkout, { status: 201 });
   } catch (error) {
