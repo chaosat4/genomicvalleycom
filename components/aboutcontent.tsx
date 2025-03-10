@@ -40,7 +40,7 @@ const alternatingFeaturesData = [
     title: "Comprehensive Research Process Outsourcing (RPO)",
     description:
       "Our commitment extends to global researchers through tailored RPO services. With access to professional software tools and a dedicated team of experts, we refine data analysis to deliver optimal solutions, driving innovation and excellence in healthcare research.",
-    image: "/a2.jpeg",
+    image: "/RPO.jpg",
     alt: "Networking and colloration with global researchers at FOG 2025"
   }
 ];
