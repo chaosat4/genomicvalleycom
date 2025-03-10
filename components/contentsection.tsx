@@ -10,7 +10,7 @@ const contentSectionData = {
   description:
     "At Genomic Valley Biotech Limited, we integrate cutting-edge AI, Next-Generation Sequencing (NGS), and years of expertise to advance oncology research and diagnostics. Join us on our journey to deliver confident, precise, and transformative healthcare solutions worldwide.",
   image: {
-    src: "/d2.jpeg",
+    src: "/Revolutionizing healthcare through AI driven genomics.jpg",
     alt: "Researchers analyzing genomic data"
   },
   cards: [

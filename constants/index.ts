@@ -27,6 +27,10 @@ export const navigationItems: NavigationItem[] = [
       ]
     },
     {
+      name: "Panels",
+      href: "/panels",
+    },
+    {
       name: "Genetic Counseling",
       href: "/genetic-counseling",
     },

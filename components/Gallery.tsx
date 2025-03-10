@@ -23,6 +23,11 @@ const galleryImages = [
         caption: "Genomic Valley at FOG London 2025"
       },
       {
+        src: "/d3.jpeg",
+        alt: "Conference",
+        caption: "Genomic Valley at King's College, London with Dr Panicos Shangaris"
+      },
+      {
         src: "/labimg3.jpg",
         alt: "Research Team",
         caption: "Our dedicated research team at work at Artemis Hospital"

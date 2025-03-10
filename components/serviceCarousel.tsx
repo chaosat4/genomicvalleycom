@@ -8,7 +8,7 @@ export function ServiceCarousel() {
     {
       icon: <Microscope className="w-8 h-8 mb-4 text-purple-600" />,
       title: "Disease Identification/Screening",
-      description: "Comprehensive screening and identification of genetic diseases using advanced diagnostic techniques."
+      description: "Comprehensive screening of genetic diseases using advanced diagnostic techniques."
     },
     {
       icon: <UserSquare2 className="w-8 h-8 mb-4 text-purple-600" />,

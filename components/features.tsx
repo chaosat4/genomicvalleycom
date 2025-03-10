@@ -44,7 +44,7 @@ function Features() {
           </div>
           <div className="pt-8 md:pt-16">
             <Image 
-              src="/feature-img.jpg" 
+              src="/Why Choose Us_2.jpg" 
               alt="Lab-Features" 
               width={450} 
               height={450}

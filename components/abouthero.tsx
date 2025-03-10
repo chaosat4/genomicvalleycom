@@ -8,7 +8,7 @@ export default function Hero() {
       {/* Background Image with Gradient Overlay */}
       <div className="absolute inset-0">
         <Image
-          src="/about-img.jpg"
+          src="/New Background.jpg"
           alt="Medical care background"
           width={1200}
           height={600}
