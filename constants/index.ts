@@ -105,7 +105,7 @@ export const navigationItems: NavigationItem[] = [
     getInTouch: {
       title: "Get in Touch",
       phone: "+91 8091366601",
-      address: "2nd Floor G74\n Pushkar Enclave, Paschim Vihar\n New Delhi, India - 110063",
+      address: "2nd Floor G74,\n Pushkar Enclave, Paschim Vihar,\n New Delhi, India - 110063",
       email: "info@genomicvalley.in"
     },
     copyright: "Made With Love By Genomic Valley Biotech Limited All Right Reserved",
