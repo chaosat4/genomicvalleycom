@@ -6,7 +6,7 @@ const alternatingFeaturesData = [
     description:
       "At Genomic Valley Bharat Pvt Ltd, we specialize in Next-Generation Sequencing (NGS) with a team of over a decade of experience, oncology, and AI to propel healthcare forward. Our dedicated team implements both novel and validated methods, ensuring accurate and confident results in our quest for better healthcare outcomes.",
     image: "/Where Innovation Meets Expertise.jpg",
-    alt: "Our team at Queen Mary University, London"
+    alt: "Where Innovation Meets Expertise"
   },
   {
     title: "A Vision for India's Genomics Future",

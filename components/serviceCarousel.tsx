@@ -7,7 +7,7 @@ export function ServiceCarousel() {
   const services = [
     {
       icon: <Microscope className="w-8 h-8 mb-4 text-purple-600" />,
-      title: "Disease Identification/Screening",
+      title: "Disease Screening",
       description: "Comprehensive screening of genetic diseases using advanced diagnostic techniques."
     },
     {
