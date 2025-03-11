@@ -33,6 +33,7 @@ export function SiteHeader() {
   const [results, setResults] = useState<SearchResult[]>([])
   const [showResults, setShowResults] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [showNotification, setShowNotification] = useState(true)
   const searchRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const pathname = usePathname()
@@ -42,6 +43,8 @@ export function SiteHeader() {
     const token = localStorage.getItem('token')
     setIsLoggedIn(!!token)
   }, [])
+
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -100,7 +103,31 @@ export function SiteHeader() {
         className={`fixed bg-gray-800/40 inset-0 z-30 ${navIsOpened ? "sm:hidden" : "hidden"}`}
       />
 
-      <header className="w-full border-b bg-purple-50 fixed left-0 top-0 z-40">
+      {/* Top Notification */}
+      <div className={`fixed top-0 left-0 right-0 transform z-50 transition-all duration-500 ease-in-out ${
+        showNotification 
+        ? 'opacity-100 translate-y-0' 
+        : 'opacity-0 -translate-y-full'
+      }`}>            
+        <div className="bg-purple-600 px-4 py-2 text-white">
+          <div className="mx-auto flex max-w-7xl items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm">Genomic Valley wishes you a joyous and blessed Holi 2025!</span>
+            </div>
+            <button
+              onClick={() => setShowNotification(false)}
+              className="text-white hover:text-gray-200"
+              aria-label="Close notification"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <header className={`w-full border-b bg-purple-50 fixed left-0 z-40 transition-all duration-500 ${showNotification ? 'top-[32px]' : 'top-0'}`}>
         <div className="container mx-auto">
           <div className="flex h-16 items-center justify-between px-4">
             {/* Logo */}

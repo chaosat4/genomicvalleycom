@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import TopNotification from "@/components/topNotification";
 import Footer from "@/components/footer";
 import { SupportBanner } from "@/components/SupportBanner";
 import { SiteHeader } from "@/components/site-header";
@@ -34,7 +33,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`min-h-screen bg-background font-serif bg-purple-50 antialiased ${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
-          <TopNotification />
           <main className="mx-auto max-w-[1200px]">
             {children}
           </main>
