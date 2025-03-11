@@ -256,7 +256,9 @@ export function SiteHeader() {
 
           {/* Mobile Navigation */}
           <div
-            className={`fixed left-0 bg-background border-b w-full px-4 py-6 sm:hidden transition-all duration-300 ease-linear top-16 ${
+            className={`fixed left-0 bg-background border-b w-full px-4 py-6 sm:hidden transition-all duration-300 ease-linear ${
+              showNotification ? 'top-[48px]' : 'top-16'
+            } ${
               navIsOpened
                 ? "translate-y-0 opacity-100 visible"
                 : "translate-y-10 opacity-0 invisible"
