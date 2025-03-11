@@ -19,13 +19,13 @@ export default function Hero() {
       </div>
       
       {/* Content */}
-      <div className="relative z-1 mx-auto max-w-7xl px-4 pt-[30%] sm:px-6 lg:px-8">
+      <div className="relative z-1 mx-auto max-w-7xl px-4 pt-[27%] sm:px-6 lg:px-8">
         <div className="max-w-3xl space-y-6">
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
             Empowering choices through knowledge.
           </h1>
           <p className="text-xl text-white/90">
-            Genomic Valley is India&apos;s most trusted Next Generation Sequencing diagnostic platform.
+            Genomic Valley: Where Trust Meets Genomic Excellence
           </p>
         </div>
       </div>
