@@ -6,7 +6,7 @@ export default function TestimonialsPage() {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative h-[600px] w-full overflow-hidden">
+      <div className="relative h-[600px] w-full overflow-hidden mt-[120px]">
         <div className="absolute inset-0">
           <Image
             src="/testimonials-hero.jpg"
@@ -20,7 +20,7 @@ export default function TestimonialsPage() {
         </div>
         
         {/* Hero Content */}
-        <div className="relative z-1 mx-auto max-w-7xl px-4 pt-[25%] sm:px-6 lg:px-8">
+        <div className="relative z-1 mx-auto max-w-7xl px-4 pt-[30%] sm:px-6 lg:px-8">
         <div className="max-w-3xl space-y-6">
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
             Creating real impact with cutting-edge genetics
@@ -29,31 +29,6 @@ export default function TestimonialsPage() {
             Genomicvalley is India&apos;s most trusted Next Generation Sequencing diagnostic platform.
           </p>
         </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 grid w-full grid-cols-1 divide-x divide-gray-200 border-t border-gray-200 bg-purple-50 sm:grid-cols-3">
-        <Link
-          href="/request-call"
-          className="flex items-center justify-between p-4 text-sm hover:bg-gray-50"
-        >
-          Request an Appointment
-          <span className="ml-2">→</span>
-        </Link>
-        <Link
-          href="/services"
-          className="flex items-center justify-between p-4 text-sm hover:bg-gray-50"
-        >
-          Search Services
-          <span className="ml-2">→</span>
-        </Link>
-        <Link
-          href="/contact"
-          className="flex items-center justify-between p-4 text-sm hover:bg-gray-50"
-        >
-          Find Genomicvalley
-          <span className="ml-2">→</span>
-        </Link>
       </div>
       </div>
 

@@ -4,7 +4,7 @@ import Image from "next/image"
 export default function Hero() { 
   return (   
     <>
-    <section className="relative bg-purple-50 h-[600px] w-full overflow-hidden">
+    <section className="relative bg-purple-50 h-[600px] w-full overflow-hidden mt-[120px]">
       {/* Background Image with Gradient Overlay */}
       <div className="absolute inset-0">
         <Image
@@ -19,7 +19,7 @@ export default function Hero() {
       </div>
       
       {/* Content */}
-      <div className="relative z-1 mx-auto max-w-7xl px-4 pt-[25%] sm:px-6 lg:px-8">
+      <div className="relative z-1 mx-auto max-w-7xl px-4 pt-[30%] sm:px-6 lg:px-8">
         <div className="max-w-3xl space-y-6">
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
             Empowering choices through knowledge.

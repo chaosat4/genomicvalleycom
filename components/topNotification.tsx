@@ -1,12 +1,26 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function TopNotification() {
     const [showNotification, setShowNotification] = useState(true)
     
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 20) { // Hide after scrolling 20px
+                setShowNotification(false)
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll)
+        
+        return () => {
+            window.removeEventListener('scroll', handleScroll)
+        }
+    }, [])
+    
     return (
        <>
-        <div className={`transform transition-all duration-500 ease-in-out ${
+        <div className={`transform z-50 transition-all duration-500 ease-in-out ${
                     showNotification 
                     ? 'opacity-100 translate-y-0 max-h-[100px]' 
                     : 'opacity-0 -translate-y-full max-h-0 overflow-hidden'

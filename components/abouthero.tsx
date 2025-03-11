@@ -4,11 +4,11 @@ import Image from "next/image"
 export default function Hero() { 
   return (   
     <>
-    <section className="relative h-[600px] bg-purple-50 w-full overflow-hidden">
+    <section className="relative h-[600px] bg-purple-50 w-full overflow-hidden mt-[120px]">
       {/* Background Image with Gradient Overlay */}
       <div className="absolute inset-0">
         <Image
-          src="/New Background.jpg"
+          src="/about-hero.jpg"
           alt="Medical care background"
           width={1200}
           height={600}
@@ -19,7 +19,7 @@ export default function Hero() {
       </div>
       
       {/* Content */}
-      <div className="relative z-1 mx-auto max-w-7xl px-4 pt-[25%] sm:px-6 lg:px-8">
+      <div className="relative z-1 mx-auto max-w-7xl px-4 pt-[30%] sm:px-6 lg:px-8">
         <div className="max-w-3xl space-y-6">
           <h1 className="text-4xl font-bold tracking-tight text-amber-100 sm:text-5xl md:text-6xl">
             IT is India Today, <br /> BT is Bharat Tomorrow!

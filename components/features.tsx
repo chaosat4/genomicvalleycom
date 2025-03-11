@@ -62,7 +62,7 @@ function Features() {
                   icon={<Icon className="w-6 h-6 md:w-8 md:h-8 mb-3 md:mb-4 text-purple-600" />}
                   title={card.title}
                   description={card.description}
-                  maxLength={100}
+                  maxLength={150}
                 />
               </div>
             );

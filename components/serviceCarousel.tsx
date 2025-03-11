@@ -6,19 +6,19 @@ import Link from "next/link"
 export function ServiceCarousel() {
   const services = [
     {
-      icon: <Microscope className="w-8 h-8 mb-4 text-purple-600" />,
-      title: "Disease Screening",
-      description: "Comprehensive screening of genetic diseases using advanced diagnostic techniques."
-    },
-    {
       icon: <UserSquare2 className="w-8 h-8 mb-4 text-purple-600" />,
       title: "Genetic Consultation",
       description: "Expert guidance and consultation for understanding genetic test results and implications."
     },
     {
       icon: <Binary className="w-8 h-8 mb-4 text-purple-600" />,
-      title: "Next Gen Sequencing Services",
+      title: "Next Generation DNA Sequencing",
       description: "State-of-the-art DNA sequencing using latest next-generation technologies."
+    },
+    {
+      icon: <Microscope className="w-8 h-8 mb-4 text-purple-600" />,
+      title: "Disease Screening",
+      description: "Comprehensive screening of genetic diseases using advanced diagnostic techniques."
     },
     {
       icon: <Briefcase className="w-8 h-8 mb-4 text-purple-600" />,

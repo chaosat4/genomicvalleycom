@@ -100,7 +100,7 @@ export function SiteHeader() {
         className={`fixed bg-gray-800/40 inset-0 z-30 ${navIsOpened ? "sm:hidden" : "hidden"}`}
       />
 
-      <header className="w-full border-b bg-purple-50 z-40">
+      <header className="w-full border-b bg-purple-50 fixed left-0 top-0 z-40">
         <div className="container mx-auto">
           <div className="flex h-16 items-center justify-between px-4">
             {/* Logo */}
@@ -229,7 +229,7 @@ export function SiteHeader() {
 
           {/* Mobile Navigation */}
           <div
-            className={`absolute left-0 bg-background border-b w-full px-4 py-6 sm:hidden transition-all duration-300 ease-linear ${
+            className={`fixed left-0 bg-background border-b w-full px-4 py-6 sm:hidden transition-all duration-300 ease-linear top-16 ${
               navIsOpened
                 ? "translate-y-0 opacity-100 visible"
                 : "translate-y-10 opacity-0 invisible"
