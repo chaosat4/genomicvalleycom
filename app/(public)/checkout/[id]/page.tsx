@@ -113,7 +113,7 @@ export default function CheckoutPage({
   }
 
   return (
-    <div className="min-h-screen bg-purple-50 p-6">
+    <div className="min-h-screen bg-purple-50 pt-44 pb-12">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">Checkout</h1>
         

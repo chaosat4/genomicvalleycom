@@ -82,15 +82,14 @@ export const navigationItems: NavigationItem[] = [
           { text: "About Us", href: "/about-us" },
           { text: "Career", href: "/contact" },
           { text: "We are hiring", href: "/contact" },
-          { text: "Blog", href: "#" }
         ]
       },
       {
         title: "Services",
         links: [
           { text: "Genetic Counselling", href: "/genetic-counseling" },
-          { text: "Diagnostic Services", href: "/services/diagnostic" },
           { text: "Research Services", href: "/services/research" },
+          { text: "Diagnostic Services", href: "/services/diagnostic" },
         ]
       },
       {
@@ -105,10 +104,10 @@ export const navigationItems: NavigationItem[] = [
     getInTouch: {
       title: "Get in Touch",
       phone: "+91 8091366601",
+      email: "info@genomicvalley.in",
       address: "2nd Floor G74,\n Pushkar Enclave, Paschim Vihar,\n New Delhi, India - 110063",
-      email: "info@genomicvalley.in"
     },
-    copyright: "Made With Love By Genomic Valley Biotech Limited All Right Reserved",
+    copyright: "Made With Love By Genomic Valley Bharat Limited All Right Reserved",
     socialLinks: [
       { name: "Facebook", href: "#", icon: "FacebookIcon" },
       { name: "Instagram", href: "#", icon: "InstagramIcon" },

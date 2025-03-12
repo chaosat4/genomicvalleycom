@@ -49,7 +49,7 @@ export default function DiagnosticServicesPage() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="min-h-screen bg-purple-50 py-12">
+    <div className="min-h-screen bg-purple-50 pt-44 pb-12">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 mb-6">

@@ -76,7 +76,7 @@ export default function ServiceDetails({ id }: { id: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-purple-50 text-foreground">
+    <div className="min-h-screen bg-purple-50 text-foreground pt-40 pb-12">
       <div className="container mx-auto px-4 py-8">
         <header className="mb-12 text-center">
           <Dna className="inline-block w-16 h-16 text-primary mb-4" />

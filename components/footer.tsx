@@ -33,12 +33,12 @@ export default function Footer() {
                 <p className="text-gray-600">{FOOTER_CONSTANTS.getInTouch.phone}</p>
               </div>
               <div className="flex items-start gap-2">
-                <MapPin className="w-5 h-5 text-purple-600 mt-1" />
-                <p className="text-gray-600">{FOOTER_CONSTANTS.getInTouch.address}</p>
-              </div>
-              <div className="flex items-start gap-2">
                 <Mail className="w-5 h-5 text-purple-600 mt-1" />
                 <p className="text-gray-600">{FOOTER_CONSTANTS.getInTouch.email}</p>
+              </div>
+              <div className="flex items-start gap-2">
+                <MapPin className="w-5 h-5 text-purple-600 mt-1" />
+                <p className="text-gray-600">{FOOTER_CONSTANTS.getInTouch.address}</p>
               </div>
             </div>
           </div>
