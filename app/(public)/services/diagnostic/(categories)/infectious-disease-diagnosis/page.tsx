@@ -1,7 +1,7 @@
 import React from "react"
 
 
-export const SERVICES_PAGE_CONTENT = {
+const SERVICES_PAGE_CONTENT = {
     mainContent: {
       leftBox: {
         title: "Infectious Disease Diagnosis",
