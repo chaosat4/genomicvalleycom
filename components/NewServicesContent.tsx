@@ -9,38 +9,45 @@ export interface ServiceItem {
   title: string;
   description: string;
   category: 'Research Services' | 'Diagnostics Services';
+  link?: string;
 }
 
 const researchServices: ServiceItem[] = [
   {
     title: 'Gene Expression Analysis',
     description: 'Understand gene expression patterns with our cutting-edge analysis services',
-    category: 'Research Services'
+    category: 'Research Services',
+    link: '/services/research/gene-expression-analysis'
   },
   {
     title: 'Genome Assembly',
     description: 'Get accurate and comprehensive genome assembly with our expert services',
-    category: 'Research Services'
+    category: 'Research Services',
+    link: '/services/research/genome-assembly'
   },
   {
     title: 'Variant Detection',
     description: 'Identify genetic variants with our advanced detection services',
-    category: 'Research Services'
+    category: 'Research Services',
+    link: '/services/research/variant-detection'
   },
   {
     title: 'Metagenomics',
     description: 'Explore microbial communities with our metagenomics services',
-    category: 'Research Services'
+    category: 'Research Services',
+    link: '/services/research/metagenomics'
   },
   {
     title: 'Epigenetics',
     description: 'Explore the epigenetic landscape with our comprehensive services',
-    category: 'Research Services'
+    category: 'Research Services',
+    link: '/services/research/epigenetics'
   },
   {
     title: 'Customised as per need',
     description: 'Explore the depth of customized NGS services as per your need',
-    category: 'Research Services'
+    category: 'Research Services',
+    link: '/services/research/custom'
   }
 ];
 
@@ -48,32 +55,38 @@ const diagnosticsServices: ServiceItem[] = [
   {
     title: 'Cancer Genomics',
     description: 'Unlock the genetic secrets of cancer with our comprehensive genomics services',
-    category: 'Diagnostics Services'
+    category: 'Diagnostics Services',
+    link: '/services/diagnostic/cancer-genomics'
   },
   {
     title: 'Rare Genetic Disorders',
     description: 'Diagnose and manage rare genetic disorders with our expert services',
-    category: 'Diagnostics Services'
+    category: 'Diagnostics Services',
+    link: '/services/diagnostic/rare-genetic-disorders'
   },
   {
     title: 'Infectious Disease Diagnosis',
     description: 'Rapidly diagnose infectious diseases with our cutting-edge services',
-    category: 'Diagnostics Services'
+    category: 'Diagnostics Services',
+    link: '/services/diagnostic/infectious-disease-diagnosis'
   },
   {
     title: 'Prenatal and Preimplantation Genetic Testing',
     description: 'Make informed reproductive choices with our genetic testing services',
-    category: 'Diagnostics Services'
+    category: 'Diagnostics Services',
+    link: '/services/diagnostic/prenatal-and-preimplantation-genetic-testing'
   },
   {
     title: 'Metagenomics',
     description: 'Diagnose microbial infections and understand the microbiome with our metagenomics services',
-    category: 'Diagnostics Services'
+    category: 'Diagnostics Services',
+    link: '/services/diagnostic/metagenomics'
   },
   {
     title: 'Transplantation Genetics',
     description: 'Optimize transplant outcomes with our comprehensive genetic testing services',
-    category: 'Diagnostics Services'
+    category: 'Diagnostics Services',
+    link: '/services/diagnostic/transplantation-genetics'
   }
 ]; 
 
@@ -100,7 +113,8 @@ const getIconForService = (title: string) => {
 
 export function ServiceCard({ service }: ServiceCardProps) {
   return (
-    <Card 
+    <a href={service.link} className="block">
+      <Card 
       className="p-6 hover:shadow-lg transition-shadow cursor-pointer bg-white h-full flex flex-col"
     >
       <div className="text-primary mb-4">
@@ -116,6 +130,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
         <span className="text-sm font-medium text-primary">Learn More</span>
       </div>
     </Card>
+    </a>
   );
 } 
 
