@@ -13,8 +13,15 @@ const leadershipData = {
 }
 
 const teamData = [
-  { name: "Ms. Romasha Gupta", role: "Senior Manager - Scientific Affairs", image: "/rg.jpeg" },
-  { name: "Dr. Uzma Shamim", role: "Senior Genetic Counselor", image: "/uzma.jpeg" },
+  {name: "Dr. Amit Chaurasia", role: "Chief Operations Officer", image: "/ac.jpeg", socialLinks: [
+    { icon: Linkedin, href: "https://www.linkedin.com/in/amit-chaurasia-42728b13/" },
+  ]},
+  { name: "Ms. Romasha Gupta", role: "Senior Manager - Scientific Affairs", image: "/rg.jpeg", socialLinks: [
+    { icon: Linkedin, href: "https://www.linkedin.com/in/romasha-gupta-98a44b190/" },
+  ]},
+  { name: "Dr. Uzma Shamim", role: "Senior Genetic Counselor", image: "/uzma.jpeg", socialLinks: [
+    { icon: Linkedin, href: "https://www.linkedin.com/in/uzma-shamim-a338b043/" },
+  ]},
 ]
 
 export default function AboutUs() {
@@ -33,12 +40,16 @@ export default function AboutUs() {
               className="rounded-full mb-4"
             />
             <h2 className="text-3xl font-semibold mb-1">{leadershipData.name}</h2>
-            <p className="text-xl text-muted-foreground mb-4">{leadershipData.role}</p>
+            <p className="text-xl text-muted-foreground">{leadershipData.role}</p>
+            {/* linkedin logo */}
+            <a href={leadershipData.socialLinks[0].href} target="_blank" rel="noopener noreferrer">
+              <Linkedin className="w-6 mt-4 h-6 text-purple-500" />
+            </a>
           </CardContent>
         </Card>
 
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 md:gap-8">
           {teamData.map((member, index) => (
             <Card key={index} className="border-purple-500">
               <CardContent className="p-6 flex flex-col items-center">
@@ -51,6 +62,10 @@ export default function AboutUs() {
                 />
                 <h3 className="text-2xl font-semibold mb-1">{member.name}</h3>
                 <p className="text-xl text-muted-foreground">{member.role}</p>
+                {/* linkedin logo */}
+                <a href={member.socialLinks[0].href} target="_blank" rel="noopener noreferrer">
+                  <Linkedin className="w-6 mt-4 h-6 text-purple-500" />
+                </a>
               </CardContent>
             </Card>
           ))}

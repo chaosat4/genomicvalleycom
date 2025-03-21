@@ -1,94 +1,18 @@
 import Image from 'next/image';
 import { Card } from "@/components/ui/card";
 import { Activity, Microscope, Dna, Beaker, Network, Settings } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-
-
+import servicesData from '../app/(public)/services/services.json';
 
 export interface ServiceItem {
-  title: string;
-  description: string;
-  category: 'Research Services' | 'Diagnostics Services';
-  link?: string;
+  id: number;
+  categoryName: string;
+  mainContent: {
+    leftBox: {
+      title: string;
+      description: string;
+    }
+  }
 }
-
-const researchServices: ServiceItem[] = [
-  {
-    title: 'Gene Expression Analysis',
-    description: 'Understand gene expression patterns with our cutting-edge analysis services',
-    category: 'Research Services',
-    link: '/services/research/gene-expression-analysis'
-  },
-  {
-    title: 'Genome Assembly',
-    description: 'Get accurate and comprehensive genome assembly with our expert services',
-    category: 'Research Services',
-    link: '/services/research/genome-assembly'
-  },
-  {
-    title: 'Variant Detection',
-    description: 'Identify genetic variants with our advanced detection services',
-    category: 'Research Services',
-    link: '/services/research/variant-detection'
-  },
-  {
-    title: 'Metagenomics',
-    description: 'Explore microbial communities with our metagenomics services',
-    category: 'Research Services',
-    link: '/services/research/metagenomics'
-  },
-  {
-    title: 'Epigenetics',
-    description: 'Explore the epigenetic landscape with our comprehensive services',
-    category: 'Research Services',
-    link: '/services/research/epigenetics'
-  },
-  {
-    title: 'Customised as per need',
-    description: 'Explore the depth of customized NGS services as per your need',
-    category: 'Research Services',
-    link: '/services/research/custom'
-  }
-];
-
-const diagnosticsServices: ServiceItem[] = [
-  {
-    title: 'Cancer Genomics',
-    description: 'Unlock the genetic secrets of cancer with our comprehensive genomics services',
-    category: 'Diagnostics Services',
-    link: '/services/diagnostic/cancer-genomics'
-  },
-  {
-    title: 'Rare Genetic Disorders',
-    description: 'Diagnose and manage rare genetic disorders with our expert services',
-    category: 'Diagnostics Services',
-    link: '/services/diagnostic/rare-genetic-disorders'
-  },
-  {
-    title: 'Infectious Disease Diagnosis',
-    description: 'Rapidly diagnose infectious diseases with our cutting-edge services',
-    category: 'Diagnostics Services',
-    link: '/services/diagnostic/infectious-disease-diagnosis'
-  },
-  {
-    title: 'Prenatal and Preimplantation Genetic Testing',
-    description: 'Make informed reproductive choices with our genetic testing services',
-    category: 'Diagnostics Services',
-    link: '/services/diagnostic/prenatal-and-preimplantation-genetic-testing'
-  },
-  {
-    title: 'Metagenomics',
-    description: 'Diagnose microbial infections and understand the microbiome with our metagenomics services',
-    category: 'Diagnostics Services',
-    link: '/services/diagnostic/metagenomics'
-  },
-  {
-    title: 'Transplantation Genetics',
-    description: 'Optimize transplant outcomes with our comprehensive genetic testing services',
-    category: 'Diagnostics Services',
-    link: '/services/diagnostic/transplantation-genetics'
-  }
-]; 
 
 interface ServiceCardProps {
   service: ServiceItem;
@@ -113,28 +37,32 @@ const getIconForService = (title: string) => {
 
 export function ServiceCard({ service }: ServiceCardProps) {
   return (
-    <a href={service.link} className="block">
+    <a href={`/services/${service.categoryName}/${service.id}`} className="block">
       <Card 
-      className="p-6 hover:shadow-lg transition-shadow cursor-pointer bg-white h-full flex flex-col"
-    >
-      <div className="text-primary mb-4">
-        {getIconForService(service.title)}
-      </div>
-      <h3 className="font-semibold text-lg mb-2 text-gray-900">
-        {service.title}
-      </h3>
-      <p className="text-gray-600 text-sm flex-grow">
-        {service.description}
-      </p>
-      <div className="flex justify-between items-center pt-4 border-t border-gray-100 mt-4">
-        <span className="text-sm font-medium text-primary">Learn More</span>
-      </div>
-    </Card>
+        className="p-6 hover:shadow-lg transition-shadow cursor-pointer bg-white h-full flex flex-col"
+      >
+        <div className="text-primary mb-4">
+          {getIconForService(service.mainContent.leftBox.title)}
+        </div>
+        <h3 className="font-semibold text-lg mb-2 text-gray-900">
+          {service.mainContent.leftBox.title}
+        </h3>
+        <p className="text-gray-600 text-sm flex-grow">
+          {service.mainContent.leftBox.description}
+        </p>
+        <div className="flex justify-between items-center pt-4 border-t border-gray-100 mt-4">
+          <span className="text-sm font-medium text-primary">Learn More</span>
+        </div>
+      </Card>
     </a>
   );
 } 
 
 export function ServicesContent() {
+  // Filter services by category
+  const researchServices = servicesData.filter(service => service.categoryName === 'research');
+  const diagnosticServices = servicesData.filter(service => service.categoryName === 'diagnostic');
+
   return (
     <div className="min-h-screen bg-purple-50 pt-44 pb-12">
       <div className="max-w-7xl mx-auto px-4 space-y-16">
@@ -167,8 +95,8 @@ export function ServicesContent() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {researchServices.map((service, index) => (
-              <ServiceCard key={index} service={service} />
+            {researchServices.map((service) => (
+              <ServiceCard key={service.id} service={service} />
             ))}
           </div>
         </div>
@@ -184,8 +112,8 @@ export function ServicesContent() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {diagnosticsServices.map((service, index) => (
-              <ServiceCard key={index} service={service} />
+            {diagnosticServices.map((service) => (
+              <ServiceCard key={service.id} service={service} />
             ))}
           </div>
         </div>
