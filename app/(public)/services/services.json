@@ -468,22 +468,6 @@
             "Investigate microRNA (miRNA) expression patterns to understand their role in regulating gene expression.",
             "Useful for studying miRNA-mediated gene regulation, identifying potential biomarkers, and understanding disease mechanisms."
           ]
-        },
-        {
-          "number": "4",
-          "title": "Transcriptome Sequencing",
-          "details": [
-            "Characterize the complete set of transcripts in a cell, tissue, or organism.",
-            "Ideal for understanding gene expression, identifying novel transcripts, and discovering alternative splicing events."
-          ]
-        },
-        {
-          "number": "5",
-          "title": "Single-cell RNA Sequencing",
-          "details": [
-            "Analyze gene expression patterns at the single-cell level to understand cellular heterogeneity.",
-            "Suitable for studying cell differentiation, understanding disease mechanisms, and identifying novel cell types."
-          ]
         }
       ],
       "benefitsHeading": "Benefits of Our Gene Expression Analysis Services:",

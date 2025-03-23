@@ -10,6 +10,12 @@ interface Service {
   mainContent: {
     contentTitle: string;
     contentDescription: string;
+    servicesHeading?: string;
+    servicesList: {
+      number: string;
+      title: string;
+      details: string[];
+    }[];
   };
 }
 
@@ -24,6 +30,8 @@ const QuotationForm = ({ id }: { id: string }) => {
     phone: "",
     email: "",
     // Technical Details
+    servicesRequired: "",
+    serviceName: "",
     speciesName: "",
     speciesNameOther: "",
     tissueName: "",
@@ -64,9 +72,11 @@ const QuotationForm = ({ id }: { id: string }) => {
     // Special handling for custom service requests
     console.log({
       serviceId: id,
+      serviceRequired: formData.servicesRequired,
       serviceName: service?.mainContent.contentTitle,
       type: "Custom Service Request",
       customRequirements: {
+        serviceName: formData.serviceName,
         species: formData.speciesName,
         tissue: formData.tissueName,
         numberOfSamples: formData.numberOfSamples,
@@ -101,9 +111,11 @@ const QuotationForm = ({ id }: { id: string }) => {
     // Standard service request handling
     console.log({
       serviceId: id,
+      serviceRequired: formData.servicesRequired,
       serviceName: service?.mainContent.contentTitle,
       type: "Standard Service Request",
       technicalDetails: {
+        serviceName: formData.serviceName,
         species: formData.speciesName === "other" ? formData.speciesNameOther : formData.speciesName,
         tissue: formData.tissueName === "other" ? formData.tissueNameOther : formData.tissueName,
         numberOfSamples: formData.numberOfSamples,
@@ -168,6 +180,50 @@ const QuotationForm = ({ id }: { id: string }) => {
 
         <form onSubmit={handleSubmit} className="bg-white shadow-xl rounded-lg px-8 pt-6 pb-8 mb-4">
           <div className="space-y-6">
+
+            {/* Service Required */}
+            <div>
+              <div>
+                <label htmlFor="servicesRequired" className="block text-sm font-medium text-gray-700 mb-2">
+                  Service Required
+                </label>
+              </div>
+              <select
+                id="servicesRequired"
+                name="servicesRequired"
+                value={formData.servicesRequired}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="">Select Services Required</option>
+                      <option value="Extraction">Extraction, Library Preparation, QC, Sequencing, Data Analysis</option>
+                      <option value="Library Preparation">Library Preparation, QC, Sequencing, Data Analysis</option>
+                      <option value="Sequencing">Library-QC, Sequencing, Data Analysis</option>
+                      <option value="Data Analysis">Data Analysis</option>
+              </select>
+            </div>
+
+            {/* Service Name */}
+            <div>
+              <label htmlFor="serviceName" className="block text-sm font-medium text-gray-700 mb-2">
+                Service Name
+              </label>
+              <select
+                    id="serviceName"
+                    name="serviceName"
+                    value={formData.serviceName}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    required
+                  >
+                    <option value="">Select Service</option>
+                    {service.mainContent.servicesList?.map((serviceItem) => (
+                      <option key={serviceItem.number} value={serviceItem.title}>
+                        {serviceItem.title}
+                      </option>
+                    ))}
+                  </select>
+            </div>
             {/* Species Name */}
             <div>
               <label htmlFor="speciesName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -286,7 +342,7 @@ const QuotationForm = ({ id }: { id: string }) => {
             {/* Read/Bases Required */}
             <div>
               <label htmlFor={isReadRequiredService ? "readRequired" : "basesRequired"} className="block text-sm font-medium text-gray-700 mb-2">
-                {isReadRequiredService ? "Read Required (M)" : "Bases Required (GB)"}
+                {isReadRequiredService ? "Read Required / Per Sample (M)" : "Bases Required / Per Sample (GB)"}
               </label>
               {isCustomService ? (
                 <input
@@ -393,9 +449,9 @@ const QuotationForm = ({ id }: { id: string }) => {
                     required
                   >
                     <option value="">Select Read Length</option>
-                    <option value="PE-50x2">PE-50x2</option>
-                    <option value="PE-100x2">PE-100x2</option>
-                    <option value="PE-150x2">PE-150x2</option>
+                    <option value="PE-50x2">PE-50 x 2</option>
+                    <option value="PE-100x2">PE-100 x 2</option>
+                    <option value="PE-150x2">PE-150 x 2</option>
                     <option value="other">Other</option>
                   </select>
                   {formData.readLength === "other" && (
