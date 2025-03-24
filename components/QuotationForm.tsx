@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import servicesData from "@/app/(public)/services/services.json";
+import { gql, useQuery } from '@apollo/client';
 
 interface Service {
-  id: number;
+  documentId: string;
   categoryName: string;
   mainContent: {
     contentTitle: string;
@@ -14,14 +14,39 @@ interface Service {
     servicesList: {
       number: string;
       title: string;
-      details: string[];
+      details: {
+        detailsItem: string;
+      }[];
     }[];
   };
 }
 
+const GET_SERVICE = gql`
+  query GetService($documentId: ID!) {
+    service(documentId: $documentId) {
+      documentId
+      categoryName
+      mainContent {
+        contentTitle
+        contentDescription
+        servicesHeading
+        servicesList {
+          number
+          title
+          details {
+            detailsItem
+          }
+        }
+      }
+    }
+  }
+`;
+
 const QuotationForm = ({ id }: { id: string }) => {
   const router = useRouter();
-  const [service, setService] = useState<Service | null>(null);
+  const { loading, error, data } = useQuery(GET_SERVICE, {
+    variables: { documentId: id }
+  });
   const [formData, setFormData] = useState({
     // Personal Information
     name: "",
@@ -55,17 +80,10 @@ const QuotationForm = ({ id }: { id: string }) => {
     "Epigenetics"
   ];
 
+  const service = data?.service;
   const isCustomService = service?.mainContent.contentTitle === "Customized Options tailored to your needs";
   const isReadRequiredService = service?.mainContent.contentTitle && 
     readRequiredServices.includes(service.mainContent.contentTitle);
-
-  useEffect(() => {
-    const serviceId = parseInt(id);
-    const foundService = servicesData.find((s) => s.id === serviceId);
-    if (foundService) {
-      setService(foundService);
-    }
-  }, [id]);
 
   const handleCustomSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,10 +177,18 @@ const QuotationForm = ({ id }: { id: string }) => {
     });
   };
 
-  if (!service) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
         <div className="text-2xl text-purple-800">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error || !service) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div className="text-2xl text-red-800">Error loading service details</div>
       </div>
     );
   }
@@ -196,10 +222,10 @@ const QuotationForm = ({ id }: { id: string }) => {
                 className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 <option value="">Select Services Required</option>
-                      <option value="Extraction">Extraction, Library Preparation, QC, Sequencing, Data Analysis</option>
-                      <option value="Library Preparation">Library Preparation, QC, Sequencing, Data Analysis</option>
-                      <option value="Sequencing">Library-QC, Sequencing, Data Analysis</option>
-                      <option value="Data Analysis">Data Analysis</option>
+                <option value="Extraction">Extraction, Library Preparation, QC, Sequencing, Data Analysis</option>
+                <option value="Library Preparation">Library Preparation, QC, Sequencing, Data Analysis</option>
+                <option value="Sequencing">Library-QC, Sequencing, Data Analysis</option>
+                <option value="Data Analysis">Data Analysis</option>
               </select>
             </div>
 
@@ -209,21 +235,22 @@ const QuotationForm = ({ id }: { id: string }) => {
                 Service Name
               </label>
               <select
-                    id="serviceName"
-                    name="serviceName"
-                    value={formData.serviceName}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    required
-                  >
-                    <option value="">Select Service</option>
-                    {service.mainContent.servicesList?.map((serviceItem) => (
-                      <option key={serviceItem.number} value={serviceItem.title}>
-                        {serviceItem.title}
-                      </option>
-                    ))}
-                  </select>
+                id="serviceName"
+                name="serviceName"
+                value={formData.serviceName}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                required
+              >
+                <option value="">Select Service</option>
+                {service.mainContent.servicesList?.map((serviceItem: { number: string; title: string; details: { detailsItem: string; }[] }) => (
+                  <option key={serviceItem.number} value={serviceItem.title}>
+                    {serviceItem.title}
+                  </option>
+                ))}
+              </select>
             </div>
+
             {/* Species Name */}
             <div>
               <label htmlFor="speciesName" className="block text-sm font-medium text-gray-700 mb-2">

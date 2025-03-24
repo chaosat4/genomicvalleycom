@@ -1,14 +1,20 @@
 import { notFound } from 'next/navigation'
-import servicesData from '../../services.json'
 import Link from 'next/link';
+import { gql } from '@apollo/client';
+import client from '@/lib/apollo';
+
 interface ServiceDetail {
-  details: string[];
+  details: {
+    detailsItem: string;
+  }[];
 }
 
 interface Service {
   number: string;
   title: string;
-  details: string[];
+  details: {
+    detailsItem: string;
+  }[];
 }
 
 interface MainContent {
@@ -21,22 +27,57 @@ interface MainContent {
   servicesHeading: string;
   servicesList: Service[];
   benefitsHeading: string;
-  benefits: string[];
+  benefits: {
+    benefitsItem: string;
+  }[];
 }
 
 interface ServiceData {
-  id: number;
+  documentId: string;
   categoryName: string;
   mainContent: MainContent;
 }
 
+const GET_SERVICE = gql`
+  query GetService($documentId: ID!) {
+    service(documentId: $documentId) {
+      documentId
+      categoryName
+      mainContent {
+        contentTitle
+        contentDescription
+        servicesHeading
+        servicesList {
+          number
+          title
+          details {
+            detailsItem
+          }
+        }
+        leftBox {
+          title
+          description
+        }
+        benefitsHeading
+        benefits {
+          benefitsItem
+        }
+      }
+    }
+  }
+`;
+
 export default async function ServicePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  // Filter research services and find the one matching the ID
-  const researchServices = servicesData.filter(service => service.categoryName === 'research')
-  const service = researchServices.find(s => s.id === parseInt(id))
+  
+  const { data } = await client.query({
+    query: GET_SERVICE,
+    variables: { documentId: id }
+  });
 
-  if (!service) {
+  const service = data.service;
+
+  if (!service || service.categoryName !== 'research') {
     notFound()
   }
 
@@ -59,9 +100,9 @@ export default async function ServicePage({ params }: { params: Promise<{ id: st
 
             <div className="flex justify-center">
               <Link href={`/request-quotation/${id}`}>
-              <button className="bg-purple-600 text-white my-4 px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">
-                Request For Quote
-              </button>
+                <button className="bg-purple-600 text-white my-4 px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">
+                  Request For Quote
+                </button>
               </Link>
             </div>
           </div>
@@ -81,7 +122,7 @@ export default async function ServicePage({ params }: { params: Promise<{ id: st
             </h4>
 
             <div className="space-y-6">
-              {mainContent.servicesList.map((service) => (
+              {mainContent.servicesList.map((service: Service) => (
                 <div key={service.number}>
                   <h5 className="text-xl font-semibold flex items-center">
                     <span className="bg-purple-600 text-white rounded-full w-7 h-7 flex items-center justify-center mr-2">
@@ -90,10 +131,10 @@ export default async function ServicePage({ params }: { params: Promise<{ id: st
                     {service.title}
                   </h5>
                   <div className="ml-9 text-gray-700">
-                    {service.details.map((detail, i) => (
+                    {service.details.map((detail: { detailsItem: string }, i: number) => (
                       <p key={i} className="flex text-lg items-start text-justify">
                         <span className="text-purple-600 mr-2">→</span>
-                        {detail}
+                        {detail.detailsItem}
                       </p>
                     ))}
                   </div>
@@ -106,8 +147,8 @@ export default async function ServicePage({ params }: { params: Promise<{ id: st
                 {mainContent.benefitsHeading}
               </h4>
               <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                {mainContent.benefits.map((benefit, i) => (
-                  <li key={i} className="text-justify">{benefit}</li>
+                {mainContent.benefits.map((benefit: { benefitsItem: string }, i: number) => (
+                  <li key={i} className="text-justify">{benefit.benefitsItem}</li>
                 ))}
               </ul>
             </div>

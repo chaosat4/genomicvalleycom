@@ -1,12 +1,30 @@
 import Image from 'next/image';
 import { Card } from "@/components/ui/card";
 import { Activity, Microscope, Dna, Beaker, Network, Settings } from 'lucide-react';
-import servicesData from '../app/(public)/services/services.json';
+import { gql, useQuery } from '@apollo/client';
+import React from 'react';
 
-export interface ServiceItem {
-  id: number;
+const GET_SERVICES = gql`
+  query {
+    services(pagination: { limit: 100 }) {
+      documentId
+      categoryName
+      mainContent {
+        contentTitle
+        leftBox {
+          title
+          description
+        }
+      }
+    }
+  }
+`;
+
+interface GraphQLService {
+  documentId: string;
   categoryName: string;
   mainContent: {
+    contentTitle: string;
     leftBox: {
       title: string;
       description: string;
@@ -14,8 +32,12 @@ export interface ServiceItem {
   }
 }
 
+interface ServicesData {
+  services: GraphQLService[];
+}
+
 interface ServiceCardProps {
-  service: ServiceItem;
+  service: GraphQLService;
 }
 
 const getIconForService = (title: string) => {
@@ -37,7 +59,7 @@ const getIconForService = (title: string) => {
 
 export function ServiceCard({ service }: ServiceCardProps) {
   return (
-    <a href={`/services/${service.categoryName}/${service.id}`} className="block">
+    <a href={`/services/${service.categoryName}/${service.documentId}`} className="block">
       <Card 
         className="p-6 hover:shadow-lg transition-shadow cursor-pointer bg-white h-full flex flex-col"
       >
@@ -59,9 +81,14 @@ export function ServiceCard({ service }: ServiceCardProps) {
 } 
 
 export function ServicesContent() {
+  const { loading, error, data } = useQuery<ServicesData>(GET_SERVICES);
+
+  if (loading) return <div>Loading services...</div>;
+  if (error) return <div>Error loading services</div>;
+
   // Filter services by category
-  const researchServices = servicesData.filter(service => service.categoryName === 'research');
-  const diagnosticServices = servicesData.filter(service => service.categoryName === 'diagnostic');
+  const researchServices = data?.services.filter((service: GraphQLService) => service.categoryName === 'research') || [];
+  const diagnosticServices = data?.services.filter((service: GraphQLService) => service.categoryName === 'diagnostic') || [];
 
   return (
     <div className="min-h-screen bg-purple-50 pt-44 pb-12">
@@ -96,7 +123,7 @@ export function ServicesContent() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {researchServices.map((service) => (
-              <ServiceCard key={service.id} service={service} />
+              <ServiceCard key={service.documentId} service={service} />
             ))}
           </div>
         </div>
@@ -113,7 +140,7 @@ export function ServicesContent() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {diagnosticServices.map((service) => (
-              <ServiceCard key={service.id} service={service} />
+              <ServiceCard key={service.documentId} service={service} />
             ))}
           </div>
         </div>
