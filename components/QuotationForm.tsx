@@ -3,6 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { gql, useQuery } from '@apollo/client';
+import { calculatePrice, usePriceList } from "@/lib/price";
+import { generateQuotationPDF } from "@/components/QuotationPDF";
+import { useToast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 interface Service {
   documentId: string;
@@ -36,6 +40,7 @@ const GET_SERVICE = gql`
           details {
             detailsItem
           }
+          kitName
         }
       }
     }
@@ -44,7 +49,9 @@ const GET_SERVICE = gql`
 
 const QuotationForm = ({ id }: { id: string }) => {
   const router = useRouter();
-  const { loading, error, data } = useQuery(GET_SERVICE, {
+  const { toast } = useToast();
+  const { priceList, loading, error } = usePriceList();
+  const { loading: serviceLoading, error: serviceError, data } = useQuery(GET_SERVICE, {
     variables: { documentId: id }
   });
   const [formData, setFormData] = useState({
@@ -66,6 +73,7 @@ const QuotationForm = ({ id }: { id: string }) => {
     readRequiredOther: "",
     basesRequired: "",
     basesRequiredOther: "",
+    kitName: "",
     readLength: "",
     readLengthOther: "",
     sequencingPlatform: "",
@@ -124,48 +132,42 @@ const QuotationForm = ({ id }: { id: string }) => {
     // router.push("/request-quotation/custom-success");
   };
 
-  const handleStandardSubmit = (e: React.FormEvent) => {
+  const handleStandardSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Standard service request handling
-    console.log({
-      serviceId: id,
-      serviceRequired: formData.servicesRequired,
-      serviceName: service?.mainContent.contentTitle,
-      type: "Standard Service Request",
-      technicalDetails: {
-        serviceName: formData.serviceName,
-        species: formData.speciesName === "other" ? formData.speciesNameOther : formData.speciesName,
-        tissue: formData.tissueName === "other" ? formData.tissueNameOther : formData.tissueName,
-        numberOfSamples: formData.numberOfSamples,
-        sequencingDetails: {
-          platform: formData.sequencingPlatform,
-          readLength: formData.readLength === "other" ? formData.readLengthOther : formData.readLength,
-          ...(isReadRequiredService 
-            ? { 
-                readsRequired: formData.readRequired === "other" 
-                  ? formData.readRequiredOther 
-                  : formData.readRequired 
-              }
-            : { 
-                basesRequired: formData.basesRequired === "other" 
-                  ? formData.basesRequiredOther 
-                  : formData.basesRequired 
-              }
-          ),
-        },
-        dataAnalysis: formData.dataAnalysis,
-      },
-      contactInfo: {
-        name: formData.name,
-        institution: formData.institution,
-        address: formData.address,
-        phone: formData.phone,
-        email: formData.email,
-      },
-      timestamp: new Date().toISOString(),
-    });
-    
-    // router.push("/request-quotation/success");
+    try {
+      const kitName = service.mainContent.servicesList.find((serviceItem: { number: string; title: string; details: { detailsItem: string; }[] }) => serviceItem.title === formData.serviceName)?.kitName;
+
+      // add kitName to formData
+      formData.kitName = kitName;
+
+      //pass technical details to calculatePrice
+      const price = calculatePrice(service?.mainContent.contentTitle, formData, priceList);
+
+      // generate quotation pdf
+      const quotation = await generateQuotationPDF(price, formData, service?.mainContent.contentTitle);
+
+      
+      
+      if (quotation.success) {
+        // Show success message using toast
+        toast({
+          title: "Success",
+          description: "Quotation generated successfully! The PDF will download automatically.",
+        });
+        
+        // Redirect to service page
+        router.push("/services");
+      } else {
+        throw new Error('Failed to generate quotation');
+      }
+    } catch (error) {
+      console.error('Error generating quotation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate quotation. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSubmit = isCustomService ? handleCustomSubmit : handleStandardSubmit;
@@ -192,6 +194,8 @@ const QuotationForm = ({ id }: { id: string }) => {
       </div>
     );
   }
+
+  // fetch kitName from service.mainContent.servicesList
 
   return (
     <div className="min-h-screen bg-purple-50 to-white mt-40 py-12 px-4 sm:px-6 lg:px-8">
@@ -222,9 +226,9 @@ const QuotationForm = ({ id }: { id: string }) => {
                 className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 <option value="">Select Services Required</option>
-                <option value="Extraction">Extraction, Library Preparation, QC, Sequencing, Data Analysis</option>
-                <option value="Library Preparation">Library Preparation, QC, Sequencing, Data Analysis</option>
-                <option value="Sequencing">Library-QC, Sequencing, Data Analysis</option>
+                <option value="Extraction, Library Preparation, QC, Sequencing, Data Analysis">Extraction, Library Preparation, QC, Sequencing, Data Analysis</option>
+                <option value="Library Preparation, QC, Sequencing, Data Analysis">Library Preparation, QC, Sequencing, Data Analysis</option>
+                <option value="Library-QC, Sequencing, Data Analysis">Library-QC, Sequencing, Data Analysis</option>
                 <option value="Data Analysis">Data Analysis</option>
               </select>
             </div>
@@ -395,10 +399,10 @@ const QuotationForm = ({ id }: { id: string }) => {
                         required
                       >
                         <option value="">Select Read Required</option>
-                        <option value="10M">10M</option>
-                        <option value="20M">20M</option>
-                        <option value="30M">30M</option>
-                        <option value="50M">50M</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="50">50</option>
                         <option value="other">Other</option>
                       </select>
                       {formData.readRequired === "other" && (
@@ -425,10 +429,10 @@ const QuotationForm = ({ id }: { id: string }) => {
                         required
                       >
                         <option value="">Select Bases Required</option>
-                        <option value="1GB">1GB</option>
-                        <option value="5GB">5GB</option>
-                        <option value="10GB">10GB</option>
-                        <option value="30GB">30GB</option>
+                        <option value="1">1</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="30">30</option>
                         <option value="other">Other</option>
                       </select>
                       {formData.basesRequired === "other" && (
@@ -662,6 +666,7 @@ const QuotationForm = ({ id }: { id: string }) => {
           </div>
         </form>
       </div>
+      <Toaster />
     </div>
   );
 };
