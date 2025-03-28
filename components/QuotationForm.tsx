@@ -7,6 +7,9 @@ import { calculatePrice, usePriceList } from "@/lib/price";
 import { generateQuotationPDF } from "@/components/QuotationPDF";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { format } from "date-fns";
+import { v4 as uuidv4 } from 'uuid';
+import { sendQuotationEmail } from "@/app/actions/quotation";
 
 interface Service {
   documentId: string;
@@ -139,14 +142,22 @@ const QuotationForm = ({ id }: { id: string }) => {
 
       // add kitName to formData
       formData.kitName = kitName;
-
       //pass technical details to calculatePrice
-      const price = calculatePrice(service?.mainContent.contentTitle, formData, priceList);
+      const { priceBeforeGST, totalPrice, gstPercentage, bulkDiscount } = calculatePrice(service?.mainContent.contentTitle, formData, priceList) || { priceBeforeGST: 0, totalPrice: 0, gstPercentage: 0, bulkDiscount: 0 };
+
+      const shortId = uuidv4().substring(0, 8);
+      const quotationNumber = `GVPBQ/${format(new Date(), 'yyyyMMdd')}-${shortId}`;
 
       // generate quotation pdf
-      const quotation = await generateQuotationPDF(price, formData, service?.mainContent.contentTitle);
+      const quotation = await generateQuotationPDF(priceBeforeGST, totalPrice, gstPercentage, bulkDiscount, formData, service?.mainContent.contentTitle, quotationNumber);
 
-      
+      // Send email to customer with quotation pdf link using server action
+      await sendQuotationEmail(formData.email, quotation.fileUrl || "", {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        institution: formData.institution
+      });
       
       if (quotation.success) {
         // Show success message using toast

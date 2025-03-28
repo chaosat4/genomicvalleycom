@@ -39,3 +39,21 @@ export const uploadPDFToMinIO = async (filename: string, pdfBuffer: Buffer) => {
     throw error;
   }
 };
+
+export const getPresignedUrl = async (filename: string, expirySeconds: number = 604800) => {
+  try {
+    const presignedUrl = await minioClient.presignedGetObject(BUCKET_NAME, filename, expirySeconds);
+    return presignedUrl;
+  } catch (error) {
+    console.error('Error generating presigned URL:', error);
+    throw error;
+  }
+};
+
+export const getPermanentLink = (filename: string) => {
+  return {
+    bucket: BUCKET_NAME,
+    objectKey: filename,
+    fullPath: `${BUCKET_NAME}/${filename}`
+  };
+};

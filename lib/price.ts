@@ -120,24 +120,33 @@ export function calculatePrice(serviceTitle: string, formData: any, priceList: a
     totalPrice += logisticsCost;
     
     // Apply bulk discount if applicable
+    let bulkDiscount = 0;
     if (formData.numberOfSamples) {
         const numSamples = Number(formData.numberOfSamples) || 0;
-        const bulkDiscount = priceList.bulkdiscount.category.find((category: any) => 
+        const discountCategory = priceList.bulkdiscount.category.find((category: { minSample: number; maxSample: number; discount: number }) => 
             numSamples >= category.minSample && numSamples <= category.maxSample
         );
-        if (bulkDiscount) {
-            totalPrice = totalPrice * (1 - Number(bulkDiscount.discount) / 100);
+        if (discountCategory) {
+            totalPrice = totalPrice * (1 - Number(discountCategory.discount) / 100);
+            bulkDiscount = discountCategory.discount;
         }
     }
+
     
     // Apply additional discount if any
     if (priceList.additionalDiscount) {
         totalPrice = totalPrice * (1 - Number(priceList.additionalDiscount) / 100);
     }
+
     
     // Apply profit percentage and GST
     totalPrice = totalPrice * (1 + Number(priceList.profitPercentage) / 100);
+    let priceBeforeGST = totalPrice;
     totalPrice = totalPrice * (1 + Number(priceList.gstPercentage) / 100);
+
+    // round off all prices to integer
+    priceBeforeGST = Math.round(priceBeforeGST);
+    totalPrice = Math.round(totalPrice);
     
-    return totalPrice;
+    return { priceBeforeGST, totalPrice, gstPercentage: priceList.gstPercentage, bulkDiscount: bulkDiscount };
 }
