@@ -10,6 +10,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { format } from "date-fns";
 import { v4 as uuidv4 } from 'uuid';
 import { sendQuotationEmail } from "@/app/actions/quotation";
+import { getBatchNumber } from "@/lib/batch";
 
 interface Service {
   documentId: string;
@@ -44,6 +45,7 @@ const GET_SERVICE = gql`
             detailsItem
           }
           kitName
+          code
         }
       }
     }
@@ -77,6 +79,7 @@ const QuotationForm = ({ id }: { id: string }) => {
     basesRequired: "",
     basesRequiredOther: "",
     kitName: "",
+    code: "",
     readLength: "",
     readLengthOther: "",
     sequencingPlatform: "",
@@ -139,17 +142,20 @@ const QuotationForm = ({ id }: { id: string }) => {
     e.preventDefault();
     try {
       const kitName = service.mainContent.servicesList.find((serviceItem: { number: string; title: string; details: { detailsItem: string; }[] }) => serviceItem.title === formData.serviceName)?.kitName;
+      const code = service.mainContent.servicesList.find((serviceItem: { number: string; title: string; details: { detailsItem: string; }[] }) => serviceItem.title === formData.serviceName)?.code;
 
       // add kitName to formData
       formData.kitName = kitName;
+      formData.code = code;
       //pass technical details to calculatePrice
       const { priceBeforeGST, totalPrice, gstPercentage, bulkDiscount } = calculatePrice(service?.mainContent.contentTitle, formData, priceList) || { priceBeforeGST: 0, totalPrice: 0, gstPercentage: 0, bulkDiscount: 0 };
 
       const shortId = uuidv4().substring(0, 8);
       const quotationNumber = `GVPBQ_${format(new Date(), 'yyyyMMdd')}_${shortId}`;
+      const batchNumber = getBatchNumber(formData);
 
       // generate quotation pdf
-      const quotation = await generateQuotationPDF(priceBeforeGST, totalPrice, gstPercentage, bulkDiscount, formData, service?.mainContent.contentTitle, quotationNumber);
+      const quotation = await generateQuotationPDF(priceBeforeGST, totalPrice, gstPercentage, bulkDiscount, formData, service?.mainContent.contentTitle, quotationNumber, batchNumber);
 
       // Send email to customer with quotation pdf link using server action
       await sendQuotationEmail(formData.email, quotation.fileUrl || "", {

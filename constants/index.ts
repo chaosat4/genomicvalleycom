@@ -103,7 +103,7 @@ export const navigationItems: NavigationItem[] = [
     ],
     getInTouch: {
       title: "Get in Touch",
-      phone: "+91 8091366601",
+      phone: "+91 98113 41542",
       email: "info@genomicvalley.in",
       address: "2nd Floor G74,\n Pushkar Enclave, Paschim Vihar,\n New Delhi, India - 110063",
     },

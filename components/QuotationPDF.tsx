@@ -136,7 +136,8 @@ const styles = StyleSheet.create({
   },
   catCell: {
     color: '#000',
-    fontSize: 10,
+    fontSize: 9,
+    paddingHorizontal: 8,
   },
   tableCellHeader: {
     color: '#FFFFFF',
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const QuotationDocument = ({ formData, priceBeforeGST, totalPrice, serviceTitle, gstPercentage, bulkDiscount, quotationNumber }: { formData: FormData; priceBeforeGST: number; totalPrice: number; serviceTitle: string; gstPercentage: number; bulkDiscount : number; quotationNumber: string }) => {
+const QuotationDocument = ({ formData, priceBeforeGST, totalPrice, serviceTitle, gstPercentage, bulkDiscount, quotationNumber, batchNumber }: { formData: FormData; priceBeforeGST: number; totalPrice: number; serviceTitle: string; gstPercentage: number; bulkDiscount : number; quotationNumber: string; batchNumber: string }) => {
   const validityDate = format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'dd.MM.yyyy');
 
   return (
@@ -253,7 +254,7 @@ const QuotationDocument = ({ formData, priceBeforeGST, totalPrice, serviceTitle,
           
           <View style={styles.tableRow}>
             <Text style={[styles.tableCell, styles.colSNo]}>1</Text>
-            <Text style={[styles.catCell, styles.colCat]}>Rs/WTS-AN 50M</Text>
+            <Text style={[styles.catCell, styles.colCat]}>{batchNumber}</Text>
             <Text style={[styles.tableCell, styles.colDesc]}>
               {serviceTitle} {'\n'}
               {formData.serviceName} {'\n'}
@@ -334,12 +335,13 @@ export async function generateQuotationPDF(
   bulkDiscount: number,
   formData: any,
   serviceTitle: string,
-  quotationNumber: string
+  quotationNumber: string,
+  batchNumber: string
 ): Promise<{ success: boolean; fileUrl: string; error?: unknown }> {
   try {
     
     // Create PDF
-    const blob = await pdf(<QuotationDocument formData={formData} priceBeforeGST={priceBeforeGST} totalPrice={totalPrice} serviceTitle={serviceTitle} gstPercentage={gstPercentage} bulkDiscount={bulkDiscount} quotationNumber={quotationNumber} />).toBlob();
+    const blob = await pdf(<QuotationDocument formData={formData} priceBeforeGST={priceBeforeGST} totalPrice={totalPrice} serviceTitle={serviceTitle} gstPercentage={gstPercentage} bulkDiscount={bulkDiscount} quotationNumber={quotationNumber} batchNumber={batchNumber} />).toBlob();
     const pdfBase64 = await blobToBase64(blob);
     
     // Upload to MinIO

@@ -16,6 +16,7 @@ const GET_SERVICES = gql`
           description
         }
       }
+      order
     }
   }
 `;
@@ -30,6 +31,7 @@ interface GraphQLService {
       description: string;
     }
   }
+  order: number;
 }
 
 interface ServicesData {
@@ -86,9 +88,13 @@ export function ServicesContent() {
   if (loading) return <div>Loading services...</div>;
   if (error) return <div>Error loading services</div>;
 
-  // Filter services by category
-  const researchServices = data?.services.filter((service: GraphQLService) => service.categoryName === 'research') || [];
-  const diagnosticServices = data?.services.filter((service: GraphQLService) => service.categoryName === 'diagnostic') || [];
+  // Filter services by category and sort by order
+  const researchServices = data?.services
+    .filter((service: GraphQLService) => service.categoryName === 'research')
+    .sort((a, b) => a.order - b.order) || [];
+  const diagnosticServices = data?.services
+    .filter((service: GraphQLService) => service.categoryName === 'diagnostic')
+    .sort((a, b) => a.order - b.order) || [];
 
   return (
     <div className="min-h-screen bg-purple-50 pt-44 pb-12">
