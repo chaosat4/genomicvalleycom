@@ -327,7 +327,15 @@ const QuotationDocument = ({ formData, priceBeforeGST, totalPrice, serviceTitle,
   );
 };
 
-export const generateQuotationPDF = async (priceBeforeGST: number, totalPrice: number, gstPercentage: number, bulkDiscount: number, formData: FormData, serviceTitle: string, quotationNumber: string) => {
+export async function generateQuotationPDF(
+  priceBeforeGST: number,
+  totalPrice: number,
+  gstPercentage: number,
+  bulkDiscount: number,
+  formData: any,
+  serviceTitle: string,
+  quotationNumber: string
+): Promise<{ success: boolean; fileUrl: string; error?: unknown }> {
   try {
     
     // Create PDF
@@ -335,7 +343,8 @@ export const generateQuotationPDF = async (priceBeforeGST: number, totalPrice: n
     const pdfBase64 = await blobToBase64(blob);
     
     // Upload to MinIO
-    const filename = `quotation_${quotationNumber}.pdf`;
+    let filename = `${quotationNumber}.pdf`;
+    
     const result = await uploadQuotationPDF(filename, pdfBase64);
 
 
@@ -348,10 +357,10 @@ export const generateQuotationPDF = async (priceBeforeGST: number, totalPrice: n
     link.click();
     URL.revokeObjectURL(url);
     
-    return { success: true, fileUrl: result.fileUrl };
+    return { success: true, fileUrl: result.fileUrl};
   } catch (error) {
     console.error('Error generating PDF:', error);
-    return { success: false, error };
+    return { success: false, fileUrl: '',  error };
   }
 };
 

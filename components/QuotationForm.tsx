@@ -146,7 +146,7 @@ const QuotationForm = ({ id }: { id: string }) => {
       const { priceBeforeGST, totalPrice, gstPercentage, bulkDiscount } = calculatePrice(service?.mainContent.contentTitle, formData, priceList) || { priceBeforeGST: 0, totalPrice: 0, gstPercentage: 0, bulkDiscount: 0 };
 
       const shortId = uuidv4().substring(0, 8);
-      const quotationNumber = `GVPBQ/${format(new Date(), 'yyyyMMdd')}-${shortId}`;
+      const quotationNumber = `GVPBQ_${format(new Date(), 'yyyyMMdd')}_${shortId}`;
 
       // generate quotation pdf
       const quotation = await generateQuotationPDF(priceBeforeGST, totalPrice, gstPercentage, bulkDiscount, formData, service?.mainContent.contentTitle, quotationNumber);
@@ -156,8 +156,9 @@ const QuotationForm = ({ id }: { id: string }) => {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        institution: formData.institution
-      });
+        institution: formData.institution,
+        address: formData.address
+      },);
       
       if (quotation.success) {
         // Show success message using toast

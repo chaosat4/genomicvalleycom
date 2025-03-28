@@ -3,6 +3,8 @@
 import { uploadPDFToMinIO, getPresignedUrl, getPermanentLink } from '@/lib/minio';
 import { sendQuotationEmailCustomer, sendQuotationEmailInternal } from '@/lib/mail';
 
+let finalFilename = "";
+
 export async function uploadQuotationPDF(filename: string, pdfBase64: string) {
   try {
     // Remove the data URI prefix to get just the base64 data
@@ -10,6 +12,10 @@ export async function uploadQuotationPDF(filename: string, pdfBase64: string) {
     
     // Convert base64 to Buffer
     const pdfBuffer = Buffer.from(base64Data, 'base64');
+
+    const fileSize = pdfBuffer.length;
+
+    finalFilename = filename;
     
     // Upload to MinIO
     const uploadResult = await uploadPDFToMinIO(filename, pdfBuffer);
@@ -20,6 +26,7 @@ export async function uploadQuotationPDF(filename: string, pdfBase64: string) {
       success: true,
       filename,
       fileUrl,
+      fileSize,
     };
   } catch (error) {
     console.error('Error uploading PDF:', error);
@@ -27,7 +34,42 @@ export async function uploadQuotationPDF(filename: string, pdfBase64: string) {
   }
 }
 
-export async function sendQuotationEmail(email: string, fileUrl: string, customerDetails: { name: string; email: string; phone: string; institution?: string }) {
+async function createNocoDBEntry(customerDetails: { name: string; email: string; phone: string; institution?: string; address?: string }, filename: string) {
+  try {
+    if (!process.env.NOCO_API_ENDPOINT || !process.env.NOCO_API_KEY || !process.env.NOCO_TABLE_ID) {
+      throw new Error('Missing NocoDB environment variables');
+    }
+
+    const response = await fetch(`${process.env.NOCO_API_ENDPOINT}/api/v2/tables/${process.env.NOCO_TABLE_ID}/records`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'xc-token': process.env.NOCO_API_KEY,
+      },
+      body: JSON.stringify({
+        customerName: customerDetails.name,
+        customerEmail: customerDetails.email,
+        customerPhone: customerDetails.phone,
+        customerInstitution: customerDetails.institution || "string",
+        customerAddress: customerDetails.address || "string",
+        quotationFilename: filename
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('NocoDB API Error:', errorData);
+      throw new Error(`Failed to create NocoDB entry: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error creating NocoDB entry:', error);
+    throw error;
+  }
+}
+
+export async function sendQuotationEmail(email: string, fileUrl: string,  customerDetails: { name: string; email: string; phone: string; institution?: string, address?: string }) {
   try {
     const htmlContent = `
       <div style="background-color: #f0f4f8; padding: 50px;">
@@ -62,6 +104,9 @@ export async function sendQuotationEmail(email: string, fileUrl: string, custome
     
     // Send email to internal team
     await sendQuotationEmailInternal(email, fileUrl, customerDetails);
+
+    // Create entry in NocoDB
+    await createNocoDBEntry(customerDetails, finalFilename);
     
     return { success: true };
   } catch (error) {
