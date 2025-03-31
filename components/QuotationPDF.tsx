@@ -136,7 +136,8 @@ const styles = StyleSheet.create({
   },
   catCell: {
     color: '#000',
-    fontSize: 9,
+    fontWeight: 'bold',
+    fontSize: 12,
     paddingHorizontal: 8,
   },
   tableCellHeader: {
@@ -146,12 +147,11 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
 
-  colSNo: { width: '4%' },
-  colCat: { width: '12%' },
-  colQty: { width: '10%' },
-  colDesc: { width: '34%' },
-  colPrice: { width: '15%' },
-  colDiscount: { width: '10%' },
+  colSNo: { width: '6%' },
+  colQty: { width: '12%' },
+  colDesc: { width: '40%' },
+  colPrice: { width: '10%' },
+  colDiscount: { width: '12%' },
   colTotal: { width: '15%' },
   summaryRow: {
     flexDirection: 'row',
@@ -240,11 +240,16 @@ const QuotationDocument = ({ formData, priceBeforeGST, totalPrice, serviceTitle,
 
         <View style={styles.divider} />
 
+        {/* Batch Number */}
+        <View style={styles.row}>
+          <Text style={styles.label}>Catalog No:</Text>
+          <Text style={[styles.value, styles.catCell]}>{batchNumber}</Text>
+        </View>
+
         {/* Service Table */}
         <View style={styles.table}>
           <View style={styles.tableHeader}>
             <Text style={[styles.tableCellHeader, styles.colSNo]}>S. NO.</Text>
-            <Text style={[styles.tableCellHeader, styles.colCat]}>Cat#</Text>
             <Text style={[styles.tableCellHeader, styles.colDesc]}>DESCRIPTION</Text>
             <Text style={[styles.tableCellHeader, styles.colPrice]}>PRICE</Text>
             <Text style={[styles.tableCellHeader, styles.colQty]}>SAMPLES</Text>
@@ -254,7 +259,6 @@ const QuotationDocument = ({ formData, priceBeforeGST, totalPrice, serviceTitle,
           
           <View style={styles.tableRow}>
             <Text style={[styles.tableCell, styles.colSNo]}>1</Text>
-            <Text style={[styles.catCell, styles.colCat]}>{batchNumber}</Text>
             <Text style={[styles.tableCell, styles.colDesc]}>
               {serviceTitle} {'\n'}
               {formData.serviceName} {'\n'}
