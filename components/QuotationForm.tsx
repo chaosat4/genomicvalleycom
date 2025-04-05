@@ -229,6 +229,33 @@ const QuotationForm = ({ id }: { id: string }) => {
   const handleStandardSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Validate read/base requirements
+      if (!isGenomeAssembly) {
+        const hasReadRequirement = formData.readRequired && formData.readRequired !== '';
+        const hasBaseRequirement = formData.basesRequired && formData.basesRequired !== '';
+        const hasReadOther = formData.readRequired === 'other' && formData.readRequiredOther && formData.readRequiredOther !== '';
+        const hasBaseOther = formData.basesRequired === 'other' && formData.basesRequiredOther && formData.basesRequiredOther !== '';
+
+        if (!hasReadRequirement && !hasBaseRequirement) {
+          toast({
+            title: "Error",
+            description: "Please specify either read or base requirements",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if ((formData.readRequired === 'other' && !hasReadOther) || 
+            (formData.basesRequired === 'other' && !hasBaseOther)) {
+          toast({
+            title: "Error",
+            description: "Please specify the required value",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
       const kitName = service.mainContent.servicesList.find(
         (serviceItem: {
           number: string;
