@@ -469,7 +469,7 @@ const QuotationForm = ({ id }: { id: string }) => {
                     className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     required
                   >
-                    <option value="">Select Species Type</option>
+                    <option value="">Select Species</option>
                     <option value="human">Human</option>
                     <option value="plant">Plant</option>
                     <option value="animal">Animal</option>
@@ -521,7 +521,7 @@ const QuotationForm = ({ id }: { id: string }) => {
                     className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     required
                   >
-                    <option value="">Select Tissue Type</option>
+                    <option value="">Select Tissue</option>
                     <option value="blood">Blood</option>
                     <option value="root">Root</option>
                     <option value="stem">Stem</option>
@@ -674,7 +674,7 @@ const QuotationForm = ({ id }: { id: string }) => {
                 htmlFor="readLength"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Read Length
+                Read Length (Optional)
               </label>
               {isCustomService ? (
                 <input
@@ -697,10 +697,9 @@ const QuotationForm = ({ id }: { id: string }) => {
                     className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     required
                   >
-                    <option value="">Select Read Length</option>
+                    <option value="PE-150x2">PE-150 x 2</option>
                     <option value="PE-50x2">PE-50 x 2</option>
                     <option value="PE-100x2">PE-100 x 2</option>
-                    <option value="PE-150x2">PE-150 x 2</option>
                     <option value="other">Other</option>
                   </select>
                   {formData.readLength === "other" && (
@@ -868,7 +867,6 @@ const QuotationForm = ({ id }: { id: string }) => {
                     className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     required
                   >
-                    <option value="">Select Platform</option>
                     <option value="MGI">MGI</option>
                     <option value="Illumina">Illumina</option>
                     <option value="PacBio">PacBio</option>
@@ -956,7 +954,7 @@ const QuotationForm = ({ id }: { id: string }) => {
             {/* Personal Information Section */}
             <div className="border-t border-gray-200 pt-6">
               <h2 className="text-xl font-semibold text-purple-800 mb-4">
-                Personal Information
+                Quote should be in the name of
               </h2>
               <div className="space-y-4">
                 {/* Name */}
