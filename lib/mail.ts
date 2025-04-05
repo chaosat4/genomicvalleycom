@@ -51,43 +51,9 @@ export async function sendQuotationEmailCustomer(email: string, fileUrl: string,
   const mailOptions = {
     from: process.env.SMTP_FROM,
     to: email,
+    cc: process.env.CONTACT_EMAIL,
     subject: 'Quotation for your service',
     html: htmlContent,
-  };
-
-  await transporter.sendMail(mailOptions);
-}
-
-export async function sendQuotationEmailInternal(email: string, fileUrl: string, customerDetails: { name: string; email: string; phone: string; institution?: string }) {
-  const mailOptions = {
-    from: process.env.SMTP_FROM,
-    to: process.env.CONTACT_EMAIL,
-    subject: `New Quotation Request from ${customerDetails.name}`,
-    html: `
-      <div style="background-color: #f0f4f8; padding: 50px;">
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; background: #fff; padding: 20px;">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <img src="https://genomicvalley.in/nav_logo.png" alt="Genomic Valley Logo" height="50" />
-          </div>
-          <h2 style="color: #333; text-align: center;">New Quotation Request</h2>
-          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
-            <h3 style="color: #555; margin-top: 0;">Customer Details:</h3>
-            <p><strong>Name:</strong> ${customerDetails.name}</p>
-            <p><strong>Email:</strong> ${customerDetails.email}</p>
-            <p><strong>Phone:</strong> ${customerDetails.phone}</p>
-            ${customerDetails.institution ? `<p><strong>Institution:</strong> ${customerDetails.institution}</p>` : ''}
-          </div>
-          <p style="text-align: center;">
-            <a href="${fileUrl}" style="display: inline-block; background-color: #8200db; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 20px 0;">
-              View Quotation
-            </a>
-          </p>
-          <footer style="margin-top: 30px; text-align: center; font-size: 14px; color: #777;">
-            <p>This is an automated notification from the quotation system.</p>
-          </footer>
-        </div>
-      </div>
-    `,
   };
 
   await transporter.sendMail(mailOptions);

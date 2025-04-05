@@ -1,7 +1,7 @@
 'use server';
 
 import { uploadPDFToMinIO, getPresignedUrl, getPermanentLink } from '@/lib/minio';
-import { sendQuotationEmailCustomer, sendQuotationEmailInternal } from '@/lib/mail';
+import { sendQuotationEmailCustomer } from '@/lib/mail';
 
 let finalFilename = "";
 
@@ -102,8 +102,6 @@ export async function sendQuotationEmail(email: string, fileUrl: string,  custom
     // Send email to customer
     await sendQuotationEmailCustomer(email, fileUrl, htmlContent);
     
-    // Send email to internal team
-    await sendQuotationEmailInternal(email, fileUrl, customerDetails);
 
     // Create entry in NocoDB
     await createNocoDBEntry(customerDetails, finalFilename);

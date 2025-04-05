@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'bold',
-    marginRight: 10,
+    marginRight: 5,
     width: 120,
   },
   value: {
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
   valueInWords: {
     marginTop: 10,
     padding: 8,
+    textAlign: 'right',
   }
 });
 
@@ -203,8 +204,12 @@ const QuotationDocument = ({ formData, priceBeforeGST, totalPrice, serviceTitle,
               <Text style={styles.value}>{formData.name}</Text>
             </View>
             <View style={styles.row}>
+              <Text style={styles.label}>Institution:</Text>
+              <Text style={styles.value}>{formData.institution}</Text>
+            </View>
+            <View style={styles.row}>
               <Text style={styles.label}>Address:</Text>
-              <Text style={styles.value}>{`${formData.institution}, ${formData.address}`}</Text>
+              <Text style={styles.value}>{`${formData.address}`}</Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.label}>E-mail:</Text>
