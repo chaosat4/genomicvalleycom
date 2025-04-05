@@ -34,7 +34,7 @@ interface FormData {
 const styles = StyleSheet.create({
   page: {
     padding: 30,
-    fontSize: 12,
+    fontSize: 10,
   },
   header: {
     flexDirection: 'row',
@@ -53,18 +53,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   companyName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 5,
     color: '#FFFFFF',
   },
   companyDetails: {
-    fontSize: 10,
+    fontSize: 8,
     marginBottom: 3,
     color: '#FFFFFF',
   },
   quotationTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#FFFFFF',
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sectionTitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#582B87',
@@ -104,10 +104,10 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     textAlign: 'center',
-    fontSize: 8,
+    fontSize: 7,
   },
   terms: {
-    fontSize: 10,
+    fontSize: 8,
     marginBottom: 3,
   },
   table: {
@@ -132,19 +132,19 @@ const styles = StyleSheet.create({
   tableCell: {
     color: '#000',
     paddingHorizontal: 8,
-    fontSize: 10,
+    fontSize: 8,
   },
   catCell: {
     color: '#000',
     fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: 7,
     paddingHorizontal: 8,
   },
   tableCellHeader: {
     color: '#FFFFFF',
     fontWeight: 'bold',
     paddingHorizontal: 8,
-    fontSize: 11,
+    fontSize: 7,
   },
 
   colSNo: { width: '6%' },
