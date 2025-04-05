@@ -18,6 +18,7 @@ const GET_PRICELIST = gql`
             mgi
             nanopore
             pacbio
+            hic
         }
         logistics
         dataAnalysis {
@@ -49,6 +50,7 @@ export function usePriceList() {
 export function calculatePrice(serviceTitle: string, formData: any, priceList: any) {
     if (!priceList) return 0;
     let totalPrice = 0;
+    console.log(formData);
     
     
     // Check if servicesRequired includes specific services
@@ -74,7 +76,7 @@ export function calculatePrice(serviceTitle: string, formData: any, priceList: a
         totalPrice += Number(priceList.libraryQC) || 0;
     }
     
-    if (formData.servicesRequired?.includes("Sequencing")) {
+    if (formData.servicesRequired?.includes("Sequencing") && serviceTitle !== "Genome Assembly") {
         let sampleSize = Number(formData.numberOfSamples) || 0;
         let platformPrice = 0;
         // Access the first item of the array since it's coming as an array
@@ -105,6 +107,31 @@ export function calculatePrice(serviceTitle: string, formData: any, priceList: a
         
         const sequencingCost = platformPrice * basesRequired * sampleSize;  
         totalPrice += sequencingCost;
+    }
+
+    if (serviceTitle === "Genome Assembly") {
+        let sampleSize = Number(formData.numberOfSamples) || 0;
+        let shortReadBaseRequired = formData.shortReadBaseRequired;
+        let longReadBaseRequired = formData.longReadBaseRequired;
+        let platformPrice = 0;
+
+        if (formData.shortRead === "Illumina") {
+            platformPrice += Number(priceList.genomeAssembly_per_sample.illumina) * shortReadBaseRequired * sampleSize;
+        } else if (formData.shortRead === "MGI") {
+            platformPrice += Number(priceList.genomeAssembly_per_sample.mgi) * shortReadBaseRequired * sampleSize;
+        }
+
+        if (formData.longRead === "PacBio") {
+            platformPrice += Number(priceList.genomeAssembly_per_sample.pacbio) * longReadBaseRequired * sampleSize;
+        } else if (formData.longRead === "Nanopore") {
+            platformPrice += Number(priceList.genomeAssembly_per_sample.nanopore) * longReadBaseRequired * sampleSize;
+        }
+
+        // adding HiC as its compulsory
+        platformPrice += Number(priceList.genomeAssembly_per_sample.hic) * longReadBaseRequired * sampleSize;
+
+        
+        totalPrice += platformPrice;
     }
     
     if (formData.servicesRequired?.includes("Data Analysis")) {
