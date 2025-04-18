@@ -50,7 +50,6 @@ export function usePriceList() {
 export function calculatePrice(serviceTitle: string, formData: any, priceList: any) {
     if (!priceList) return 0;
     let totalPrice = 0;
-    console.log(formData);
     
     
     // Check if servicesRequired includes specific services

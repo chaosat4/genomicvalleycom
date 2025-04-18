@@ -29,6 +29,6 @@ export const config = {
     '/api/services/new',
     '/api/services/edit/:path*',
     '/api/services/delete/:path*',
-    '/api/services/admin/:path*'
+    '/api/services/admin/:path*',
   ]
 };

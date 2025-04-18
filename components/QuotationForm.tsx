@@ -369,9 +369,10 @@ const QuotationForm = ({ id }: { id: string }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-        <div className="text-2xl text-purple-800">Loading...</div>
-      </div>
+      <div className="relative w-16 h-16">
+          <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
+          <div className="absolute top-0 left-0 w-full h-full border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
     );
   }
 

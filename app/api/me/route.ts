@@ -14,7 +14,6 @@ interface JWTPayload {
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
-    console.log('Auth header:', authHeader);
 
     if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json(
@@ -24,11 +23,9 @@ export async function GET(request: NextRequest) {
     }
 
     const token = authHeader.split(' ')[1];
-    console.log('Token to verify:', token.slice(0, 10) + '...');
 
     try {
       const payload = await verifyJWT<JWTPayload>(token);
-      console.log('Verified payload:', payload);
 
       const user = await prisma.user.findUnique({
         where: { id: payload.sub },
