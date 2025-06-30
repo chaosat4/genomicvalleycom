@@ -7,8 +7,17 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 
 export const testimonialData = [
+  
   {
     id: 1,
+    name: "Dr Suman Mishra",
+    role: "Post Doctoral Fellow",
+    image: "/sm.jpeg",
+    testimonial: "Genomic Valley Bharat's commitment to excellence and customer satisfaction truly sets them apart. I highly recommend them to researchers and clinicians seeking reliable genomic and transcriptomic analysis.",
+    rating: 5
+  },
+  {
+    id: 2,
     name: "Dr Garima",
     role: "Healthcare Professional",
     image: "/female_avatar.png",

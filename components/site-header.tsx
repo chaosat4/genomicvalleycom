@@ -112,7 +112,7 @@ export function SiteHeader() {
         <div className="bg-purple-600 px-4 py-2 text-white">
           <div className="mx-auto flex max-w-7xl items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-sm">Genomic Valley wishes you a joyous and blessed Holi 2025!</span>
+              <span className="text-sm">Genomic Valley is attending GIC 2025 in Bengaluru from 11th to 14th August.</span>
             </div>
             <button
               onClick={() => setShowNotification(false)}

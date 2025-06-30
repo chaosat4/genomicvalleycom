@@ -15,8 +15,8 @@ const teamData = [
   { name: "Ms. Romasha Gupta", role: "Senior Manager - Scientific Affairs", image: "/rg.jpeg", socialLinks: [
     { icon: Linkedin, href: "https://www.linkedin.com/in/romasha-gupta-98a44b190/" },
   ]},
-  { name: "Dr. Uzma Shamim", role: "Senior Genetic Counselor", image: "/uzma.jpeg", socialLinks: [
-    { icon: Linkedin, href: "https://www.linkedin.com/in/uzma-shamim-a338b043/" },
+  { name: "Mr. Vishal", role: "Bioinformatics Analyst", image: "/vishal.jpeg", socialLinks: [
+    { icon: Linkedin, href: "https://www.linkedin.com/in/vishal-singh-a58491216/" },
   ]},
 ]
 
