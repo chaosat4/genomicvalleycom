@@ -5,22 +5,17 @@ import Link from "next/link"
 import { Mail, Calendar, Phone, Book } from 'lucide-react'
 
 export const counselorData = {
-  title: "Meet Our Genetic Counselor",
-  counselor: {
-    name: "Dr. Uzma Shamim",
-    role: "Geneticist/Consultant/Genetic Counselor",
-    image: {
-      src: "/uzma.jpeg",
-      alt: "Dr. Uzma Shamim"
-    },
-    description: "Over 8 years of experience in Clinical Genomics and Genetics, particularly in the realm of Rare Diseases. I have led comprehensive genetic screening and research programs, significantly contributing to the scientific understanding of complex genomic questions.",
+  title: "Genetic Counseling",
+  image: {
+    src: "/genetic-counselling.jpg",
+    alt: "Genetic Counseling"
   },
   cards: [
     {
       icon: Calendar,
       title: "Clinical Expertise",
       description:
-        "8+ years in Clinical Genomics & Genetics, specializing in screening, analysis, and reporting."
+        "Experience in Clinical Genomics & Genetics, specializing in screening, analysis, and reporting."
     },
     {
       icon: Mail,
@@ -59,8 +54,8 @@ export function MeetGeneticCounselor() {
           {/* Image Section with Button */}
           <div className="w-full md:w-5/12 space-y-6">
             <Image
-              src="/uzma.jpeg"
-              alt="Dr. Uzma"
+              src={counselorData.image.src}
+              alt={counselorData.image.alt}
               width={500}
               height={600}
               className="rounded-lg object-cover w-full h-[600px] shadow-lg"
@@ -78,18 +73,6 @@ export function MeetGeneticCounselor() {
 
           {/* Content Section */}
           <div className="w-full md:w-6/12 space-y-8">
-            <div>
-              <h2 className="text-purple-600 font-bold text-3xl mb-2">
-                {counselorData.counselor.name}
-              </h2>
-              <p className="text-lg text-gray-600 mb-4">
-                {counselorData.counselor.role}
-              </p>
-              <p className="text-lg text-gray-700">
-                {counselorData.counselor.description}
-              </p>
-            </div>
-
             <div className="grid sm:grid-cols-2 gap-6">
               {counselorData.cards.map((card, index) => (
                 <Card key={index} className="border-purple-200 hover:shadow-lg transition-shadow duration-300">

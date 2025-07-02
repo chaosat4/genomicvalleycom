@@ -8,6 +8,7 @@ export default function Home() {
   return (
     <div>
       <Hero />
+      <MeetGeneticCounselor />
       <GeneticCounselingProcess />
       <FaqSection />
     </div>
