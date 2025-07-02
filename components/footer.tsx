@@ -47,10 +47,11 @@ export default function Footer() {
 
       {/* Footer Bottom */}
       <div className="border-t">
-        <div className="container mx-auto px-4 py-6 flex flex-col sm:flex-row justify-between items-center">
-          <p className="text-sm text-gray-600">
-            {FOOTER_CONSTANTS.copyright}
-          </p>
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center w-full gap-4">
+            <p className="text-sm text-gray-600">{FOOTER_CONSTANTS.copyright}</p>
+            <p className="text-sm text-gray-600">GSTIN: 07AAKCG6119R1ZX</p>
+          </div>
         </div>
       </div>
     </footer>

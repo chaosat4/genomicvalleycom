@@ -1,5 +1,4 @@
-import { Testimonials } from '@/components/Testimonials';
-import Link from 'next/link';
+import { TestimonialsList } from '@/components/TestimonialsList';
 import Image from 'next/image';
 
 export default function TestimonialsPage() {
@@ -34,7 +33,7 @@ export default function TestimonialsPage() {
 
       {/* Testimonials Section */}
       <div className="bg-purple-50">
-        <Testimonials />
+        <TestimonialsList />
       </div>
     </div>
   );

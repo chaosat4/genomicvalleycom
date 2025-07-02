@@ -8,22 +8,26 @@ export function ServiceCarousel() {
     {
       icon: <UserSquare2 className="w-8 h-8 mb-4 text-purple-600" />,
       title: "Genetic Consultation",
-      description: "Expert guidance and consultation for understanding genetic test results and implications."
+      description: "Expert guidance and consultation for understanding genetic test results and implications.",
+      link: "/genetic-counseling"
+    },
+    {
+      icon: <Microscope className="w-8 h-8 mb-4 text-purple-600" />,
+      title: "Get Your Own Genetic Profile",
+      description: "Get your own genetic profile with our advanced diagnostic techniques.",
+      link: "/services"
     },
     {
       icon: <Binary className="w-8 h-8 mb-4 text-purple-600" />,
       title: "Next Generation DNA Sequencing",
-      description: "State-of-the-art DNA sequencing using latest next-generation technologies."
-    },
-    {
-      icon: <Microscope className="w-8 h-8 mb-4 text-purple-600" />,
-      title: "Disease Screening",
-      description: "Comprehensive screening of genetic diseases using advanced diagnostic techniques."
+      description: "State-of-the-art DNA sequencing using latest next-generation technologies.",
+      link: "/services"
     },
     {
       icon: <Briefcase className="w-8 h-8 mb-4 text-purple-600" />,
       title: "Extramural R&D Support",
-      description: "Comprehensive research and development support for external projects and collaborations."
+      description: "Comprehensive research and development support for external projects and collaborations.",
+      link: "/services/research"
     }
   ];
 
@@ -46,6 +50,7 @@ export function ServiceCarousel() {
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 max-w-6xl mx-auto">
         {services.map((service, index) => (
           <div key={index} className="h-full">
+            <Link href={service.link}>
             <Card className="border-none shadow-md hover:bg-accent h-full flex flex-col">
               <CardContent className="flex flex-col h-full p-4 md:p-6 border-t-4 border-purple-500">
                 <div className="mb-4">
@@ -59,6 +64,7 @@ export function ServiceCarousel() {
                 </p>
               </CardContent>
             </Card>
+            </Link>
           </div>
         ))}
       </div>

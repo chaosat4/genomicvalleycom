@@ -156,13 +156,13 @@ export const navigationItems: NavigationItem[] = [
         question:
           "What are the primary diagnostic services offered by Genomic Valley Biotech Limited?",
         answer:
-          "We specialize in Next-Generation Sequencing (NGS)-based molecular diagnostics, leveraging advanced AI to detect genetic mutations and abnormalities. This approach enables early identification of risk factors and supports customized treatment strategies, especially in oncology."
+          "We offer NGS-based molecular diagnostics with AI-powered analysis to detect genetic mutations and abnormalities. This enables early risk identification and personalized treatment strategies, particularly for cancer."
       },
       {
         category: "Diagnostics & Predisposition",
         question: "Could you explain your genetic disease predisposition services?",
         answer:
-          "We utilize NGS to evaluate hereditary risk factors and conduct pharmacogenomic assessments, providing proactive healthcare strategies. This helps patients and healthcare professionals make informed decisions based on genetic insights."
+          "We use NGS to assess hereditary risk factors and provide pharmacogenomic testing. This helps patients and doctors make informed healthcare decisions based on genetic insights."
       },
   
       // Personalized Healthcare
@@ -171,7 +171,7 @@ export const navigationItems: NavigationItem[] = [
         question:
           "What are the key components of your personalized healthcare services?",
         answer:
-          "Our personalized care model combines NGS with AI to tailor medical treatments according to individual genetic profiles. This approach improves therapy effectiveness, minimizes side effects, and ensures patient-focused care."
+          "We combine NGS with AI to create personalized treatment plans based on individual genetic profiles. This improves treatment effectiveness and reduces side effects."
       },
   
       // Community Health
@@ -180,7 +180,7 @@ export const navigationItems: NavigationItem[] = [
         question:
           "How does Genomic Valley Biotech Limited support community health through genomic initiatives?",
         answer:
-          "By integrating AI into large-scale NGS efforts, we enable population-wide genetic screening to identify common health risks. These insights guide targeted community health programs and preventive measures aimed at improving public health outcomes."
+          "We conduct AI-powered population genetic screening to identify common health risks. This data supports targeted community health programs and preventive care initiatives."
       },
   
       // Oncology Research
@@ -189,7 +189,7 @@ export const navigationItems: NavigationItem[] = [
         question:
           "How does Genomic Valley Biotech Limited contribute to oncology research?",
         answer:
-          "Building on over a decade of experience in NGS and AI, we drive innovation in cancer research by discovering novel biomarkers and genetic targets. We partner with leading institutions to develop more precise diagnostic methods and therapeutic strategies."
+          "With over a decade of NGS and AI experience, we discover new cancer biomarkers and genetic targets. We collaborate with institutions to develop better diagnostic tools and treatments."
       }
     ]
   };

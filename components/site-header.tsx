@@ -329,106 +329,16 @@ export function SiteHeader() {
                       </NavigationMenuTrigger>
                       </Link>
                       <NavigationMenuContent>
-                        <div className="flex w-[900px] bg-purple-50 text-white">
-                          {/* Left sidebar */}
-                          <div className="w-[250px] p-6 border-r border-gray-800">
-                            <h3 className="text-2xl font-medium mb-2 text-purple-900">Solutions</h3>
-                            <p className="text-sm text-gray-900 mb-8">
-                              Discover our comprehensive range of genomic services
-                            </p>
-
-                            <div className="space-y-4">
-                              <Link href="/services/diagnostic" className="flex items-center justify-between group">
-                                <span className="text-lg text-purple-900">Diagnostic Services</span>
-                                <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                              </Link>
-                              <Link href="/services/research" className="flex items-center justify-between group">
-                                <span className="text-lg text-purple-900">Research Services</span>
-                                <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                              </Link>
-                            </div>
-                          </div>
-
-                          {/* Middle content */}
-                          <div className="flex-1 grid grid-cols-2 gap-6 p-6">
-                            <div className="flex gap-3">
-                              <div className="mt-1 flex h-8 w-8 items-center justify-center rounded-full border border-gray-600">
-                                <Microscope className="h-4 w-4 text-purple-900" />
-                              </div>
-                              <div>
-                                <h4 className="text-lg font-medium mb-2 text-purple-900">Disease Screening</h4>
-                                <p className="text-sm text-gray-900">
-                                  Comprehensive screening of genetic diseases using advanced diagnostic techniques.
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex gap-3">
-                              <div className="mt-1 flex h-8 w-8 items-center justify-center rounded-full border border-gray-600">
-                                <UserSquare2 className="h-4 w-4 text-purple-900" />
-                              </div>
-                              <div>
-                                <h4 className="text-lg font-medium mb-2 text-purple-900">Genetic Consultation</h4>
-                                <p className="text-sm text-gray-900">
-                                  Expert guidance and consultation for understanding genetic test results and implications.
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex gap-3">
-                              <div className="mt-1 flex h-8 w-8 items-center justify-center rounded-full border border-gray-600">
-                                <Binary className="h-4 w-4 text-purple-900" />
-                              </div>
-                              <div>
-                                <h4 className="text-lg font-medium mb-2 text-purple-900">NGS Services</h4><br />
-                                <p className="text-sm text-gray-900">
-                                  State-of-the-art DNA sequencing using latest next-generation technologies.
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex gap-3">
-                              <div className="mt-1 flex h-8 w-8 items-center justify-center rounded-full border border-gray-600">
-                                <Briefcase className="h-4 w-4 text-purple-900" />
-                              </div>
-                              <div>
-                                <h4 className="text-lg font-medium mb-2 text-purple-900">Extramural R&D Support</h4>
-                                <p className="text-sm text-gray-900">
-                                  Comprehensive research and development support for external projects and collaborations.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Right sidebar */}
-                          <div className="w-[250px] p-6 border-l border-gray-800">
-                            <h3 className="text-xl font-medium mb-6 text-purple-900">Quick Links</h3>
-
-                            <div className="space-y-8">
-                              <div>
-                                <h4 className="text-sm font-medium text-purple-900 mb-2">TESTIMONIALS</h4>
-                                <Link href="/testimonials" className="flex items-center justify-between group">
-                                  <span className="text-sm text-gray-900">
-                                    Hear from our satisfied clients and partners
-                                  </span>
-                                  <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                </Link>
-                              </div>
-
-                              <div>
-                                <h4 className="text-sm font-medium text-purple-900 mb-2">LEGAL</h4>
-                                <div className="space-y-4">
-                                  <Link href="/privacy-policy" className="flex items-center justify-between group">
-                                    <span className="text-sm text-gray-900">Privacy Policy</span>
-                                    <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                  </Link>
-                                  <Link href="/terms" className="flex items-center justify-between group">
-                                    <span className="text-sm text-gray-900">Terms & Conditions</span>
-                                    <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                  </Link>
-                                </div>
-                              </div>
-                            </div>
+                        <div className="w-[300px] bg-purple-50 p-6">                          
+                          <div className="space-y-3">
+                            <Link href="/services/research" className="flex items-center justify-between group p-3 rounded-md hover:bg-purple-100 transition-colors">
+                              <span className="text-base text-purple-900">Research Services</span>
+                              <ArrowRight className="h-4 w-4 text-purple-700 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </Link>
+                            <Link href="/services/diagnostic" className="flex items-center justify-between group p-3 rounded-md hover:bg-purple-100 transition-colors">
+                              <span className="text-base text-purple-900">Diagnostic Services</span>
+                              <ArrowRight className="h-4 w-4 text-purple-700 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </Link>
                           </div>
                         </div>
                       </NavigationMenuContent>

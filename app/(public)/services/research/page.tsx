@@ -1,52 +1,96 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
-import { Microscope, Brain, Database, Network } from "lucide-react";
+import { Microscope, Brain, Database, Network, Activity, Dna, Beaker, Settings } from "lucide-react";
 import Image from "next/image";
-import LoadingSpinner from "@/components/ui/loading-spinner";
+import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 
-interface Service {
-  id: number;
-  name: string;
-  overview: string;
-  price: number;
-  category: string;
-  _count: {
-    whyChoose: number;
-    diseasesSupported: number;
-    process: number;
+const GET_RESEARCH_SERVICES = gql`
+  query {
+    services(pagination: { limit: 100 }) {
+      documentId
+      categoryName
+      mainContent {
+        contentTitle
+        leftBox {
+          title
+          description
+        }
+      }
+      order
+    }
   }
+`;
+
+interface GraphQLService {
+  documentId: string;
+  categoryName: string;
+  mainContent: {
+    contentTitle: string;
+    leftBox: {
+      title: string;
+      description: string;
+    }
+  }
+  order: number;
 }
+
+interface ServicesData {
+  services: GraphQLService[];
+}
+
+const getIconForService = (title: string) => {
+  switch (title.toLowerCase()) {
+    case 'gene expression analysis':
+      return <Dna className="h-6 w-6" />;
+    case 'genome assembly':
+      return <Network className="h-6 w-6" />;
+    case 'variant detection':
+      return <Activity className="h-6 w-6" />;
+    case 'metagenomics':
+      return <Beaker className="h-6 w-6" />;
+    case 'epigenetics':
+      return <Microscope className="h-6 w-6" />;
+    case 'next generation sequencing':
+      return <Database className="h-6 w-6" />;
+    case 'bioinformatics':
+      return <Brain className="h-6 w-6" />;
+    default:
+      return <Settings className="h-6 w-6" />;
+  }
+};
 
 export default function ResearchServicesPage() {
   const router = useRouter();
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { loading, error, data } = useQuery<ServicesData>(GET_RESEARCH_SERVICES);
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const response = await fetch('/api/services/category?category=Research Services');
-        if (!response.ok) throw new Error('Failed to fetch services');
-        const data = await response.json();
-        setServices(data);
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchServices();
-  }, []);
-
-  const handleServiceClick = (id: number) => {
-    router.push(`/services/${id}`);
+  const handleServiceClick = (documentId: string) => {
+    router.push(`/services/research/${documentId}`);
   };
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) return (
+    <div className="min-h-screen bg-purple-50 pt-44 pb-12 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading research services...</p>
+      </div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="min-h-screen bg-purple-50 pt-44 pb-12 flex items-center justify-center">
+      <div className="text-center">
+        <p className="text-red-600">Error loading research services</p>
+        <p className="text-gray-600 text-sm mt-2">{error.message}</p>
+      </div>
+    </div>
+  );
+
+  // Filter research services and sort by order
+  const researchServices = data?.services
+    .filter((service: GraphQLService) => service.categoryName === 'research')
+    .sort((a, b) => a.order - b.order) || [];
 
   return (
     <div className="min-h-screen bg-purple-50 pt-44 pb-12">
@@ -60,7 +104,7 @@ export default function ResearchServicesPage() {
           </p>
         </div>
 
-        {/* Hero Image Placeholder */}
+        {/* Hero Image */}
         <div className="relative h-[400px] mb-16 rounded-xl overflow-hidden">
           <div className="absolute inset-0 bg-gray-200 animate-pulse" />
           <Image
@@ -95,31 +139,42 @@ export default function ResearchServicesPage() {
           />
         </div>
 
-        {/* Available Services */}
+        {/* Available Research Services */}
         <div className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
             Research Opportunities
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => (
-              <Card 
-                key={service.id} 
-                className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => handleServiceClick(service.id)}
-              >
-                <div className="text-primary mb-4">
-                  <Microscope className="h-6 w-6" />
-                </div>
-                <h3 className="font-semibold text-lg mb-2">{service.name}</h3>
-                <p className="text-gray-600 text-sm mb-4">{service.overview}</p>
-                <div className="flex justify-between items-center">
-                  <div className="text-sm text-gray-500">
-                    {service._count.process} research steps
+          {researchServices.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {researchServices.map((service) => (
+                <Card 
+                  key={service.documentId} 
+                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer bg-white h-full flex flex-col"
+                  onClick={() => handleServiceClick(service.documentId)}
+                >
+                  <div className="text-primary mb-4">
+                    {getIconForService(service.mainContent.leftBox.title)}
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
+                  <h3 className="font-semibold text-lg mb-2 text-gray-900">
+                    {service.mainContent.leftBox.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm flex-grow mb-4">
+                    {service.mainContent.leftBox.description}
+                  </p>
+                  <div className="flex justify-between items-center pt-4 border-t border-gray-100 mt-auto">
+                    <span className="text-sm font-medium text-primary">Learn More</span>
+                    <div className="text-sm text-gray-500">
+                      Research Service
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-600">No research services available at the moment.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

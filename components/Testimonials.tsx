@@ -18,14 +18,6 @@ export const testimonialData = [
   },
   {
     id: 2,
-    name: "Dr Garima",
-    role: "Healthcare Professional",
-    image: "/female_avatar.png",
-    testimonial: "Genomic Valley Bharat will be a trailblazer in integrating Next-Generation Sequencing and AI into healthcare. Their expertise and commitment to innovation will be evident in the precision and reliability of their diagnostic services. As a healthcare provider, I will trust their data and solutions to enhance patient outcomes and support informed decision-making.",
-    rating: 5
-  },
-  {
-    id: 3,
     name: "Dr. Shikha",
     role: "Healthcare Professional",
     image: "/female_avatar.png",
