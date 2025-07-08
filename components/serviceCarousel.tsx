@@ -13,9 +13,9 @@ export function ServiceCarousel() {
     },
     {
       icon: <Microscope className="w-8 h-8 mb-4 text-purple-600" />,
-      title: "Get Your Own Genetic Profile",
+      title: "Genomic Kundli",
       description: "Get your own genetic profile with our advanced diagnostic techniques.",
-      link: "/services"
+      link: "/genomic-kundli"
     },
     {
       icon: <Binary className="w-8 h-8 mb-4 text-purple-600" />,
