@@ -18,6 +18,14 @@ export const testimonialData = [
   },
   {
     id: 2,
+    name: "Dr. Mohit",
+    role: "Healthcare Professional",
+    image: "/mohit.jpeg",
+    testimonial: "Genomic Valley Bharat Pvt. Ltd. delivered high-quality sequencing services with a comprehensive, end-to-end approach, ensuring timely data generation and insightful analysis outcome. Team is highly experienced and supportive. We highly recommend their expertise for any genomics related projects.",
+    rating: 5
+  },
+  {
+    id: 3,
     name: "Dr. Shikha",
     role: "Healthcare Professional",
     image: "/female_avatar.png",

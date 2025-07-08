@@ -128,10 +128,10 @@ const QuotationForm = ({ id }: { id: string }) => {
     basesRequiredOther: "",
     kitName: "",
     code: "",
-    readLength: "",
+    readLength: "PE-150x2",
     readLengthOther: "",
-    sequencingPlatform: "",
-    dataAnalysis: "",
+    sequencingPlatform: "MGI",
+    dataAnalysis: "standard",
     panel: [],
     shortRead: "",
     longRead: "",
@@ -275,6 +275,26 @@ const QuotationForm = ({ id }: { id: string }) => {
       // add kitName to formData
       formData.kitName = kitName;
       formData.code = code;
+      
+      // Transform genome assembly sequencing platform data
+      if (isGenomeAssembly) {
+        const platforms = [];
+        if (formData.shortRead) {
+          platforms.push(formData.shortRead);
+        }
+        if (formData.longRead) {
+          platforms.push(formData.longRead);
+        }
+        formData.sequencingPlatform = platforms.join(', ');
+      } else {
+        // For non-genome assembly services, clear the genome assembly specific fields
+        formData.shortReadBaseRequired = undefined as any;
+        formData.longReadBaseRequired = undefined as any;
+        formData.hicBaseRequired = undefined as any;
+        formData.shortRead = '';
+        formData.longRead = '';
+      }
+      
       //pass technical details to calculatePrice
       const { priceBeforeGST, totalPrice, gstPercentage, bulkDiscount } =
         calculatePrice(
@@ -723,7 +743,6 @@ const QuotationForm = ({ id }: { id: string }) => {
                     value={formData.readLength}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    required
                   >
                     <option value="PE-150x2">PE-150 x 2</option>
                     <option value="PE-50x2">PE-50 x 2</option>
@@ -739,7 +758,6 @@ const QuotationForm = ({ id }: { id: string }) => {
                       onChange={handleChange}
                       placeholder="Please specify read length"
                       className="mt-2 w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      required
                     />
                   )}
                 </>
@@ -932,7 +950,6 @@ const QuotationForm = ({ id }: { id: string }) => {
                   className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                   required
                 >
-                  <option value="">Select Analysis Type</option>
                   <option value="standard">Standard</option>
                   <option value="advanced">Advanced</option>
                   <option value="none">None</option>

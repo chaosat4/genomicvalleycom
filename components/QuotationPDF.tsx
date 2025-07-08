@@ -28,6 +28,14 @@ interface FormData {
   readLengthOther: string;
   sequencingPlatform: string;
   dataAnalysis: string;
+  shortRead?: string;
+  longRead?: string;
+  shortReadBaseRequired?: number;
+  longReadBaseRequired?: number;
+  hicBaseRequired?: number;
+  panel?: string[];
+  code?: string;
+  serviceCategory?: string;
 }
 
 // Create styles
@@ -171,6 +179,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 8,
     textAlign: 'right',
+  },
+  boldText: {
+    fontWeight: 'bold',
   }
 });
 
@@ -265,15 +276,34 @@ const QuotationDocument = ({ formData, priceBeforeGST, totalPrice, serviceTitle,
           <View style={styles.tableRow}>
             <Text style={[styles.tableCell, styles.colSNo]}>1</Text>
             <Text style={[styles.tableCell, styles.colDesc]}>
-              {serviceTitle} {'\n'}
-              {formData.serviceName} {'\n'}
-              Species: {formData.speciesName} {formData.speciesNameOther} {'\n'}
-              Tissue: {formData.tissueName} {formData.tissueNameOther} {'\n'}
-              Number of Samples: {formData.numberOfSamples} {'\n'}
-              Read/Bases: {formData.readRequired} {formData.readRequiredOther} {formData.basesRequired} {formData.basesRequiredOther} {'\n'}
-              Read Length: {formData.readLength} {formData.readLengthOther} {'\n'}
-              Sequencing Platform: {formData.sequencingPlatform} {'\n'}
-              Data Analysis: {formData.dataAnalysis}
+              <Text style={styles.boldText}>{capitalizeFirstLetter(serviceTitle)}</Text> {'\n'}
+              <Text style={styles.boldText}>{capitalizeFirstLetter(formData.serviceName)}</Text> {'\n'}
+              {'\n'}
+              <Text style={styles.boldText}>Species:</Text> {formData.speciesName === 'other' ? capitalizeFirstLetter(formData.speciesNameOther) : capitalizeFirstLetter(formData.speciesName)} {'\n'}
+              <Text style={styles.boldText}>Tissue:</Text> {formData.tissueName === 'other' ? capitalizeFirstLetter(formData.tissueNameOther) : capitalizeFirstLetter(formData.tissueName)} {'\n'}
+              <Text style={styles.boldText}>Number of Samples:</Text> {formData.numberOfSamples} {'\n'}
+              <Text style={styles.boldText}>Read/Bases:</Text> {
+                // Check if this is a genome assembly service by service title
+                serviceTitle === 'Genome Assembly' 
+                  ? `Short Read: ${formData.shortReadBaseRequired || 0} GB, Long Read: ${formData.longReadBaseRequired || 0} GB, Hi-C: ${formData.hicBaseRequired || 0} GB`
+                  : formData.readRequired 
+                    ? (formData.readRequired === 'other' ? capitalizeFirstLetter(formData.readRequiredOther) + ' M' : capitalizeFirstLetter(formData.readRequired) + ' M')
+                    : formData.basesRequired 
+                      ? (formData.basesRequired === 'other' ? capitalizeFirstLetter(formData.basesRequiredOther) + ' GB' : capitalizeFirstLetter(formData.basesRequired) + ' GB')
+                      : ''
+              } {'\n'}
+              {serviceTitle !== 'Genome Assembly' && (
+                <>
+                  <Text style={styles.boldText}>Read Length:</Text> {formData.readLength === 'other' ? capitalizeFirstLetter(formData.readLengthOther) : capitalizeFirstLetter(formData.readLength)} {'\n'}
+                </>
+              )}
+              <Text style={styles.boldText}>Sequencing Platform:</Text> {
+                // Check if this is a genome assembly service by service title
+                serviceTitle === 'Genome Assembly' 
+                  ? `${formData.shortRead ? 'Short Read: ' + capitalizeFirstLetter(formData.shortRead) : ''}${formData.shortRead && formData.longRead ? ', ' : ''}${formData.longRead ? 'Long Read: ' + capitalizeFirstLetter(formData.longRead) : ''}`
+                  : capitalizeFirstLetter(formData.sequencingPlatform)
+              } {'\n'}
+              <Text style={styles.boldText}>Data Analysis:</Text> {capitalizeFirstLetter(formData.dataAnalysis)}
             </Text>
             <Text style={[styles.tableCell, styles.colPrice]}>{(priceBeforeGST / parseInt(formData.numberOfSamples)).toLocaleString('en-IN')}</Text>
             <Text style={[styles.tableCell, styles.colQty]}>{formData.numberOfSamples}</Text>
@@ -446,4 +476,10 @@ const convertToWords = (num: number): string => {
   result += convertLessThanThousand(num);
   
   return result + 'Rupees';
+};
+
+// Helper function to capitalize first letter
+const capitalizeFirstLetter = (text: string): string => {
+  if (!text) return text;
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }; 
