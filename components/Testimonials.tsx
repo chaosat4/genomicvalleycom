@@ -11,7 +11,7 @@ export const testimonialData = [
   {
     id: 1,
     name: "Dr Suman Mishra",
-    role: "Post Doctoral Fellow",
+    role: "Assistant Professor",
     image: "/sm.jpeg",
     testimonial: "Genomic Valley Bharat's commitment to excellence and customer satisfaction truly sets them apart. I highly recommend them to researchers and clinicians seeking reliable genomic and transcriptomic analysis.",
     rating: 5
@@ -19,7 +19,7 @@ export const testimonialData = [
   {
     id: 2,
     name: "Dr. Mohit",
-    role: "Healthcare Professional",
+    role: "Sr. Technical Officer",
     image: "/mohit.jpeg",
     testimonial: "Genomic Valley Bharat Pvt. Ltd. delivered high-quality sequencing services with a comprehensive, end-to-end approach, ensuring timely data generation and insightful analysis outcome. Team is highly experienced and supportive. We highly recommend their expertise for any genomics related projects.",
     rating: 5
@@ -28,7 +28,7 @@ export const testimonialData = [
     id: 3,
     name: "Dr. Shikha",
     role: "Healthcare Professional",
-    image: "/female_avatar.png",
+    image: "/shikha.jpeg",
     testimonial: "The personalized healthcare services at Genomic Valley Bharat will revolutionize our approach to patient care. By tailoring treatments based on unique genetic profiles, they will ensure our patients receive the most effective therapies with minimal adverse effects. Their expertise in NGS and AI will be unmatched, making them an invaluable partner in our healthcare journey.",
     rating: 5
   }
@@ -107,7 +107,6 @@ export function Testimonials() {
               className="bg-white rounded-xl shadow-lg p-8 md:p-12"
             >
               <div className="flex flex-col items-center text-center">
-                <Quote className="w-12 h-12 text-purple-600 mb-6" />
                 <div className="relative w-24 h-24 mb-6">
                   <Image
                     src={testimonialData[currentIndex].image}

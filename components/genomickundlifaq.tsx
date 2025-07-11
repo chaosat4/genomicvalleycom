@@ -10,77 +10,58 @@ export const GENOMIC_KUNDLI_FAQ_CONSTANTS = {
     {
       category: "Genomic Kundli Basics",
       question: "What is a Genomic Kundli?",
-      answer: `A Genomic Kundli is your personalized genetic wellbeing profile that unlocks the secrets hidden in your DNA. Much like a traditional kundali reveals astrological insights, your genomic kundli reveals the genetic wisdom embedded in your genes.
+      answer: `A Genomic Kundli is your personal health horoscope that reveals what your genes say about your health. Just like a traditional kundali guides life decisions, your genomic kundli helps you make informed health choices.
 
-Our cutting-edge software meticulously decodes your genetic blueprint, revealing only the most impactful insights while preserving your privacy. This comprehensive analysis helps you understand your genetic predispositions, health risks, and personalized wellness recommendations.`,
+We analyze your DNA to provide insights about disease risks, nutrition needs, and wellness recommendations. This helps you take proactive steps for better health and guides your doctor in providing personalized treatment.`,
     },
     {
       category: "Privacy & Security",
-      question: "How is my privacy protected during the genomic analysis?",
-      answer: `At Genomic Valley, privacy is our top priority. We employ a privacy-first approach by removing all personal identifiers from your genetic data during analysis. Only essential, actionable genetic information is processed and included in your report.
+      question: "How is my data protected and where is it stored?",
+      answer: `Your genetic data is stored on our highly secured servers with bank-level encryption and multiple security layers. We remove all personal identifiers from your genetic information during analysis, ensuring complete privacy.
 
-Our secure laboratory protocols ensure that your genetic information is handled with the highest levels of confidentiality. We never share your genetic data with third parties, and you maintain complete control over your genomic kundli report.`,
+Your data is never shared with third parties and you maintain full control over your genomic kundli report. Our laboratory follows international privacy standards and strict confidentiality protocols.`,
     },
     {
       category: "Testing Process",
       question: "How do I collect my sample for the Genomic Kundli?",
-      answer: `Sample collection is simple and can be done from the comfort of your home. We provide a comprehensive at-home testing kit that includes detailed instructions and all necessary materials.
+      answer: `Sample collection is simple and done at home with no needles required. We send you a kit with detailed instructions and all necessary materials.
 
-The process typically involves a simple saliva sample or cheek swab collection. Our kit includes step-by-step guidance to ensure proper sample collection for accurate genetic analysis. Once collected, you'll send the sample back to our laboratory using the provided secure shipping materials.`,
+You simply collect a saliva sample or cheek swab following our step-by-step guide. Once collected, send the sample back to our laboratory using the provided secure shipping materials. The entire process takes just a few minutes.`,
     },
     {
       category: "Results & Reports",
       question: "What information will my Genomic Kundli report contain?",
-      answer: `Your personalized Genomic Kundli report provides comprehensive insights into your genetic wellbeing, including:
+      answer: `Your report includes health predisposition analysis, personalized diet and exercise recommendations, medication response indicators, and carrier status for inherited conditions.
 
-• Health predisposition analysis for various conditions
-• Personalized wellness and lifestyle recommendations
-• Nutritional insights based on your genetic makeup  
-• Exercise and fitness guidance tailored to your genes
-• Medication response indicators
-• Carrier status for inherited conditions
-
-The report is designed to empower both you and your healthcare professionals to make precise, informed decisions about your health and wellbeing.`,
+The report is designed in simple language that both you and your healthcare professionals can easily understand. It provides actionable insights to help you make informed decisions about your health and wellness.`,
     },
     {
       category: "Healthcare Integration",
-      question: "How can healthcare professionals use my Genomic Kundli?",
-      answer: `Your Genomic Kundli serves as a powerful tool for healthcare professionals to provide personalized medicine. The genetic insights enable doctors to:
+      question: "How can doctors use my Genomic Kundli?",
+      answer: `Your Genomic Kundli helps doctors provide personalized medicine by understanding your genetic profile. They can develop targeted treatment plans, prescribe medications with optimal effectiveness, and recommend preventive measures.
 
-• Develop personalized treatment plans based on your genetic profile
-• Prescribe medications with optimal efficacy and minimal side effects
-• Recommend preventive measures for genetic predispositions
-• Create targeted wellness strategies
-• Make informed decisions about screening schedules and health monitoring
-
-The report provides actionable genetic information that bridges the gap between your DNA and personalized healthcare.`,
+The report enables healthcare professionals to create wellness strategies specific to your genetic makeup and make informed decisions about health monitoring and screening schedules.`,
     },
     {
       category: "Accuracy & Science",
-      question: "How accurate and scientifically valid is the Genomic Kundli analysis?",
-      answer: `Our Genomic Kundli analysis is based on cutting-edge genomic science and validated genetic markers. We use state-of-the-art sequencing technology and bioinformatics algorithms to ensure high accuracy in our genetic analysis.
+      question: "How accurate is the Genomic Kundli analysis?",
+      answer: `Our analysis uses cutting-edge genomic science and validated genetic markers. We employ state-of-the-art sequencing technology and follow strict quality control protocols with international standards.
 
-Our laboratory follows strict quality control protocols and international standards for genetic testing. The genetic variants we analyze are backed by peer-reviewed scientific research and established genetic databases. However, like all genetic tests, results should be interpreted in consultation with healthcare professionals.`,
+The genetic variants we analyze are backed by peer-reviewed research and established genetic databases. However, like all genetic tests, results should be discussed with healthcare professionals for proper interpretation.`,
     },
     {
       category: "Getting Started",
       question: "How do I order my Genomic Kundli kit?",
-      answer: `Ordering your Genomic Kundli is simple and convenient. You can request your at-home genetic testing kit through our secure online platform or by contacting our customer service team.
+      answer: `Ordering is simple through our secure online platform or by contacting our customer service team. We ship your kit with detailed instructions, sample collection materials, and secure return packaging.
 
-Once you place your order, we'll ship your kit with detailed instructions, sample collection materials, and secure return packaging. The entire process from ordering to receiving your personalized genomic kundli report typically takes 3-4 weeks, ensuring thorough and accurate analysis of your genetic profile.`,
+The entire process from ordering to receiving your personalized genomic kundli report typically takes 3-4 weeks for thorough and accurate analysis of your genetic profile.`,
     },
     {
       category: "Follow-up Support",
-      question: "What support do I receive after getting my Genomic Kundli report?",
-      answer: `We provide comprehensive support to help you understand and act on your genomic kundli insights. This includes:
+      question: "What support do I receive after getting my report?",
+      answer: `We provide comprehensive support including detailed explanation of your report findings, genetic counseling sessions, and guidance on sharing results with healthcare providers.
 
-• Detailed explanation of your report findings
-• Genetic counseling sessions to discuss implications
-• Guidance on sharing results with healthcare providers
-• Updates on new scientific discoveries relevant to your genetic profile
-• Ongoing support for implementing personalized wellness recommendations
-
-Our team of genetic experts is available to answer questions and help you make the most of your genomic insights for better health and wellbeing.`,
+Our team of genetic experts is available to answer questions and help you understand your genomic insights. We also provide updates on new scientific discoveries relevant to your genetic profile.`,
     },
   ],
 };
@@ -159,11 +140,11 @@ export function GenomicKundliFaq() {
                 onTouchEnd={() => setIsAutoRotating(true)}
                 className="bg-white rounded-xl p-5 md:p-8 lg:p-10 shadow-lg border border-gray-100"
               >
-                                 {/* Progress Bar */}
-                 <motion.div
-                   style={{ width: `${progress}%` }}
-                   className="h-1 bg-purple-600 rounded-full mb-4 md:mb-6"
-                 />
+                {/* Progress Bar */}
+                <motion.div
+                  style={{ width: `${progress}%` }}
+                  className="h-1 bg-purple-600 rounded-full mb-4 md:mb-6"
+                />
 
                 <motion.h3 
                   initial={{ opacity: 0 }}
@@ -196,12 +177,12 @@ export function GenomicKundliFaq() {
                   setIsAutoRotating(false)
                   setProgress(0)
                 }}
-                                 className={cn(
-                   "w-1.5 md:w-2 h-1.5 md:h-2 rounded-full transition-all duration-300",
-                   currentQuestionIndex === index
-                     ? "bg-purple-600 w-4 md:w-6"
-                     : "bg-gray-300"
-                 )}
+                className={cn(
+                  "w-1.5 md:w-2 h-1.5 md:h-2 rounded-full transition-all duration-300",
+                  currentQuestionIndex === index
+                    ? "bg-purple-600 w-4 md:w-6"
+                    : "bg-gray-300"
+                )}
                 aria-label={`Go to question ${index + 1}`}
               />
             ))}
