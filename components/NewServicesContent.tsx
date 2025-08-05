@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Card } from "@/components/ui/card";
-import { Activity, Microscope, Dna, Beaker, Network, Settings } from 'lucide-react';
+import { Microscope, Dna, Beaker, Network, Settings, Search, FileText, Database, TestTube, Code } from 'lucide-react';
 import { gql, useQuery } from '@apollo/client';
 import React from 'react';
 
@@ -47,13 +47,29 @@ const getIconForService = (title: string) => {
     case 'Gene Expression Analysis':
       return <Dna className="h-6 w-6" />;
     case 'Genome Assembly':
-      return <Network className="h-6 w-6" />;
+      return <Database className="h-6 w-6" />;
     case 'Variant Detection':
-      return <Activity className="h-6 w-6" />;
+      return <Search className="h-6 w-6" />;
     case 'Metagenomics':
       return <Beaker className="h-6 w-6" />;
     case 'Epigenetics':
       return <Microscope className="h-6 w-6" />;
+    case 'Bioinformatics Analysis':
+      return <Code className="h-6 w-6" />;
+    case 'Sequencing Services':
+      return <TestTube className="h-6 w-6" />;
+    case 'Data Analysis':
+      return <FileText className="h-6 w-6" />;
+    case 'Cancer Genomics':
+      return <Dna className="h-6 w-6" />;
+    case 'Rare Genetic Disorders':
+      return <Search className="h-6 w-6" />;
+    case 'Prenatal and Preimplantation Genetic Testing':
+      return <TestTube className="h-6 w-6" />;
+    case 'Infectious Disease Diagnosis':
+      return <Microscope className="h-6 w-6" />;
+    case 'Transplantation Genetics':
+      return <Database className="h-6 w-6" />;
     default:
       return <Settings className="h-6 w-6" />;
   }
