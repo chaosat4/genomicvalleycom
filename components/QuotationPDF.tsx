@@ -284,24 +284,24 @@ const QuotationDocument = ({ formData, priceBeforeGST, totalPrice, serviceTitle,
               <Text style={styles.boldText}>Number of Samples:</Text> {formData.numberOfSamples} {'\n'}
               <Text style={styles.boldText}>Read/Bases:</Text> {
                 // Check if this is a genome assembly service by service title
-                serviceTitle === 'Genome Assembly' 
+                serviceTitle === 'Genome Assembly'
                   ? `Short Read: ${formData.shortReadBaseRequired || 0} GB, Long Read: ${formData.longReadBaseRequired || 0} GB, Hi-C: ${formData.hicBaseRequired || 0} GB`
-                  : formData.readRequired 
-                    ? (formData.readRequired === 'other' ? capitalizeFirstLetter(formData.readRequiredOther) + ' M' : capitalizeFirstLetter(formData.readRequired) + ' M')
-                    : formData.basesRequired 
-                      ? (formData.basesRequired === 'other' ? capitalizeFirstLetter(formData.basesRequiredOther) + ' GB' : capitalizeFirstLetter(formData.basesRequired) + ' GB')
+                  : formData.readRequired
+                    ? `${formData.readRequired === 'other' ? (formData.readRequiredOther || '') : formData.readRequired}M`
+                    : formData.basesRequired
+                      ? (formData.basesRequired === 'other' ? `${capitalizeFirstLetter(formData.basesRequiredOther)} GB` : `${capitalizeFirstLetter(formData.basesRequired)} GB`)
                       : ''
               } {'\n'}
               {serviceTitle !== 'Genome Assembly' && (
                 <>
-                  <Text style={styles.boldText}>Read Length:</Text> {formData.readLength === 'other' ? capitalizeFirstLetter(formData.readLengthOther) : capitalizeFirstLetter(formData.readLength)} {'\n'}
+                  <Text style={styles.boldText}>Read Length:</Text> {formData.readLength === 'other' ? (formData.readLengthOther || '') : formData.readLength} {'\n'}
                 </>
               )}
               <Text style={styles.boldText}>Sequencing Platform:</Text> {
                 // Check if this is a genome assembly service by service title
-                serviceTitle === 'Genome Assembly' 
-                  ? `${formData.shortRead ? 'Short Read: ' + capitalizeFirstLetter(formData.shortRead) : ''}${formData.shortRead && formData.longRead ? ', ' : ''}${formData.longRead ? 'Long Read: ' + capitalizeFirstLetter(formData.longRead) : ''}`
-                  : capitalizeFirstLetter(formData.sequencingPlatform)
+                serviceTitle === 'Genome Assembly'
+                  ? `${formData.shortRead ? 'Short Read: ' + formatPlatform(formData.shortRead) : ''}${formData.shortRead && formData.longRead ? ', ' : ''}${formData.longRead ? 'Long Read: ' + formatPlatform(formData.longRead) : ''}`
+                  : formatPlatform(formData.sequencingPlatform)
               } {'\n'}
               <Text style={styles.boldText}>Data Analysis:</Text> {capitalizeFirstLetter(formData.dataAnalysis)}
             </Text>
@@ -483,3 +483,14 @@ const capitalizeFirstLetter = (text: string): string => {
   if (!text) return text;
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }; 
+
+// Ensure proper casing for platform names (e.g., MGI fully uppercased)
+const formatPlatform = (text: string): string => {
+  if (!text) return text;
+  const trimmed = text.trim();
+  if (/^mgi$/i.test(trimmed)) return 'MGI';
+  if (/^illumina$/i.test(trimmed)) return 'Illumina';
+  if (/^pacbio$/i.test(trimmed)) return 'PacBio';
+  if (/^nanopore$/i.test(trimmed)) return 'Nanopore';
+  return capitalizeFirstLetter(trimmed);
+};
