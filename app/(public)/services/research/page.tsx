@@ -1,29 +1,12 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Microscope, Brain, Database, Network, Activity, Dna, Beaker, Settings } from "lucide-react";
 import Image from "next/image";
-import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 
-const GET_RESEARCH_SERVICES = gql`
-  query {
-    services(pagination: { limit: 100 }) {
-      documentId
-      categoryName
-      mainContent {
-        contentTitle
-        leftBox {
-          title
-          description
-        }
-      }
-      order
-    }
-  }
-`;
-
-interface GraphQLService {
+interface Service {
   documentId: string;
   categoryName: string;
   mainContent: {
@@ -31,13 +14,9 @@ interface GraphQLService {
     leftBox: {
       title: string;
       description: string;
-    }
-  }
+    };
+  };
   order: number;
-}
-
-interface ServicesData {
-  services: GraphQLService[];
 }
 
 const getIconForService = (title: string) => {
@@ -63,7 +42,31 @@ const getIconForService = (title: string) => {
 
 export default function ResearchServicesPage() {
   const router = useRouter();
-  const { loading, error, data } = useQuery<ServicesData>(GET_RESEARCH_SERVICES);
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('/api/services?category=research');
+        const data = await response.json();
+        
+        if (data.success) {
+          const sortedServices = data.data.sort((a: Service, b: Service) => a.order - b.order);
+          setServices(sortedServices);
+        } else {
+          setError(data.error || 'Failed to fetch services');
+        }
+      } catch (err) {
+        setError('Error loading research services');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   const handleServiceClick = (documentId: string) => {
     router.push(`/services/research/${documentId}`);
@@ -82,15 +85,10 @@ export default function ResearchServicesPage() {
     <div className="min-h-screen bg-purple-50 pt-44 pb-12 flex items-center justify-center">
       <div className="text-center">
         <p className="text-red-600">Error loading research services</p>
-        <p className="text-gray-600 text-sm mt-2">{error.message}</p>
+        <p className="text-gray-600 text-sm mt-2">{error}</p>
       </div>
     </div>
   );
-
-  // Filter research services and sort by order
-  const researchServices = data?.services
-    .filter((service: GraphQLService) => service.categoryName === 'research')
-    .sort((a, b) => a.order - b.order) || [];
 
   return (
     <div className="min-h-screen bg-purple-50 pt-44 pb-12">
@@ -144,9 +142,9 @@ export default function ResearchServicesPage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
             Research Opportunities
           </h2>
-          {researchServices.length > 0 ? (
+          {services.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {researchServices.map((service) => (
+              {services.map((service) => (
                 <Card 
                   key={service.documentId} 
                   className="p-6 hover:shadow-lg transition-shadow cursor-pointer bg-white h-full flex flex-col"
@@ -207,4 +205,4 @@ function ResearchSection({
       </div>
     </div>
   );
-} 
+}

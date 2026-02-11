@@ -1,55 +1,38 @@
 'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Dna } from "lucide-react";
-import LoadingSpinner from "@/components/ui/loading-spinner";
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import LoadingSpinner from '@/components/ui/loading-spinner';
 
 interface ServiceData {
-  id: number;
-  name: string;
-  overview: string;
-  commitment: string;
-  contact: string;
-  price: number;
-  whyChoose: { feature: string; description: string }[];
-  whoCanBenefit: { type: string; description: string }[];
-  diseasesSupported: { name: string; relevance: string }[];
-  process: { step: string; description: string }[];
-  faqs: { question: string; answer: string }[];
+  documentId: string;
+  categoryName: 'diagnostic' | 'research';
+  mainContent: {
+    leftBox: { title: string; description: string };
+    contentTitle: string;
+    contentDescription: string;
+    servicesHeading: string;
+    servicesList: { number: string; title: string; details: string[] }[];
+    benefitsHeading: string;
+    benefits: string[];
+  };
 }
 
 export default function ServiceDetails({ id }: { id: string }) {
   const [data, setData] = useState<ServiceData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchService = async () => {
       try {
-        setIsLoading(true);
         const response = await fetch(`/api/services/${id}`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch service details');
+        const payload = await response.json();
+        if (!response.ok || !payload.success) {
+          throw new Error(payload.error || 'Failed to fetch service');
         }
-        
-        const serviceData = await response.json();
-        
-        // Validate required arrays exist
-        if (!serviceData.whyChoose) serviceData.whyChoose = [];
-        if (!serviceData.whoCanBenefit) serviceData.whoCanBenefit = [];
-        if (!serviceData.diseasesSupported) serviceData.diseasesSupported = [];
-        if (!serviceData.process) serviceData.process = [];
-        if (!serviceData.faqs) serviceData.faqs = [];
-        
-        setData(serviceData);
-        setError(null);
+        setData(payload.data);
       } catch (err) {
-        console.error('Error fetching service:', err);
         setError(err instanceof Error ? err.message : 'Failed to load service');
       } finally {
         setIsLoading(false);
@@ -59,13 +42,7 @@ export default function ServiceDetails({ id }: { id: string }) {
     fetchService();
   }, [id]);
 
-  const handleBuyNow = () => {
-    router.push(`/checkout/${id}`);
-  };
-
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  if (isLoading) return <LoadingSpinner />;
 
   if (error || !data) {
     return (
@@ -75,116 +52,62 @@ export default function ServiceDetails({ id }: { id: string }) {
     );
   }
 
+  const { mainContent } = data;
+
   return (
-    <div className="min-h-screen bg-purple-50 text-foreground pt-40 pb-12">
-      <div className="container mx-auto px-4 py-8">
-        <header className="mb-12 text-center">
-          <Dna className="inline-block w-16 h-16 text-primary mb-4" />
-          <h1 className="text-5xl font-bold mb-4 text-primary">{data.name}</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">{data.overview}</p>
-          <div className="flex justify-center items-center gap-4">
-            <button
-              onClick={handleBuyNow}
-              className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Buy Now
-            </button>
+    <div className="bg-purple-50 min-h-screen pt-40 pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto mt-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-3">
+          <div className="bg-white rounded-lg border-2 border-purple-500 p-6 flex flex-col items-center text-center">
+            <h3 className="text-xl font-bold mb-3">{mainContent.leftBox.title}</h3>
+            <p className="text-gray-700 text-center">{mainContent.leftBox.description}</p>
           </div>
-        </header>
 
-        <section className="mb-16">
-          <h2 className="text-3xl font-semibold mb-8 text-center text-primary">Why Choose Our Service</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data.whyChoose.map((feature, index) => (
-              <Card key={index} className="bg-accent shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardHeader>
-                  <CardTitle className="text-primary">{feature.feature}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="flex justify-center">
+            <Link href={`/request-quotation/${id}`}>
+              <button className="bg-purple-600 text-white my-4 px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">
+                Request For Quote
+              </button>
+            </Link>
           </div>
-        </section>
+        </div>
 
-        <section className="mb-16">
-          <h2 className="text-3xl font-semibold mb-8 text-center text-primary">Who Can Benefit</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {data.whoCanBenefit.map((item, index) => (
-              <Card key={index} className="bg-secondary shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardHeader>
-                  <CardTitle className="text-primary">{item.type}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-secondary-foreground">{item.description}</p>
-                </CardContent>
-              </Card>
+        <div className="lg:col-span-9">
+          <h2 className="text-3xl font-bold text-purple-600 mb-4">{mainContent.contentTitle}</h2>
+          <p className="text-gray-800 text-xl mb-4 text-justify">{mainContent.contentDescription}</p>
+
+          <h4 className="text-2xl font-semibold text-purple-600 mt-6 mb-4">{mainContent.servicesHeading}</h4>
+
+          <div className="space-y-6">
+            {mainContent.servicesList.map((service) => (
+              <div key={service.number}>
+                <h5 className="text-xl font-semibold flex items-center">
+                  <span className="bg-purple-600 text-white rounded-full w-7 h-7 flex items-center justify-center mr-2">
+                    {service.number}
+                  </span>
+                  {service.title}
+                </h5>
+                <div className="ml-9 text-gray-700">
+                  {service.details.map((detail, i) => (
+                    <p key={i} className="flex text-lg items-start text-justify">
+                      <span className="text-purple-600 mr-2">→</span>
+                      {detail}
+                    </p>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
-        </section>
 
-        <section className="mb-16">
-          <h2 className="text-3xl font-semibold mb-8 text-center text-primary">Diseases Supported</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data.diseasesSupported.map((disease, index) => (
-              <Card key={index} className="bg-muted shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardHeader>
-                  <CardTitle className="text-primary">{disease.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">{disease.relevance}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="mt-8">
+            <h4 className="text-xl font-semibold text-purple-600 mb-4">{mainContent.benefitsHeading}</h4>
+            <ul className="list-disc pl-5 space-y-2 text-gray-700">
+              {mainContent.benefits.map((benefit, i) => (
+                <li key={i} className="text-justify">{benefit}</li>
+              ))}
+            </ul>
           </div>
-        </section>
-
-        <section className="mb-16">
-          <h2 className="text-3xl font-semibold mb-8 text-center text-primary">Our Process</h2>
-          <ol className="list-none space-y-4">
-            {data.process.map((step, index) => (
-              <li key={index} className="bg-accent rounded-lg p-4 shadow-md">
-                <span className="font-semibold text-primary text-lg block mb-2">{step.step}</span>
-                <p className="text-accent-foreground">{step.description}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <section className="mb-16">
-          <h2 className="text-3xl font-semibold mb-8 text-center text-primary">Our Commitment</h2>
-          <Card className="bg-secondary shadow-lg">
-            <CardContent className="p-6">
-              <p className="text-lg text-secondary-foreground">{data.commitment}</p>
-            </CardContent>
-          </Card>
-        </section>
-
-        <section className="mb-16">
-          <h2 className="text-3xl font-semibold mb-8 text-center text-primary">Frequently Asked Questions</h2>
-          <Accordion type="single" collapsible className="w-full">
-            {data.faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border-b border-primary/20">
-                <AccordionTrigger className="text-primary hover:text-primary/80">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </section>
-
-        <section className="mb-16">
-          <h2 className="text-3xl font-semibold mb-8 text-center text-primary">Contact Us</h2>
-          <Card className="bg-accent shadow-lg">
-            <CardContent className="p-6">
-              <p className="text-lg text-center text-accent-foreground">{data.contact}</p>
-            </CardContent>
-          </Card>
-        </section>
+        </div>
       </div>
     </div>
   );

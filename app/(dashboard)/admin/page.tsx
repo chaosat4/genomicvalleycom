@@ -1,198 +1,190 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import { Pencil, Trash2, Plus, Package, ArrowRight } from "lucide-react";
 import Link from 'next/link';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Package, TestTube, Dna, FileText, DollarSign, Plus, ArrowRight } from 'lucide-react';
 
-interface Service {
-  id: number;
-  name: string;
-  overview: string;
-  price: number;
-  category: string;
-  createdAt: string;
-  _count: {
-    whyChoose: number;
-    whoCanBenefit: number;
-    diseasesSupported: number;
-    process: number;
-    faqs: number;
-  }
+interface DashboardStats {
+  totalServices: number;
+  publishedServices: number;
+  draftServices: number;
+  totalKits: number;
+  totalPanels: number;
+  totalQuotations: number;
 }
 
-const AdminDashboard = () => {
-  const router = useRouter();
-  const [services, setServices] = useState<Service[]>([]);
+export default function AdminDashboardPage() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuthAndFetchServices = async () => {
+    const fetchStats = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
+        // Fetch all stats in parallel
+        const [servicesRes, kitsRes, panelsRes, quotationsRes] = await Promise.all([
+          fetch('/api/admin/services?limit=1'),
+          fetch('/api/admin/kits?limit=1'),
+          fetch('/api/admin/panels?limit=1'),
+          fetch('/api/admin/quotations?limit=1').catch(() => ({ json: () => ({ pagination: { total: 0 } }) })),
+        ]);
 
-        if (!token || !userData) {
-          router.push('/login');
-          console.log('User not authenticated');
-          return;
-        }
+        const [servicesData, kitsData, panelsData] = await Promise.all([
+          servicesRes.json(),
+          kitsRes.json(),
+          panelsRes.json(),
+        ]);
 
-        const user = JSON.parse(userData);
-        if (!user.is_admin) {
-          router.push('/');
-          return;
-        }
-
-        // Fetch services
-        const response = await fetch('/api/services', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        setStats({
+          totalServices: servicesData.pagination?.total || 0,
+          publishedServices: 0, // Would need separate query
+          draftServices: 0, // Would need separate query
+          totalKits: kitsData.pagination?.total || 0,
+          totalPanels: panelsData.pagination?.total || 0,
+          totalQuotations: 0,
         });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch services');
-        }
-
-        const data = await response.json();
-        setServices(Array.isArray(data) ? data : []);
       } catch (error) {
-        console.error('Failed to fetch services:', error);
-        setServices([]);
+        console.error('Error fetching stats:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    checkAuthAndFetchServices();
-  }, [router]);
+    fetchStats();
+  }, []);
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this service?')) return;
+  const statCards = [
+    {
+      title: 'Total Services',
+      value: stats?.totalServices || 0,
+      icon: Package,
+      href: '/dashboard/admin/services/manage',
+      color: 'bg-blue-500',
+    },
+    {
+      title: 'Kits',
+      value: stats?.totalKits || 0,
+      icon: TestTube,
+      href: '/dashboard/admin/kits/manage',
+      color: 'bg-green-500',
+    },
+    {
+      title: 'Panels',
+      value: stats?.totalPanels || 0,
+      icon: Dna,
+      href: '/dashboard/admin/panels/manage',
+      color: 'bg-purple-500',
+    },
+    {
+      title: 'Quotations',
+      value: stats?.totalQuotations || 0,
+      icon: FileText,
+      href: '/dashboard/admin/quotations',
+      color: 'bg-orange-500',
+    },
+  ];
 
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/services/${id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        setServices(services.filter(service => service.id !== id));
-      }
-    } catch (error) {
-      console.error('Failed to delete service:', error);
-    }
-  };
-
-  const handleEdit = (id: number) => {
-    router.push(`/admin/services/${id}/edit`);
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+  const quickActions = [
+    {
+      title: 'Add New Service',
+      description: 'Create a new diagnostic or research service',
+      href: '/dashboard/admin/services/new',
+      icon: Plus,
+    },
+    {
+      title: 'Add New Kit',
+      description: 'Add a new kit to the library',
+      href: '/dashboard/admin/kits/new',
+      icon: TestTube,
+    },
+    {
+      title: 'Update Pricing',
+      description: 'Modify service pricing configuration',
+      href: '/dashboard/admin/pricing',
+      icon: DollarSign,
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-purple-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Add Service Button */}
-        <Link 
-          href="/admin/services/new" 
-          className="block bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-        >
-          <div className="p-6 flex items-center justify-between group">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
-                <Plus className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900">Add New Service</h3>
-                <p className="text-gray-600 mt-1">Create a new service offering</p>
-              </div>
-            </div>
-            <ArrowRight className="h-6 w-6 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-          </div>
-        </Link>
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
+        <p className="text-gray-600 mt-2">Manage your services, kits, panels, and pricing</p>
+      </div>
 
-        {/* Services List Section */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <Package className="h-6 w-6 text-primary" />
-            <h2 className="text-2xl font-semibold">All Services</h2>
-          </div>
-          
-          <div className="grid gap-4">
-            {services.map((service) => (
-              <Card key={service.id} className="hover:shadow-lg transition-shadow duration-200">
-                <CardContent className="flex items-center justify-between p-4">
-                  <div className="flex-grow">
-                    <h3 className="text-lg font-semibold text-gray-900">{service.name}</h3>
-                    <p className="text-gray-600 mt-1 line-clamp-2">{service.overview}</p>
-                    <div className="mt-2 flex items-center gap-2 flex-wrap">
-                      <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-                        ₹{service.price}
-                      </span>
-                      <span className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-sm font-medium">
-                        {service.category}
-                      </span>
-                      <div className="flex gap-2 text-sm text-gray-500">
-                        <span title="Features">{service._count.whyChoose} features</span>
-                        <span>•</span>
-                        <span title="Diseases">{service._count.diseasesSupported} diseases</span>
-                        <span>•</span>
-                        <span title="Process Steps">{service._count.process} steps</span>
-                        <span>•</span>
-                        <span title="FAQs">{service._count.faqs} FAQs</span>
-                      </div>
-                      <span className="text-sm text-gray-400">
-                        Added {new Date(service.createdAt).toLocaleDateString()}
-                      </span>
+      {/* Stats Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="animate-pulse">
+              <CardContent className="p-6">
+                <div className="h-16 bg-gray-200 rounded"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {statCards.map((stat) => (
+            <Link key={stat.title} href={stat.href}>
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                      <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
                     </div>
-                  </div>
-                  <div className="flex gap-3 ml-4">
-                    <button
-                      onClick={() => handleEdit(service.id)}
-                      className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-full transition-colors"
-                      title="Edit service"
-                    >
-                      <Pencil className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(service.id)}
-                      className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-full transition-colors"
-                      title="Delete service"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
+                    <div className={`${stat.color} p-3 rounded-lg`}>
+                      <stat.icon className="h-6 w-6 text-white" />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
-            ))}
-            {services.length === 0 && (
-              <div className="text-center py-12 bg-gray-50 rounded-lg">
-                <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg">
-                  No services found
-                </p>
-                <p className="text-gray-400 text-sm mt-1">
-                  Add your first service using the form above
-                </p>
-              </div>
-            )}
-          </div>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {/* Quick Actions */}
+      <div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {quickActions.map((action) => (
+            <Link key={action.title} href={action.href}>
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-purple-100 p-3 rounded-lg group-hover:bg-purple-200 transition-colors">
+                        <action.icon className="h-6 w-6 text-purple-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{action.title}</h3>
+                        <p className="text-sm text-gray-600 mt-1">{action.description}</p>
+                      </div>
+                    </div>
+                    <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-purple-600 transition-colors" />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
         </div>
       </div>
+
+      {/* Recent Activity Placeholder */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-600 text-center py-8">
+            Recent service updates and quotation activity will appear here
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default AdminDashboard;
+}

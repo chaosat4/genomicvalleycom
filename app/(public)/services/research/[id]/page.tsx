@@ -1,81 +1,51 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link';
-import { gql } from '@apollo/client';
-import client from '@/lib/apollo';
-
-interface ServiceDetail {
-  details: {
-    detailsItem: string;
-  }[];
-}
 
 interface Service {
   number: string;
   title: string;
-  details: {
-    detailsItem: string;
-  }[];
-}
-
-interface MainContent {
-  leftBox: {
-    title: string;
-    description: string;
-  };
-  contentTitle: string;
-  contentDescription: string;
-  servicesHeading: string;
-  servicesList: Service[];
-  benefitsHeading: string;
-  benefits: {
-    benefitsItem: string;
-  }[];
+  details: string[];
 }
 
 interface ServiceData {
   documentId: string;
   categoryName: string;
-  mainContent: MainContent;
+  mainContent: {
+    leftBox: {
+      title: string;
+      description: string;
+    };
+    contentTitle: string;
+    contentDescription: string;
+    servicesHeading: string;
+    servicesList: Service[];
+    benefitsHeading: string;
+    benefits: string[];
+  };
 }
 
-const GET_SERVICE = gql`
-  query GetService($documentId: ID!) {
-    service(documentId: $documentId) {
-      documentId
-      categoryName
-      mainContent {
-        contentTitle
-        contentDescription
-        servicesHeading
-        servicesList {
-          number
-          title
-          details {
-            detailsItem
-          }
-        }
-        leftBox {
-          title
-          description
-        }
-        benefitsHeading
-        benefits {
-          benefitsItem
-        }
-      }
+async function getService(documentId: string): Promise<ServiceData | null> {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/services/${documentId}`, {
+      cache: 'no-store'
+    });
+    
+    if (!response.ok) {
+      return null;
     }
+    
+    const data = await response.json();
+    return data.success ? data.data : null;
+  } catch (error) {
+    console.error('Error fetching service:', error);
+    return null;
   }
-`;
+}
 
 export default async function ServicePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   
-  const { data } = await client.query({
-    query: GET_SERVICE,
-    variables: { documentId: id }
-  });
-
-  const service = data.service;
+  const service = await getService(id);
 
   if (!service || service.categoryName !== 'research') {
     notFound()
@@ -131,10 +101,10 @@ export default async function ServicePage({ params }: { params: Promise<{ id: st
                     {service.title}
                   </h5>
                   <div className="ml-9 text-gray-700">
-                    {service.details.map((detail: { detailsItem: string }, i: number) => (
+                    {service.details.map((detail: string, i: number) => (
                       <p key={i} className="flex text-lg items-start text-justify">
                         <span className="text-purple-600 mr-2">→</span>
-                        {detail.detailsItem}
+                        {detail}
                       </p>
                     ))}
                   </div>
@@ -147,8 +117,8 @@ export default async function ServicePage({ params }: { params: Promise<{ id: st
                 {mainContent.benefitsHeading}
               </h4>
               <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                {mainContent.benefits.map((benefit: { benefitsItem: string }, i: number) => (
-                  <li key={i} className="text-justify">{benefit.benefitsItem}</li>
+                {mainContent.benefits.map((benefit: string, i: number) => (
+                  <li key={i} className="text-justify">{benefit}</li>
                 ))}
               </ul>
             </div>

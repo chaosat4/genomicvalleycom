@@ -1,95 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { getMongoClient } from '@/lib/mongodb';
+import Service from '@/lib/models/Service';
+import { handleOptions, withCors } from '@/lib/api/cors';
+import { parseEnumParam } from '@/lib/api/query';
 
+const allowedCategories = ['diagnostic', 'research'] as const;
 
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    
-    if (!body.name || !body.overview || !body.category) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
-
-    const service = await prisma.service.create({
-      data: {
-        name: body.name,
-        overview: body.overview,
-        commitment: body.commitment || '',
-        contact: body.contact || '',
-        price: parseFloat(body.price) || 0,
-        category: body.category,
-        razorpay_link: body.razorpay_link || '',
-        whyChoose: {
-          create: body.whyChoose || []
-        },
-        whoCanBenefit: {
-          create: body.whoCanBenefit || []
-        },
-        diseasesSupported: {
-          create: body.diseasesSupported || []
-        },
-        process: {
-          create: body.process || []
-        },
-        faqs: {
-          create: body.faqs || []
-        }
-      },
-      include: {
-        whyChoose: true,
-        whoCanBenefit: true,
-        diseasesSupported: true,
-        process: true,
-        faqs: true
-      }
-    });
-
-    return NextResponse.json(service, { status: 201 });
-  } catch (error) {
-    console.error('Service creation error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
+export function OPTIONS(request: NextRequest) {
+  return handleOptions(request);
 }
 
+// GET /api/services - List published services
 export async function GET(request: NextRequest) {
   try {
-    const services = await prisma.service.findMany({
-      select: {
-        id: true,
-        name: true,
-        overview: true,
-        price: true,
-        category: true,
-        razorpay_link: true,
-        createdAt: true,
-        _count: {
-          select: {
-            whyChoose: true,
-            whoCanBenefit: true,
-            diseasesSupported: true,
-            process: true,
-            faqs: true,
-          }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
+    const { searchParams } = new URL(request.url);
+    const categoryRaw = searchParams.get('category');
+    const category = parseEnumParam(categoryRaw, allowedCategories);
+    if (categoryRaw && !category) {
+      return withCors(request, NextResponse.json({ success: false, error: 'Invalid category filter' }, { status: 400 }));
+    }
+    
+    await getMongoClient();
 
-    return NextResponse.json(services);
+    const filter: any = { status: 'published' };
+    if (category) filter.categoryName = category;
+
+    const services = await Service.find(filter)
+      .select('documentId categoryName order stockStatus mainContent.contentTitle mainContent.leftBox')
+      .sort({ order: 1 })
+      .lean();
+
+    return withCors(request, NextResponse.json({ success: true, data: services }));
   } catch (error) {
-    console.error('Failed to fetch services:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error('Error fetching services:', error);
+    return withCors(request, NextResponse.json({ success: false, error: 'Failed to fetch services' }, { status: 500 }));
   }
-} 
+}
