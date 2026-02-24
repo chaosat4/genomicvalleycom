@@ -1,51 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { connectDB } from '@/lib/mongodb';
+import Service from '@/lib/models/Service';
+import { handleOptions, withCors } from '@/lib/api/cors';
+
+export function OPTIONS(request: NextRequest) {
+  return handleOptions(request);
+}
 
 export async function GET(request: NextRequest) {
-  console.log('Received request URL:', request.url); // Debug log
   try {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
-    console.log('Category param:', category); // Debug log
 
-    if (!category) {
-      return NextResponse.json(
-        { error: 'Category parameter is required' },
+    if (!category || !['diagnostic', 'research'].includes(category)) {
+      return withCors(request, NextResponse.json(
+        { success: false, error: 'Valid category parameter is required (diagnostic or research)' },
         { status: 400 }
-      );
+      ));
     }
 
-    const services = await prisma.service.findMany({
-      where: { category },
-      select: {
-        id: true,
-        name: true,
-        overview: true,
-        price: true,
-        category: true,
-        razorpay_link: true, // Added this to match the other endpoint
-        createdAt: true,     // Added this to match the other endpoint
-        _count: {
-          select: {
-            whyChoose: true,
-            diseasesSupported: true,
-            process: true,
-            whoCanBenefit: true, // Added this to match the other endpoint
-            faqs: true,          // Added this to match the other endpoint
-          }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
+    await connectDB();
 
-    return NextResponse.json(services);
+    const services = await Service.find({ 
+      categoryName: category,
+      status: 'published'
+    })
+    .select('documentId categoryName order mainContent.contentTitle mainContent.leftBox')
+    .sort({ order: 1 })
+    .lean();
+
+    return withCors(request, NextResponse.json({ success: true, data: services }));
   } catch (error) {
     console.error('Failed to fetch services:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
+    return withCors(request, NextResponse.json(
+      { success: false, error: 'Internal server error' },
       { status: 500 }
-    );
+    ));
   }
-} 
+}

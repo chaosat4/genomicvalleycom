@@ -345,11 +345,11 @@ export function SiteHeader() {
                     </NavigationMenuItem>
                   ) : !item.features ? (
                     <NavigationMenuItem key={item.name}>
-                      <Link href={item.href} legacyBehavior passHref>
-                        <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-purple-50 px-4 py-2 text-base font-normal transition-colors hover:bg-purple-100 hover:text-accent-foreground focus:bg-purple-100 focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
+                      <NavigationMenuLink asChild>
+                        <Link href={item.href} className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-purple-50 px-4 py-2 text-base font-normal transition-colors hover:bg-purple-100 hover:text-accent-foreground focus:bg-purple-100 focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
                           {item.name}
-                        </NavigationMenuLink>
-                      </Link>
+                        </Link>
+                      </NavigationMenuLink>
                     </NavigationMenuItem>
                   ) : (
                     <>

@@ -1,29 +1,12 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Activity, Heart, Shield, Users, Microscope, Brain, Database, Network, Dna, Beaker, Settings } from "lucide-react";
 import Image from "next/image";
-import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 
-const GET_DIAGNOSTIC_SERVICES = gql`
-  query {
-    services(pagination: { limit: 100 }) {
-      documentId
-      categoryName
-      mainContent {
-        contentTitle
-        leftBox {
-          title
-          description
-        }
-      }
-      order
-    }
-  }
-`;
-
-interface GraphQLService {
+interface Service {
   documentId: string;
   categoryName: string;
   mainContent: {
@@ -31,13 +14,9 @@ interface GraphQLService {
     leftBox: {
       title: string;
       description: string;
-    }
-  }
+    };
+  };
   order: number;
-}
-
-interface ServicesData {
-  services: GraphQLService[];
 }
 
 const getIconForService = (title: string) => {
@@ -71,7 +50,31 @@ const getIconForService = (title: string) => {
 
 export default function DiagnosticServicesPage() {
   const router = useRouter();
-  const { loading, error, data } = useQuery<ServicesData>(GET_DIAGNOSTIC_SERVICES);
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('/api/services?category=diagnostic');
+        const data = await response.json();
+        
+        if (data.success) {
+          const sortedServices = data.data.sort((a: Service, b: Service) => a.order - b.order);
+          setServices(sortedServices);
+        } else {
+          setError(data.error || 'Failed to fetch services');
+        }
+      } catch (err) {
+        setError('Error loading diagnostic services');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   const handleServiceClick = (documentId: string) => {
     router.push(`/services/diagnostic/${documentId}`);
@@ -90,15 +93,10 @@ export default function DiagnosticServicesPage() {
     <div className="min-h-screen bg-purple-50 pt-44 pb-12 flex items-center justify-center">
       <div className="text-center">
         <p className="text-red-600">Error loading diagnostic services</p>
-        <p className="text-gray-600 text-sm mt-2">{error.message}</p>
+        <p className="text-gray-600 text-sm mt-2">{error}</p>
       </div>
     </div>
   );
-
-  // Filter diagnostic services and sort by order
-  const diagnosticServices = data?.services
-    .filter((service: GraphQLService) => service.categoryName === 'diagnostic')
-    .sort((a, b) => a.order - b.order) || [];
 
   return (
     <div className="min-h-screen bg-purple-50 pt-44 pb-12">
@@ -152,9 +150,9 @@ export default function DiagnosticServicesPage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
             Available Services
           </h2>
-          {diagnosticServices.length > 0 ? (
+          {services.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {diagnosticServices.map((service) => (
+              {services.map((service) => (
                 <Card 
                   key={service.documentId} 
                   className="p-6 hover:shadow-lg transition-shadow cursor-pointer bg-white h-full flex flex-col"
@@ -215,4 +213,4 @@ function ServiceSection({
       </div>
     </div>
   );
-} 
+}

@@ -1,56 +1,35 @@
 'use client';
 
-import { use, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import QuotationForm from "@/components/QuotationForm";
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from '@/lib/auth-client';
+import QuotationForm from '@/components/QuotationForm';
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const { id } = use(params);
+  const { data: session, isPending } = useSession();
+  const [id, setId] = useState<string>('');
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          const returnUrl = `/request-quotation/${id}`;
-          router.push(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
-          return;
-        }
+    params.then(p => setId(p.id));
+  }, [params]);
 
-        const response = await fetch('/api/me', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  useEffect(() => {
+    if (!isPending && !session && id) {
+      router.push(`/login?returnUrl=${encodeURIComponent(`/request-quotation/${id}`)}`);
+    }
+  }, [session, isPending, router, id]);
 
-        if (!response.ok) {
-          const returnUrl = `/request-quotation/${id}`;
-          router.push(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
-          return;
-        }
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Auth check error:', error);
-        const returnUrl = `/request-quotation/${id}`;
-        router.push(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
-      }
-    };
-
-    checkAuth();
-  }, [router, id]);
-
-  if (isLoading) {
+  if (isPending || !id) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="relative w-16 h-16">
-          <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-          <div className="absolute top-0 left-0 w-full h-full border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-        </div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
+  }
+
+  if (!session) {
+    return null;
   }
 
   return <QuotationForm id={id} />;

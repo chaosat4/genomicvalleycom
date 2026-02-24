@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Footer from "@/components/footer";
-import { SupportBanner } from "@/components/SupportBanner";
-import { SiteHeader } from "@/components/site-header";
 import Providers from '@/components/Providers';
 import { Toaster } from "@/components/ui/toaster";
 
@@ -31,15 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`min-h-screen bg-background font-serif bg-purple-50 antialiased ${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`min-h-screen bg-background antialiased ${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
-          <main className="mx-auto max-w-[1200px]">
-            {children}
-          </main>
-          <SupportBanner />
-          <div className="mx-auto max-w-[1200px]">
-            <Footer />
-          </div>
+          {children}
         </Providers>
         <Toaster />
       </body>
