@@ -1,15 +1,17 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import clientPromise from "./mongodb";
+import { dbPromise } from "./mongodb";
 import { getEnv, getOptionalEnv } from "./env";
 
+const db = await dbPromise;
+
 export const auth = betterAuth({
-  database: mongodbAdapter(clientPromise as any),
+  database: mongodbAdapter(db),
   
-  providers: {
+  socialProviders: {
     google: {
-      clientId: getOptionalEnv("GOOGLE_CLIENT_ID", "") || "",
-      clientSecret: getOptionalEnv("GOOGLE_CLIENT_SECRET", "") || "",
+      clientId: getOptionalEnv("GOOGLE_CLIENT_ID") || "",
+      clientSecret: getOptionalEnv("GOOGLE_CLIENT_SECRET") || "",
     },
   },
   
@@ -44,6 +46,20 @@ export const auth = betterAuth({
   secret: getEnv("BETTER_AUTH_SECRET"),
   
   baseURL: getEnv("BETTER_AUTH_URL"),
+  
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user: any) => {
+          const adminEmail = getOptionalEnv("ADMIN_EMAIL");
+          if (adminEmail && user.email === adminEmail) {
+            return { data: { ...user, role: "admin" } };
+          }
+          return { data: { ...user, role: "patient" } };
+        },
+      },
+    },
+  },
   
   callbacks: {
     async session(session: any) {

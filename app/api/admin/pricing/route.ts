@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMongoClient } from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongodb';
 import PriceConfiguration from '@/lib/models/PriceConfiguration';
 import { pricingSchema } from '@/lib/validation/schemas';
 import { handleOptions, withCors } from '@/lib/api/cors';
 import { getClientIp, rateLimit } from '@/lib/api/rate-limit';
+import { requireAdmin } from '@/lib/api/admin-guard';
 
 export function OPTIONS(request: NextRequest) {
   return handleOptions(request);
 }
 
 export async function GET(request: NextRequest) {
+  const denied = await requireAdmin(request);
+  if (denied) return denied;
   try {
-    await getMongoClient();
+    await connectDB();
     
     let config = await PriceConfiguration.findOne({ isActive: true })
       .populate('libraryPreparation.kitRef')
@@ -46,6 +49,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = await requireAdmin(request);
+  if (denied) return denied;
   try {
     const ip = getClientIp(request.headers);
     const rl = rateLimit(`admin-pricing:${ip}`, { windowMs: 60_000, max: 20 });
@@ -60,7 +65,7 @@ export async function PUT(request: NextRequest) {
       return withCors(request, NextResponse.json({ success: false, error: 'Invalid payload', code: 'VALIDATION_ERROR', details: parsed.error.issues }, { status: 400 }));
     }
     const body = parsed.data;
-    await getMongoClient();
+    await connectDB();
 
     // Find existing active config or create new one
     let config = await PriceConfiguration.findOne({ isActive: true });

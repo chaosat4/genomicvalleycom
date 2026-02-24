@@ -27,22 +27,23 @@ export default function AdminDashboardPage() {
           fetch('/api/admin/services?limit=1'),
           fetch('/api/admin/kits?limit=1'),
           fetch('/api/admin/panels?limit=1'),
-          fetch('/api/admin/quotations?limit=1').catch(() => ({ json: () => ({ pagination: { total: 0 } }) })),
+          fetch('/api/admin/quotations?limit=1'),
         ]);
 
-        const [servicesData, kitsData, panelsData] = await Promise.all([
+        const [servicesData, kitsData, panelsData, quotationsData] = await Promise.all([
           servicesRes.json(),
           kitsRes.json(),
           panelsRes.json(),
+          quotationsRes.json(),
         ]);
 
         setStats({
-          totalServices: servicesData.pagination?.total || 0,
-          publishedServices: 0, // Would need separate query
-          draftServices: 0, // Would need separate query
-          totalKits: kitsData.pagination?.total || 0,
-          totalPanels: panelsData.pagination?.total || 0,
-          totalQuotations: 0,
+          totalServices:    servicesData.pagination?.total  || 0,
+          publishedServices: 0,
+          draftServices:     0,
+          totalKits:        kitsData.pagination?.total      || 0,
+          totalPanels:      panelsData.pagination?.total    || 0,
+          totalQuotations:  quotationsData.pagination?.total || 0,
         });
       } catch (error) {
         console.error('Error fetching stats:', error);

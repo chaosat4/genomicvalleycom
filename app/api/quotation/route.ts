@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMongoClient } from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongodb';
 import PriceConfiguration from '@/lib/models/PriceConfiguration';
 import Quotation from '@/lib/models/Quotation';
 import { quotationRequestSchema } from '@/lib/validation/schemas';
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const { serviceTitle, formData, userInfo } = parsed.data;
 
 
-    await getMongoClient();
+    await connectDB();
 
     // Get current price configuration
     const priceConfig = await PriceConfiguration.findOne({ isActive: true }).lean();

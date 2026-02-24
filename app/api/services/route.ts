@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMongoClient } from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongodb';
 import Service from '@/lib/models/Service';
 import { handleOptions, withCors } from '@/lib/api/cors';
 import { parseEnumParam } from '@/lib/api/query';
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       return withCors(request, NextResponse.json({ success: false, error: 'Invalid category filter' }, { status: 400 }));
     }
     
-    await getMongoClient();
+    await connectDB();
 
     const filter: any = { status: 'published' };
     if (category) filter.categoryName = category;

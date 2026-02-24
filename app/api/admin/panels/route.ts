@@ -1,25 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMongoClient } from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongodb';
 import Panel from '@/lib/models/Panel';
 import { panelSchema } from '@/lib/validation/schemas';
 import { escapeRegex } from '@/lib/api/safe-regex';
 import { handleOptions, withCors } from '@/lib/api/cors';
 import { getClientIp, rateLimit } from '@/lib/api/rate-limit';
-import { parsePositiveInt } from '@/lib/api/query';
+import { parseBooleanParam, parsePositiveInt } from '@/lib/api/query';
+import { requireAdmin } from '@/lib/api/admin-guard';
 
 export function OPTIONS(request: NextRequest) {
   return handleOptions(request);
 }
 
 export async function GET(request: NextRequest) {
+  const denied = await requireAdmin(request);
+  if (denied) return denied;
   try {
     const { searchParams } = new URL(request.url);
-    const page = parsePositiveInt(searchParams.get('page'), 1, 1, 10_000);
-    const limit = parsePositiveInt(searchParams.get('limit'), 50, 1, 100);
-    const search = searchParams.get('search');
-    const skip = (page - 1) * limit;
+    const page        = parsePositiveInt(searchParams.get('page'), 1, 1, 10_000);
+    const limit       = parsePositiveInt(searchParams.get('limit'), 50, 1, 100);
+    const search      = searchParams.get('search');
+    const isActiveRaw = searchParams.get('isActive');
+    const skip        = (page - 1) * limit;
 
     const filter: any = {};
+
+    const isActive = parseBooleanParam(isActiveRaw);
+    if (isActiveRaw !== null && isActive === undefined) {
+      return withCors(request, NextResponse.json({ success: false, error: 'Invalid isActive filter' }, { status: 400 }));
+    }
+    if (isActive !== undefined) filter.isActive = isActive;
+
     if (search && search.trim()) {
       const safe = escapeRegex(search.trim().slice(0, 120));
       filter.$or = [
@@ -28,7 +39,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    await getMongoClient();
+    await connectDB();
     const [panels, total] = await Promise.all([
       Panel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
       Panel.countDocuments(filter),
@@ -42,6 +53,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const denied = await requireAdmin(request);
+  if (denied) return denied;
   try {
     const ip = getClientIp(request.headers);
     const rl = rateLimit(`admin-panels:${ip}`, { windowMs: 60_000, max: 30 });
@@ -56,7 +69,7 @@ export async function POST(request: NextRequest) {
       return withCors(request, NextResponse.json({ success: false, error: 'Invalid payload', code: 'VALIDATION_ERROR', details: parsed.error.issues }, { status: 400 }));
     }
     const body = parsed.data;
-    await getMongoClient();
+    await connectDB();
 
     const existingPanel = await Panel.findOne({ documentId: body.documentId });
     if (existingPanel) {

@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from '@/lib/auth-client';
 import {
   LayoutDashboard,
@@ -11,11 +11,13 @@ import {
   Dna,
   DollarSign,
   FileText,
+  Users,
   ChevronLeft,
   ChevronRight,
   LogOut,
   Menu,
-  X
+  X,
+  ShieldAlert,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -70,53 +72,35 @@ const navItems: NavItem[] = [
     href: '/dashboard/admin/quotations',
     icon: <FileText className="h-5 w-5" />,
   },
+  {
+    label: 'Users',
+    href: '/dashboard/admin/users',
+    icon: <Users className="h-5 w-5" />,
+  },
 ];
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session, isPending } = useSession();
 
-  if (isPending) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
-      </div>
-    );
-  }
+  // Redirect if not authenticated or not admin — after session resolves
+  useEffect(() => {
+    if (isPending) return;
+    if (!session) {
+      router.replace(`/login?returnUrl=${encodeURIComponent(pathname)}`);
+      return;
+    }
+    const role = (session.user as any)?.role;
+    if (role !== 'admin') {
+      router.replace('/');
+    }
+  }, [isPending, session, pathname]);
 
-  if (!session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <p className="text-gray-600 mb-4">Please sign in to access the admin dashboard</p>
-          <Button asChild>
-            <Link href="/login">Sign In</Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // Check admin role - extend session type if needed
-  const user = session.user as any;
-  if (user?.role !== 'admin') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">Access denied. Admin privileges required.</p>
-          <Button asChild variant="outline">
-            <Link href="/">Go Home</Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const user = session?.user as any;
+  const isAdmin = !isPending && !!session && user?.role === 'admin';
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -132,16 +116,16 @@ export default function AdminLayout({
         )}
       </button>
 
-      {/* Sidebar */}
+      {/* Sidebar — always rendered */}
       <aside
         className={cn(
-          'fixed lg:static inset-y-0 left-0 z-40 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out',
+          'fixed lg:static inset-y-0 left-0 z-40 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out',
           sidebarOpen ? 'w-64' : 'w-20',
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 shrink-0">
           <Link href="/dashboard/admin" className="flex items-center gap-2">
             <div className="h-8 w-8 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
               <span className="text-white font-bold text-sm">GV</span>
@@ -163,9 +147,10 @@ export default function AdminLayout({
         </div>
 
         {/* Navigation */}
-        <nav className="p-4 space-y-1">
+        <nav className="flex-1 overflow-y-auto p-4 space-y-1">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+            const isActive =
+              pathname === item.href || pathname.startsWith(item.href + '/');
             const hasChildren = item.children && item.children.length > 0;
 
             return (
@@ -187,7 +172,6 @@ export default function AdminLayout({
                   )}
                 </Link>
 
-                {/* Submenu */}
                 {hasChildren && sidebarOpen && (
                   <div className="ml-8 mt-1 space-y-1">
                     {item.children!.map((child) => {
@@ -215,44 +199,59 @@ export default function AdminLayout({
         </nav>
 
         {/* User Section */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-white">
-          {sidebarOpen ? (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span className="text-gray-600 font-medium text-sm">
-                    {session.user.name?.charAt(0).toUpperCase() || session.user.email?.charAt(0).toUpperCase()}
-                  </span>
+        <div className="shrink-0 p-4 border-t border-gray-200 bg-white">
+          {isPending ? (
+            /* Skeleton while session loads */
+            <div className={cn('flex items-center gap-3', !sidebarOpen && 'justify-center')}>
+              <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse shrink-0" />
+              {sidebarOpen && (
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3.5 w-24 bg-gray-200 animate-pulse rounded" />
+                  <div className="h-3 w-16 bg-gray-100 animate-pulse rounded" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {session.user.name || session.user.email}
-                  </p>
-                  <p className="text-xs text-gray-500">Administrator</p>
+              )}
+            </div>
+          ) : session ? (
+            sidebarOpen ? (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center shrink-0">
+                    <span className="text-purple-700 font-semibold text-sm">
+                      {session.user.name?.charAt(0).toUpperCase() ||
+                        session.user.email?.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {session.user.name || session.user.email}
+                    </p>
+                    <p className="text-xs text-gray-500">Administrator</p>
+                  </div>
                 </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => signOut()}
+                  className="text-gray-400 hover:text-red-600 shrink-0"
+                  title="Sign out"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => signOut()}
-                className="text-gray-500 hover:text-red-600"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
-          ) : (
-            <div className="flex justify-center">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => signOut()}
-                className="text-gray-500 hover:text-red-600"
-                title="Sign out"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
+            ) : (
+              <div className="flex justify-center">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => signOut()}
+                  className="text-gray-400 hover:text-red-600"
+                  title="Sign out"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+            )
+          ) : null}
         </div>
       </aside>
 
@@ -265,9 +264,21 @@ export default function AdminLayout({
       )}
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">
-        <div className="p-4 lg:p-8">
-          {children}
+      <main className="flex-1 min-w-0 overflow-auto">
+        <div className="p-4 lg:p-8 animate-in fade-in duration-200">
+          {/* Access denied — shown inline, not as full-screen takeover */}
+          {!isPending && session && !isAdmin ? (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-4">
+              <ShieldAlert className="h-12 w-12 text-red-400" />
+              <p className="text-gray-700 font-medium text-lg">Access denied</p>
+              <p className="text-gray-500 text-sm">Admin privileges required.</p>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/">Go Home</Link>
+              </Button>
+            </div>
+          ) : (
+            children
+          )}
         </div>
       </main>
     </div>

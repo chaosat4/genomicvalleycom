@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMongoClient } from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongodb';
 import Service from '@/lib/models/Service';
 import { handleOptions, withCors } from '@/lib/api/cors';
 
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       ));
     }
 
-    await getMongoClient();
+    await connectDB();
 
     const services = await Service.find({ 
       categoryName: category,

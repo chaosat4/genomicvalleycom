@@ -10,7 +10,9 @@ export async function proxy(request: NextRequest) {
 
     if (request.nextUrl.pathname.startsWith('/dashboard/admin')) {
       if (!session || (session.user as any).role !== 'admin') {
-        return NextResponse.redirect(new URL('/login', request.url));
+        const loginUrl = new URL('/login', request.url);
+        loginUrl.searchParams.set('returnUrl', request.nextUrl.pathname);
+        return NextResponse.redirect(loginUrl);
       }
     }
 
@@ -24,7 +26,9 @@ export async function proxy(request: NextRequest) {
     if (request.nextUrl.pathname.startsWith('/api/admin')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    return NextResponse.redirect(new URL('/login', request.url));
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('returnUrl', request.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();

@@ -140,7 +140,7 @@ const PriceConfigurationSchema: Schema = new Schema({
 });
 
 // Ensure only one active price configuration
-PriceConfigurationSchema.pre('save', async function(next: any) {
+PriceConfigurationSchema.pre('save', async function() {
   if (this.isActive) {
     const Model = this.constructor as any;
     await Model.updateMany(
@@ -148,7 +148,6 @@ PriceConfigurationSchema.pre('save', async function(next: any) {
       { isActive: false }
     );
   }
-  next();
 });
 
 export default mongoose.models.PriceConfiguration || mongoose.model<IPriceConfiguration>('PriceConfiguration', PriceConfigurationSchema);

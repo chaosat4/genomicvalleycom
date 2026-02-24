@@ -1,7 +1,90 @@
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+interface Panel {
+  _id: string;
+  documentId: string;
+  name: string;
+  geneCount: number;
+  category: 'human' | 'pro' | 'ultra';
+  order: number;
+}
+
+interface GroupedPanels {
+  human: Panel[];
+  pro: Panel[];
+  ultra: Panel[];
+}
+
+const TAB_LABELS: Record<keyof GroupedPanels, string> = {
+  human: 'Human DNA Panels',
+  pro: 'DNA Pro Panels',
+  ultra: 'DNA Ultra Panels',
+};
+
+const CAPTION: Record<keyof GroupedPanels, string> = {
+  human: 'Available Human DNA Panels',
+  pro: 'Available DNA Pro Panels',
+  ultra: 'Available DNA Ultra Panels',
+};
+
+const COL_LABEL: Record<keyof GroupedPanels, string> = {
+  human: 'Panel Name',
+  pro: 'Pro Panel Name',
+  ultra: 'Ultra Panel Name',
+};
+
+function PanelTable({ panels, tab }: { panels: Panel[]; tab: keyof GroupedPanels }) {
+  if (panels.length === 0) {
+    return (
+      <p className="text-center text-gray-500 py-8 text-sm">
+        No panels available in this category yet.
+      </p>
+    );
+  }
+  return (
+    <Table>
+      <TableCaption>{CAPTION[tab]}</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[70%]">{COL_LABEL[tab]}</TableHead>
+          <TableHead className="text-right">Number of Genes</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {panels.map((panel) => (
+          <TableRow key={panel._id ?? panel.documentId}>
+            <TableCell className="font-medium">{panel.name}</TableCell>
+            <TableCell className="text-right">{panel.geneCount}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
 
 export default function DNAPanels() {
+  const [grouped, setGrouped] = useState<GroupedPanels | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/panels')
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.success) {
+          setGrouped(json.data);
+        } else {
+          setError(true);
+        }
+      })
+      .catch(() => setError(true));
+  }, []);
+
+  const tabs: (keyof GroupedPanels)[] = ['human', 'pro', 'ultra'];
+
   return (
     <div className="min-h-screen bg-purple-50">
       <div className="container mx-auto px-4 py-12">
@@ -22,207 +105,46 @@ export default function DNAPanels() {
             </p>
           </div>
 
+          {error && (
+            <p className="text-center text-red-500 text-sm mb-6">
+              Failed to load panel data. Please refresh the page.
+            </p>
+          )}
+
           <Tabs defaultValue="human" className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-8 bg-purple-200">
-              <TabsTrigger value="human" className="text-sm md:text-base">
-                Human DNA Panels
-              </TabsTrigger>
-              <TabsTrigger value="pro" className="text-sm md:text-base">
-                DNA Pro Panels
-              </TabsTrigger>
-              <TabsTrigger value="ultra" className="text-sm md:text-base">
-                DNA Ultra Panels
-              </TabsTrigger>
+              {tabs.map((tab) => (
+                <TabsTrigger key={tab} value={tab} className="text-sm md:text-base">
+                  {TAB_LABELS[tab]}
+                </TabsTrigger>
+              ))}
             </TabsList>
 
-            <TabsContent value="human">
-              <div className="bg-white  rounded-lg shadow-lg p-6">
-                <h2 className="text-2xl font-bold mb-6 text-purple-600">Human DNA Panels</h2>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableCaption>Available Human DNA Panels</TableCaption>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[70%]">Panel Name</TableHead>
-                        <TableHead className="text-right">Number of Genes</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className="font-medium">Human Breast Cancer Panel</TableCell>
-                        <TableCell className="text-right">93</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Human Colorectal Cancer Panel</TableCell>
-                        <TableCell className="text-right">71</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Human Myeloid Neoplasms Panel</TableCell>
-                        <TableCell className="text-right">141</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Human Lung Cancer Panel</TableCell>
-                        <TableCell className="text-right">72</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Human Inherited Disease Panel</TableCell>
-                        <TableCell className="text-right">298</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Human Comprehensive Cancer Panel</TableCell>
-                        <TableCell className="text-right">275</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Human Actionable Solid Tumor Panel</TableCell>
-                        <TableCell className="text-right">22</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Human BRCA1 and BRCA2 Panel</TableCell>
-                        <TableCell className="text-right">2</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Human BRCA1 and BRCA2 Plus Panel</TableCell>
-                        <TableCell className="text-right">6</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Human HRR Panel</TableCell>
-                        <TableCell className="text-right">15</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Human TMB and MSI Panel</TableCell>
-                        <TableCell className="text-right">486</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+            {tabs.map((tab) => (
+              <TabsContent key={tab} value={tab}>
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-6 text-purple-600">{TAB_LABELS[tab]}</h2>
+                  <div className="overflow-x-auto">
+                    {grouped === null && !error ? (
+                      // Skeleton loader
+                      <div className="space-y-3 animate-pulse">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <div key={i} className="flex justify-between">
+                            <div className="h-4 bg-gray-200 rounded w-2/3" />
+                            <div className="h-4 bg-gray-200 rounded w-8" />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <PanelTable panels={grouped?.[tab] ?? []} tab={tab} />
+                    )}
+                  </div>
                 </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="pro">
-              <div className="bg-white  rounded-lg shadow-lg p-6">
-                <h2 className="text-2xl font-bold mb-6 text-purple-600">DNA Pro Panels</h2>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableCaption>Available DNA Pro Panels</TableCaption>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[70%]">Pro Panel Name</TableHead>
-                        <TableHead className="text-right">Number of Genes</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className="font-medium">Comprehensive Cancer Research Panel</TableCell>
-                        <TableCell className="text-right">225</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Breast Cancer Research Panel</TableCell>
-                        <TableCell className="text-right">54</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Colorectal Cancer Research Panel</TableCell>
-                        <TableCell className="text-right">76</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Myeloid Neoplasms Research Panel</TableCell>
-                        <TableCell className="text-right">164</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Brain Cancer Research Panel</TableCell>
-                        <TableCell className="text-right">50</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Lung Cancer Research Panel</TableCell>
-                        <TableCell className="text-right">76</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Comprehensive Cancer Focus Panel</TableCell>
-                        <TableCell className="text-right">164</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Breast Cancer Focus Panel</TableCell>
-                        <TableCell className="text-right">36</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Colorectal Cancer Focus Panel</TableCell>
-                        <TableCell className="text-right">53</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Myeloid Neoplasms Focus Panel</TableCell>
-                        <TableCell className="text-right">92</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Brain Cancer Focus Panel</TableCell>
-                        <TableCell className="text-right">26</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Lung Cancer Focus Panel</TableCell>
-                        <TableCell className="text-right">44</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Comprehensive Hereditary Cancer Research Panel</TableCell>
-                        <TableCell className="text-right">287</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Hereditary Breast and Ovarian Cancer Panel</TableCell>
-                        <TableCell className="text-right">50</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Hereditary Colorectal Cancer Panel</TableCell>
-                        <TableCell className="text-right">44</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Hematologic Malignancy Panel</TableCell>
-                        <TableCell className="text-right">33</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Hereditary Prostate Cancer Panel</TableCell>
-                        <TableCell className="text-right">23</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Hereditary Pancreatic Cancer Panel</TableCell>
-                        <TableCell className="text-right">32</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="ultra">
-              <div className="bg-white  rounded-lg shadow-lg p-6">
-                <h2 className="text-2xl font-bold mb-6 text-purple-600">DNA Ultra Panels</h2>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableCaption>Available DNA Ultra Panels</TableCaption>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[70%]">Ultra Panel Name</TableHead>
-                        <TableHead className="text-right">Number of Genes</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className="font-medium">Breast Cancer Research Panel</TableCell>
-                        <TableCell className="text-right">14</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Colorectal Cancer Research Panel</TableCell>
-                        <TableCell className="text-right">27</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Human Lung Cancer Panel</TableCell>
-                        <TableCell className="text-right">26</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
-            </TabsContent>
+              </TabsContent>
+            ))}
           </Tabs>
         </div>
       </div>
     </div>
-  )
+  );
 }
-

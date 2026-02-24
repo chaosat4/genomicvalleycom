@@ -33,8 +33,10 @@ export const serviceSchema = z.object({
 export const panelSchema = z.object({
   documentId: z.string().min(1).max(120).regex(/^[a-z0-9-]+$/),
   name: z.string().min(1),
-  genes: z.string().min(1),
-  category: z.string().optional(),
+  geneCount: z.number().int().nonnegative(),
+  genes: z.string().optional(),
+  category: z.enum(['human', 'pro', 'ultra']),
+  order: z.number().int().default(0),
   isActive: z.boolean().optional(),
 });
 

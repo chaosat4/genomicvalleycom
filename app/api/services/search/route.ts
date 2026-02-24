@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMongoClient } from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongodb';
 import Service from '@/lib/models/Service';
 import { escapeRegex } from '@/lib/api/safe-regex';
 import { handleOptions, withCors } from '@/lib/api/cors';
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       return withCors(request, NextResponse.json({ success: false, error: 'Query is too long' }, { status: 400 }));
     }
 
-    await getMongoClient();
+    await connectDB();
 
     const safe = escapeRegex(query);
     const services = await Service.find({

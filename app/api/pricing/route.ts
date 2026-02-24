@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMongoClient } from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongodb';
 import PriceConfiguration from '@/lib/models/PriceConfiguration';
 import { handleOptions, withCors } from '@/lib/api/cors';
 
@@ -9,7 +9,7 @@ export function OPTIONS(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    await getMongoClient();
+    await connectDB();
 
     const config = await PriceConfiguration.findOne({ isActive: true })
       .populate('libraryPreparation.kitRef', 'name code')

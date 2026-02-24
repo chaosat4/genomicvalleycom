@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMongoClient } from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongodb';
 import Service from '@/lib/models/Service';
 import { handleOptions, withCors } from '@/lib/api/cors';
 
@@ -10,7 +10,7 @@ export function OPTIONS(request: NextRequest) {
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    await getMongoClient();
+    await connectDB();
 
     const service = await Service.findOne({ 
       documentId: id,
