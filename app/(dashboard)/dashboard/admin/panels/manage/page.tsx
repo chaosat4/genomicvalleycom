@@ -39,7 +39,6 @@ import {
   ToggleRight,
   Dna,
   RefreshCw,
-  DatabaseZap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -97,10 +96,6 @@ export default function PanelsManagePage() {
   // Delete confirm
   const [deletePanel, setDeleteP]   = useState<Panel | null>(null);
   const [deleteLoading, setDelLoad] = useState(false);
-
-  // Seed
-  const [seedLoading, setSeedLoad]  = useState(false);
-  const [seedDialog, setSeedDialog] = useState(false);
 
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -219,23 +214,6 @@ export default function PanelsManagePage() {
     }
   };
 
-  // --- Seed ---
-  const runSeed = async () => {
-    setSeedLoad(true);
-    try {
-      const res  = await fetch('/api/admin/panels/seed', { method: 'POST' });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error || 'Seed failed');
-      showToast(`Seed complete: ${data.inserted} inserted, ${data.updated} updated`);
-      setSeedDialog(false);
-      fetchPanels({ resetPage: true });
-    } catch (e: unknown) {
-      showToast(e instanceof Error ? e.message : 'Seed failed', 'error');
-    } finally {
-      setSeedLoad(false);
-    }
-  };
-
   return (
     <div className="space-y-6">
 
@@ -264,10 +242,6 @@ export default function PanelsManagePage() {
           <Button variant="outline" size="sm" onClick={() => fetchPanels()} disabled={loading} className="gap-2">
             <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
             Refresh
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => setSeedDialog(true)} className="gap-2">
-            <DatabaseZap className="h-4 w-4" />
-            Seed Default Data
           </Button>
           <Button asChild size="sm">
             <Link href="/dashboard/admin/panels/new">
@@ -351,13 +325,9 @@ export default function PanelsManagePage() {
                   <tr>
                     <td colSpan={7} className="px-4 py-16 text-center text-gray-400 text-sm">
                       No panels found.{' '}
-                      <button onClick={() => setSeedDialog(true)} className="text-purple-600 hover:underline">
-                        Seed default data
-                      </button>
-                      {' '}or{' '}
                       <Link href="/dashboard/admin/panels/new" className="text-purple-600 hover:underline">
-                        add a panel manually
-                      </Link>.
+                        Add a panel
+                      </Link>
                     </td>
                   </tr>
                 ) : panels.map(panel => (
@@ -534,27 +504,6 @@ export default function PanelsManagePage() {
             <Button variant="outline" onClick={() => setDeleteP(null)} disabled={deleteLoading}>Cancel</Button>
             <Button onClick={confirmDelete} disabled={deleteLoading} className="bg-red-600 hover:bg-red-700 text-white">
               {deleteLoading ? 'Deleting…' : 'Delete Panel'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Seed Confirm Dialog */}
-      <Dialog open={seedDialog} onOpenChange={open => !open && !seedLoading && setSeedDialog(false)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Seed Default Panel Data</DialogTitle>
-            <DialogDescription>
-              This will upsert all 32 default panels (Human, Pro, and Ultra categories) into the database.
-              Existing panels with matching Document IDs will be updated. New panels will be created.
-              This action is safe to run multiple times.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSeedDialog(false)} disabled={seedLoading}>Cancel</Button>
-            <Button onClick={runSeed} disabled={seedLoading} className="gap-2">
-              <DatabaseZap className="h-4 w-4" />
-              {seedLoading ? 'Seeding…' : 'Seed Now'}
             </Button>
           </DialogFooter>
         </DialogContent>
