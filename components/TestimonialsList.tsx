@@ -49,6 +49,16 @@ export function TestimonialsList() {
                       <p className="text-purple-600 font-medium">
                         {testimonial.role}
                       </p>
+                      {testimonial.pdf && (
+                        <a
+                          href={testimonial.pdf}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-purple-500 underline hover:text-purple-700"
+                        >
+                          View Recommendation Letter
+                        </a>
+                      )}
                     </div>
 
                     {/* Rating Stars */}
