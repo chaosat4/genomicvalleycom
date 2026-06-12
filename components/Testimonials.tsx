@@ -28,7 +28,7 @@ export const testimonialData = [
     id: 3,
     name: "Prof. S. C. Lakhotia",
     role: "BHU Distinguished Professor (Lifetime), Cytogenetics Laboratory, Department of Zoology, Institute of Science, Banaras Hindu University, Varanasi",
-    image: "/placeholder-profile.svg",
+    image: "/default_profile.jpg",
     testimonial: "Genomic Valley Bharat Pvt. Ltd. has consistently delivered high-quality genome sequencing and bioinformatics services with excellent turnaround time and reliable analytical support. Researchers have appreciated the accuracy of the generated sequencing data, along with the dedicated guidance and prompt technical assistance provided by the expert team whenever required. Their commitment to maintaining scientific standards, responsiveness, and dependable research support has made GV a trusted partner for academic and research institutions.",
     rating: 5,
     pdf: "/Testimonials/Dr.%20Lakhotia%20BHU.pdf"
@@ -37,7 +37,7 @@ export const testimonialData = [
     id: 4,
     name: "Prof. Manisha Sachan",
     role: "Professor, Department of Biotechnology, Motilal Nehru National Institute of Technology Allahabad, Prayagraj",
-    image: "/placeholder-profile.svg",
+    image: "/default_profile.jpg",
     testimonial: "Genomic Valley Bharat Pvt. Ltd. provided efficient and satisfactory bisulfite amplicon sequencing services with high-quality NGS data analysis and timely project delivery. The sequencing outcomes and analytical standards met the expected research requirements, while the team ensured smooth collaboration and reliable communication throughout the project. Their professional approach and commitment to quality have established GV as a dependable partner for advanced biotechnology and genomics research services.",
     rating: 5,
     pdf: "/Testimonials/Dr.%20Manisha%20Sachan_MNNIT.pdf"
@@ -46,7 +46,7 @@ export const testimonialData = [
     id: 5,
     name: "Dr. Neeraj Kumar",
     role: "Scientist, Department of Reproductive Biology, All India Institute of Medical Sciences, New Delhi",
-    image: "/placeholder-profile.svg",
+    image: "/default_profile.jpg",
     testimonial: "Genomic Valley Bharat Pvt. Ltd. demonstrated exceptional professionalism, technical expertise, and responsiveness while supporting advanced research projects with high-quality genomic analysis and data visualization services. Their efficient turnaround time, reliable deliverables, and strong analytical insights significantly enhanced the clarity and depth of the study outcomes. The team's dedication, collaborative approach, and commitment to maintaining research quality have made GV a highly recommended and trusted partner for biomedical and life science research.",
     rating: 5,
     pdf: "/Testimonials/Dr.%20Neeraj%20AIIMS.pdf"
@@ -55,7 +55,7 @@ export const testimonialData = [
     id: 6,
     name: "Dr. Varun Suroliya",
     role: "Scientist-C, Artemis Education & Research Foundation, Artemis Hospital, Gurugram",
-    image: "/placeholder-profile.svg",
+    image: "/default_profile.jpg",
     testimonial: "Genomic Valley Bharat Pvt. Ltd. successfully delivered comprehensive next-generation sequencing and transcriptome analysis services with professionalism, technical expertise, and reliable end-to-end project support. Their team efficiently managed sample collection, RNA isolation, library preparation, quality control, data generation, and downstream analysis while maintaining timely communication and responsiveness throughout the project. The scientific guidance, proactive support, and commitment to research quality significantly contributed to the smooth execution and successful completion of the study, making GV a highly recommended partner for genomics and transcriptomics research projects.",
     rating: 5,
     pdf: "/Testimonials/Dr.%20Varun%20Artemis.pdf"
@@ -64,7 +64,7 @@ export const testimonialData = [
     id: 7,
     name: "Registrar",
     role: "Magadh University, Bodh Gaya",
-    image: "/placeholder-profile.svg",
+    image: "/default_profile.jpg",
     testimonial: "Genomic Valley Bharat Pvt. Ltd. has been recognized for delivering reliable whole transcriptome sequencing and advanced data analysis services with a strong focus on quality, accuracy, and timely execution. Their expertise in RNA isolation, library preparation, RNA sequencing, and downstream analytical support has contributed significantly to successful research outcomes. GV's professional approach, technical proficiency, and commitment to providing comprehensive genomics solutions continue to make them a trusted partner for academic and scientific institutions.",
     rating: 5,
     pdf: "/Testimonials/Magadh%20University.pdf"
@@ -73,7 +73,7 @@ export const testimonialData = [
     id: 8,
     name: "Dr. Jayanthi Shastri",
     role: "Chair Professor, Centre of Excellence in Research & Training in Infectious Diseases, Maharashtra University of Health Sciences, Mumbai",
-    image: "/placeholder-profile.svg",
+    image: "/default_profile.jpg",
     testimonial: "Genomic Valley Bharat Pvt. Ltd. successfully delivered high-quality next-generation sequencing (NGS) services with comprehensive end-to-end support for advanced infectious disease and viral genome research projects. Their team demonstrated exceptional technical expertise, professionalism, and responsiveness throughout the project by providing support in conceptualization, experimental planning, library preparation, sequencing execution, and downstream analysis. The sequencing quality, data integrity, and analytical outcomes consistently met expected scientific standards while ensuring timely and well-structured project delivery. GV's collaborative approach and reliable technical guidance significantly contributed to the successful completion of the research, making them a highly recommended partner for genomics and sequencing-based studies.",
     rating: 5,
     pdf: "/Testimonials/Recommendation%20Letter%20Genome%20Valley%20.pdf"
@@ -91,7 +91,7 @@ export const testimonialData = [
     id: 10,
     name: "Dr. Gopinath M",
     role: "Scientist F, CFTRI, Mysore",
-    image: "/placeholder-profile.svg",
+    image: "/default_profile.jpg",
     testimonial: "Genomic Valley Bharat Pvt. Ltd. provided exceptional 16S V3-V4 metagenomics analysis and NCBI SRA submission support for our research project. Their scientific expertise, technical guidance, and commitment to quality ensured reliable results, timely delivery, and a smooth project experience.",
     rating: 5,
     pdf: "/Testimonials/Dr.%20Gopinath%2C%20CFTRI%20Mysore.pdf"
